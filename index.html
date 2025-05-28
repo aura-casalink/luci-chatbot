@@ -478,15 +478,63 @@
         
         // Función para generar device_id único
         function generateDeviceId() {
+            // Primero intentar obtener desde localStorage
             let deviceId = localStorage.getItem('lucy_device_id');
-            if (!deviceId) {
-                deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-                localStorage.setItem('lucy_device_id', deviceId);
-                console.log('Nuevo device_id generado:', deviceId);
-            } else {
+            if (deviceId) {
                 console.log('Device_id existente:', deviceId);
+                return deviceId;
             }
+            
+            // Si no existe, intentar generar uno basado en características del navegador
+            const fingerprint = [
+                navigator.userAgent,
+                navigator.language,
+                screen.width + 'x' + screen.height,
+                navigator.platform,
+                Intl.DateTimeFormat().resolvedOptions().timeZone
+            ].join('|');
+            
+            // Generar hash simple del fingerprint
+            let hash = 0;
+            for (let i = 0; i < fingerprint.length; i++) {
+                const char = fingerprint.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convertir a 32-bit integer
+            }
+            
+            // Convertir a string hexadecimal positivo
+            deviceId = Math.abs(hash).toString(16) + Date.now().toString(16);
+            
+            localStorage.setItem('lucy_device_id', deviceId);
+            console.log('Nuevo device_id generado:', deviceId);
             return deviceId;
+        }
+
+        // Función para intentar recuperar conversaciones por IP cuando no hay device_id match
+        async function tryRecoverConversationsByIP() {
+            if (!supabase || !userIP) return [];
+            
+            try {
+                console.log('Intentando recuperar conversaciones por IP:', userIP);
+                
+                const { data, error } = await supabase
+                    .from('chat_sessions')
+                    .select('*')
+                    .eq('ip', userIP)
+                    .order('updated_at', { ascending: false })
+                    .limit(5); // Solo las 5 más recientes para no sobrecargar
+                    
+                if (error) {
+                    console.error('Error al recuperar por IP:', error);
+                    return [];
+                }
+                
+                console.log('Conversaciones encontradas por IP:', data);
+                return data || [];
+            } catch (error) {
+                console.error('Error en recuperación por IP:', error);
+                return [];
+            }
         }
 
         // Función para generar session_id único
@@ -544,6 +592,7 @@
             try {
                 console.log('Cargando conversaciones para device_id:', deviceId);
                 
+                // Primero intentar por device_id
                 const { data, error } = await supabase
                     .from('chat_sessions')
                     .select('*')
@@ -555,8 +604,15 @@
                     return;
                 }
         
-                console.log('Conversaciones cargadas:', data);
-                displayConversations(data);
+                console.log('Conversaciones por device_id:', data);
+                
+                // Si no hay conversaciones por device_id, intentar recuperar por IP
+                let conversationsToShow = data;
+                if (!data || data.length === 0) {
+                    conversationsToShow = await tryRecoverConversationsByIP();
+                }
+                
+                displayConversations(conversationsToShow);
             } catch (error) {
                 console.error('Error al cargar conversaciones:', error);
             }
