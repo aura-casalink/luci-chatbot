@@ -441,40 +441,6 @@
             await initializeApp();
         });
 
-        // Función temporal para debug - eliminar después
-        async function debugDatabase() {
-            if (!supabase) return;
-            
-            try {
-                // Ver todas las conversaciones sin filtros
-                const { data: allData, error: allError } = await supabase
-                    .from('chat_sessions')
-                    .select('device_id, session_id, updated_at')
-                    .limit(10);
-                    
-                if (allError) {
-                    console.error('Error al obtener todas las conversaciones:', allError);
-                } else {
-                    console.log('TODAS las conversaciones en DB:', allData);
-                }
-                
-                // Ver conversaciones con nuestro device_id específico
-                const { data: myData, error: myError } = await supabase
-                    .from('chat_sessions')
-                    .select('*')
-                    .eq('device_id', deviceId);
-                    
-                if (myError) {
-                    console.error('Error al obtener mis conversaciones:', myError);
-                } else {
-                    console.log('MIS conversaciones:', myData);
-                }
-                
-            } catch (error) {
-                console.error('Error en debug:', error);
-            }
-        }
-
         
         // Función para generar device_id único
         function generateDeviceId() {
@@ -577,7 +543,6 @@
             
             // Esperar un poco para asegurar que Supabase esté listo
             setTimeout(async () => {
-                await debugDatabase();
                 await loadPreviousConversations();
             }, 500);
         }
