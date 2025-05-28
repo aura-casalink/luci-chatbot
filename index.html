@@ -420,6 +420,7 @@
         let userIP = null;
         let currentConversation = [];
         let supabase = null;
+        let currentTopic = null;
         
         // Configuración de Supabase
         const SUPABASE_URL = 'https://uxyxxhsgkprnuxohjhbc.supabase.co';
@@ -671,6 +672,7 @@
         function loadConversation(conversation) {
             currentSessionId = conversation.session_id;
             currentConversation = conversation.conversations || [];
+            currentTopic = conversation.topic || null;
 
             // Cambiar a vista de chat
             showChatScreen();
@@ -714,6 +716,7 @@
                     device_id: deviceId,
                     session_id: currentSessionId,
                     ip: userIP,
+                    topic: currentTopic,
                     conversations: currentConversation,
                     browser_info: getBrowserInfo(),
                     updated_at: new Date().toISOString()
@@ -739,6 +742,7 @@
             // Crear nueva sesión
             currentSessionId = generateSessionId();
             currentConversation = [];
+            currentTopic = optionText;
 
             // Fade out de la pantalla de bienvenida
             const welcomeScreen = document.getElementById('welcomeScreen');
@@ -826,6 +830,7 @@
                     current_message: message,
                     session_id: currentSessionId,
                     device_id: deviceId,
+                    topic: currentTopic,
                     timestamp: new Date().toISOString(),
                     user_ip: userIP,
                     conversation_stats: {
@@ -852,6 +857,13 @@
             })
             .then(data => {
                 hideLoading();
+                
+                // Actualizar topic si viene en la respuesta
+                if (data.topic && data.topic !== currentTopic) {
+                    currentTopic = data.topic;
+                    console.log('Topic actualizado a:', currentTopic);
+                }
+                
                 // Añadir respuesta del asistente
                 addMessage(data.response || 'Respuesta recibida del servidor', 'assistant');
                 isWaitingForResponse = false;
@@ -907,6 +919,7 @@
         function newChat() {
             currentSessionId = null;
             currentConversation = [];
+            currentTopic = null;
             
             // Mostrar pantalla de bienvenida
             const welcomeScreen = document.getElementById('welcomeScreen');
