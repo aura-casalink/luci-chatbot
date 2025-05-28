@@ -421,6 +421,7 @@
         let currentConversation = [];
         let supabase = null;
         let currentTopic = null;
+        let pendingCallback = false;
         
         // Configuración de Supabase
         const SUPABASE_URL = 'https://uxyxxhsgkprnuxohjhbc.supabase.co';
@@ -841,7 +842,7 @@
                 }
             };
 
-            // Simulación del webhook (REEMPLAZA ESTO CON TU LÓGICA REAL)
+
             fetch(webhookData.url, {
                 method: webhookData.method,
                 headers: {
@@ -863,9 +864,17 @@
                     currentTopic = data.topic;
                     console.log('Topic actualizado a:', currentTopic);
                 }
+
+                 // Verificar si se espera un callback
+                if (data.started_search === "yes") {
+                    pendingCallback = true;
+                    console.log('Callback pendiente activado para sesión:', currentSessionId);
+                } else {
+                    pendingCallback = false;
+                }
                 
                 // Añadir respuesta del asistente
-                addMessage(data.response || 'Respuesta recibida del servidor', 'assistant');
+                addMessage(data.message || data.response || 'Respuesta recibida del servidor', 'assistant');
                 isWaitingForResponse = false;
                 updateSendButton();
             })
@@ -886,6 +895,33 @@
             messagesContainer.appendChild(messageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
+
+        // Función para manejar callbacks desde n8n
+        function handleCallback(data) {
+            console.log('Callback recibido:', data);
+            
+            if (!currentSessionId || !pendingCallback) {
+                console.log('No hay sesión activa o no se esperaba callback');
+                return { success: false, message: 'No active session or callback not expected' };
+            }
+            
+            // Actualizar topic si viene en la respuesta
+            if (data.topic && data.topic !== currentTopic) {
+                currentTopic = data.topic;
+                console.log('Topic actualizado via callback a:', currentTopic);
+            }
+            
+            // Añadir mensaje del asistente
+            addMessage(data.message || data.response || 'Respuesta recibida', 'assistant');
+            
+            // Resetear estado de callback pendiente
+            pendingCallback = false;
+            
+            return { success: true, message: 'Callback procesado correctamente' };
+        }
+        
+        // Exponer función globalmente para el endpoint
+        window.handleCallback = handleCallback;
 
         function sendMessage() {
             const input = document.getElementById('chatInput');
@@ -920,6 +956,7 @@
             currentSessionId = null;
             currentConversation = [];
             currentTopic = null;
+            pendingCallback = false;
             
             // Mostrar pantalla de bienvenida
             const welcomeScreen = document.getElementById('welcomeScreen');
@@ -952,6 +989,30 @@
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, 120) + 'px';
         });
+
+        // Endpoint para recibir callbacks de n8n
+        if (typeof window !== 'undefined') {
+            // Crear endpoint simulado usando postMessage para desarrollo local
+            window.addEventListener('message', function(event) {
+                if (event.data && event.data.type === 'n8n_callback') {
+                    handleCallback(event.data.payload);
+                }
+            });
+            
+            // Endpoint real para producción (esto requerirá configuración adicional en Vercel)
+            window.callbackEndpoint = function(data) {
+                return handleCallback(data);
+            };
+        }
+        
+        // Para desarrollo: función de prueba del callback
+        window.testCallback = function(message) {
+            const testData = {
+                message: message || 'Mensaje de prueba del callback',
+                topic: currentTopic
+            };
+            return handleCallback(testData);
+        };
     </script>
 </body>
 </html>
