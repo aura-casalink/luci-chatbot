@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucy - Asistente Inmobiliario</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Graphik', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Menú lateral */
+        .sidebar {
+            width: 250px;
+            background-color: #f0fbff;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+        }
+
+        .sidebar h3 {
+            color: black;
+            margin-bottom: 15px;
+            font-size: 16px;
+            font-family: 'Graphik', sans-serif;
+            font-weight: bold;
+        }
+
+        .conversation-item {
+            padding: 10px;
+            margin-bottom: 8px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: black;
+            font-size: 14px;
+            font-family: 'Graphik', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .conversation-item:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Área principal */
+        .main-area {
+            flex: 1;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Estado inicial */
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 40px;
+        }
+
+        .welcome-title {
+            font-family: 'Graphik', sans-serif;
+            font-weight: bold;
+            font-size: 32px;
+            color: black;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .buttons-container {
+            background-color: #f0fbff;
+            border: 1px solid #e9ecef;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .option-button {
+            flex: 1;
+            min-width: 300px;
+            padding: 15px 20px;
+            background-color: white;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-family: 'Graphik', sans-serif;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .option-button:hover {
+            background-color: #f8f9fa;
+            border-color: #007bff;
+        }
+
+        .option-button:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Estado de chat */
+        .chat-screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .chat-title {
+            font-family: 'Graphik', sans-serif;
+            font-weight: bold;
+            font-size: 24px;
+            color: black;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            max-width: 70%;
+            margin-bottom: 15px;
+            padding: 12px 18px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            font-family: 'Graphik', sans-serif;
+        }
+
+        .message.assistant {
+            background-color: #f0fbff;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.user {
+            background-color: #fdfff0;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            background-color: white;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            padding: 5px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            font-family: 'Graphik', sans-serif;
+            border-radius: 20px;
+            resize: none;
+            max-height: 120px;
+            min-height: 50px;
+        }
+
+        .send-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-right: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .send-button:hover {
+            background-color: #0056b3;
+        }
+
+        .send-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        /* Loader */
+        .loader {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #007bff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 70%;
+            margin-bottom: 15px;
+            padding: 12px 18px;
+            border-radius: 18px;
+            background-color: #f0fbff;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            font-family: 'Graphik', sans-serif;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            .welcome-title {
+                font-size: 24px;
+            }
+            
+            .buttons-container {
+                padding: 20px;
+                flex-direction: column;
+            }
+            
+            .option-button {
+                min-width: auto;
+            }
+            
+            .message {
+                max-width: 85%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Menú lateral -->
+        <div class="sidebar">
+            <h3>Conversaciones</h3>
+            <div class="conversation-item">Nueva conversación</div>
+            <div class="conversation-item">Buscar casa en Madrid</div>
+            <div class="conversation-item">Alquiler estudiantes</div>
+            <div class="conversation-item">Financiación hipoteca</div>
+        </div>
+
+        <!-- Área principal -->
+        <div class="main-area">
+            <!-- Pantalla de bienvenida -->
+            <div class="welcome-screen" id="welcomeScreen">
+                <h1 class="welcome-title">Hola, soy Lucy. ¿Con qué te puedo ayudar?</h1>
+                <div class="buttons-container">
+                    <button class="option-button" onclick="selectOption('Buscar propiedades para comprar')">
+                        Buscar propiedades para comprar
+                    </button>
+                    <button class="option-button" onclick="selectOption('Buscar propiedades para alquilar')">
+                        Buscar propiedades para alquilar
+                    </button>
+                    <button class="option-button" onclick="selectOption('Gestión de alquiler')">
+                        Gestión de alquiler
+                    </button>
+                    <button class="option-button" onclick="selectOption('Gestión de financiación')">
+                        Gestión de financiación
+                    </button>
+                </div>
+            </div>
+
+            <!-- Pantalla de chat -->
+            <div class="chat-screen" id="chatScreen">
+                <div class="chat-header">
+                    <h2 class="chat-title">Hola, soy Lucy. ¿Con qué te puedo ayudar?</h2>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Los mensajes aparecerán aquí -->
+                </div>
+
+                <div class="chat-input-container">
+                    <div class="chat-input-wrapper">
+                        <textarea 
+                            class="chat-input" 
+                            id="chatInput" 
+                            placeholder="Escribe tu mensaje..."
+                            rows="1"
+                        ></textarea>
+                        <button class="send-button" id="sendButton" onclick="sendMessage()">
+                            ➤
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isWaitingForResponse = false;
+
+        function selectOption(optionText) {
+            // Cambiar a pantalla de chat
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('chatScreen').style.display = 'flex';
+            
+            // Añadir mensaje del usuario
+            addMessage(optionText, 'user');
+            
+            // Enviar webhook
+            sendWebhook(optionText);
+        }
+
+        function addMessage(text, sender) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.textContent = text;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showLoading() {
+            const messagesContainer = document.getElementById('chatMessages');
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading-message';
+            loadingDiv.id = 'loadingMessage';
+            loadingDiv.innerHTML = '<div class="loader"></div><span>Escribiendo...</span>';
+            messagesContainer.appendChild(loadingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function hideLoading() {
+            const loadingMessage = document.getElementById('loadingMessage');
+            if (loadingMessage) {
+                loadingMessage.remove();
+            }
+        }
+
+        function sendWebhook(message) {
+            isWaitingForResponse = true;
+            updateSendButton();
+            showLoading();
+
+            // AQUÍ DEBES MODIFICAR EL MÉTODO Y LA URL DEL WEBHOOK
+            const webhookData = {
+                method: 'POST', // Cambia por GET, PUT, etc. según necesites
+                url: 'https://tu-webhook-url-aqui.com/endpoint', // CAMBIA ESTA URL
+                data: {
+                    message: message,
+                    timestamp: new Date().toISOString(),
+                    user_id: 'usuario_' + Date.now() // ID único del usuario
+                }
+            };
+
+            // Simulación del webhook (REEMPLAZA ESTO CON TU LÓGICA REAL)
+            fetch(webhookData.url, {
+                method: webhookData.method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(webhookData.data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                return response.json();
+            })
+            .then(data => {
+                hideLoading();
+                // Añadir respuesta del asistente
+                addMessage(data.response || 'Respuesta recibida del servidor', 'assistant');
+                isWaitingForResponse = false;
+                updateSendButton();
+            })
+            .catch(error => {
+                hideLoading();
+                addMessage('Error de conexión, inténtalo de nuevo más tarde', 'assistant');
+                isWaitingForResponse = false;
+                updateSendButton();
+                console.error('Error:', error);
+            });
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message && !isWaitingForResponse) {
+                addMessage(message, 'user');
+                input.value = '';
+                sendWebhook(message);
+            }
+        }
+
+        function updateSendButton() {
+            const sendButton = document.getElementById('sendButton');
+            sendButton.disabled = isWaitingForResponse;
+        }
+
+        // Event listeners
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Auto-resize textarea
+        document.getElementById('chatInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+    </script>
+</body>
+</html>
