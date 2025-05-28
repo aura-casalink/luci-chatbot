@@ -1,49 +1,41 @@
-export default function handler(req, res) {
-  // Permitir CORS
+export default async function handler(req, res) {
+  // Configurar CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
+  // Manejar preflight OPTIONS
   if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
+    return res.status(200).end();
   }
 
+  // Solo permitir POST
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ 
+      success: false, 
+      error: 'Only POST method allowed' 
+    });
   }
 
-  const { sessionId } = req.query;
-  const callbackData = req.body;
+  try {
+    const callbackData = req.body;
+    const sessionId = req.query.sessionId || callbackData.sessionId;
+    
+    console.log('Callback recibido:', { sessionId, data: callbackData });
 
-  console.log('Callback recibido para sesión:', sessionId, 'Data:', callbackData);
+    // Responder con éxito y datos para el frontend
+    return res.status(200).json({
+      success: true,
+      message: 'Callback received successfully',
+      data: callbackData,
+      sessionId: sessionId
+    });
 
-  // Aquí podrías validar el sessionId si es necesario
-  
-  // Devolver script que ejecute el callback en el frontend
-  const script = `
-    <script>
-      try {
-        if (window.opener && window.opener.handleCallback) {
-          const result = window.opener.handleCallback(${JSON.stringify(callbackData)});
-          console.log('Callback ejecutado:', result);
-        } else if (parent && parent.handleCallback) {
-          const result = parent.handleCallback(${JSON.stringify(callbackData)});
-          console.log('Callback ejecutado:', result);
-        } else {
-          console.log('No se encontró función handleCallback en ventana padre');
-        }
-        // Cerrar ventana si fue abierta para callback
-        if (window.opener) {
-          window.close();
-        }
-      } catch (error) {
-        console.error('Error ejecutando callback:', error);
-      }
-    </script>
-    <html><body>Callback procesado</body></html>
-  `;
-
-  res.setHeader('Content-Type', 'text/html');
-  res.status(200).send(script);
+  } catch (error) {
+    console.error('Error procesando callback:', error);
+    return res.status(500).json({
+      success: false,
+      error: 'Internal server error'
+    });
+  }
 }
