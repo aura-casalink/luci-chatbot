@@ -801,20 +801,38 @@
             }
         }
 
+        function formatConversationAsText() {
+            let conversationText = "Historial de conversación:\n\n";
+            
+            currentConversation.forEach((msg, index) => {
+                const role = msg.sender === 'user' ? 'Usuario' : 'Lucy';
+                conversationText += `${role}: ${msg.text}\n\n`;
+            });
+            
+            return conversationText;
+        }
+        
         function sendWebhook(message) {
             isWaitingForResponse = true;
             updateSendButton();
             showLoading();
-
+            
+            const conversationText = formatConversationAsText();
             const webhookData = {
                 method: 'POST',
                 url: 'https://luci-aura.app.n8n.cloud/webhook/c3b65321-b14c-47b5-80e2-0d6646bf00cd/chat', 
                 data: {
-                    message: message,
+                    conversation_text: conversationText,
+                    current_message: message,
                     session_id: currentSessionId,
                     device_id: deviceId,
                     timestamp: new Date().toISOString(),
-                    user_ip: userIP
+                    user_ip: userIP,
+                    conversation_stats: {
+                        total_messages: currentConversation.length,
+                        user_messages: currentConversation.filter(m => m.sender === 'user').length,
+                        assistant_messages: currentConversation.filter(m => m.sender === 'assistant').length
+                    }
                 }
             };
 
