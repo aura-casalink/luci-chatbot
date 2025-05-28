@@ -806,10 +806,9 @@
             updateSendButton();
             showLoading();
 
-            // AQUÍ DEBES MODIFICAR EL MÉTODO Y LA URL DEL WEBHOOK
             const webhookData = {
-                method: 'POST', // Cambia por GET, PUT, etc. según necesites
-                url: 'https://tu-webhook-url-aqui.com/endpoint', // CAMBIA ESTA URL
+                method: 'POST',
+                url: 'https://luci-aura.app.n8n.cloud/webhook/c3b65321-b14c-47b5-80e2-0d6646bf00cd/chat', 
                 data: {
                     message: message,
                     session_id: currentSessionId,
