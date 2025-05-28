@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lucy - Asistente Inmobiliario</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,7 +13,7 @@
         }
 
         body {
-            font-family: 'Graphik', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             height: 100vh;
             overflow: hidden;
         }
@@ -25,7 +26,7 @@
         /* Menú lateral */
         .sidebar {
             width: 250px;
-            background-color: #f0fbff;
+            background-color: #edf2f4;
             padding: 20px;
             border-right: 1px solid #ddd;
         }
@@ -34,8 +35,43 @@
             color: black;
             margin-bottom: 15px;
             font-size: 16px;
-            font-family: 'Graphik', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             font-weight: bold;
+        }
+
+        .new-chat-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: black;
+            font-size: 14px;
+            font-family: 'Montserrat', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border: none;
+            width: 100%;
+        }
+
+        .new-chat-button:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .conversation-section {
+            margin-bottom: 20px;
+        }
+
+        .conversation-section-title {
+            font-size: 12px;
+            color: #666;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .conversation-item {
@@ -45,7 +81,7 @@
             border-radius: 8px;
             color: black;
             font-size: 14px;
-            font-family: 'Graphik', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             cursor: pointer;
             transition: background-color 0.2s;
         }
@@ -71,10 +107,16 @@
             align-items: center;
             height: 100%;
             padding: 40px;
+            opacity: 1;
+            transition: opacity 0.3s ease-out;
+        }
+
+        .welcome-screen.fade-out {
+            opacity: 0;
         }
 
         .welcome-title {
-            font-family: 'Graphik', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             font-weight: bold;
             font-size: 32px;
             color: black;
@@ -83,8 +125,8 @@
         }
 
         .buttons-container {
-            background-color: #f0fbff;
-            border: 1px solid #e9ecef;
+            background-color: #edf2f4;
+            border: 1px solid #ddd;
             border-radius: 20px;
             padding: 30px;
             max-width: 800px;
@@ -99,10 +141,10 @@
             min-width: 300px;
             padding: 15px 20px;
             background-color: white;
-            color: #333;
+            color: #edf2f4;
             border: 1px solid #ddd;
             border-radius: 12px;
-            font-family: 'Graphik', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             font-size: 16px;
             cursor: pointer;
             transition: all 0.2s;
@@ -123,15 +165,22 @@
             display: none;
             flex-direction: column;
             height: 100%;
+            opacity: 0;
+            transition: opacity 0.3s ease-in;
+        }
+
+        .chat-screen.fade-in {
+            opacity: 1;
         }
 
         .chat-header {
             padding: 20px;
             border-bottom: 1px solid #eee;
+            display: none;
         }
 
         .chat-title {
-            font-family: 'Graphik', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             font-weight: bold;
             font-size: 24px;
             color: black;
@@ -151,33 +200,46 @@
             padding: 12px 18px;
             border-radius: 18px;
             word-wrap: break-word;
-            font-family: 'Graphik', sans-serif;
+            font-family: 'Montserrat', sans-serif;
         }
 
         .message.assistant {
-            background-color: #f0fbff;
+            background-color: white;
+            border: 1px solid #ddd;
             align-self: flex-start;
             border-bottom-left-radius: 4px;
         }
 
         .message.user {
-            background-color: #fdfff0;
+            background-color: #edf2f4;
             align-self: flex-end;
             border-bottom-right-radius: 4px;
         }
 
+        .message.error {
+            background-color: #fee;
+            color: #c53030;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
         .chat-input-container {
-            padding: 20px;
+            padding: 30px;
             border-top: 1px solid #eee;
+            display: flex;
+            justify-content: center;
         }
 
         .chat-input-wrapper {
             display: flex;
             background-color: white;
-            border: 2px solid #ddd;
+            border: 1px solid #ddd;
             border-radius: 25px;
             padding: 5px;
-            align-items: center;
+            align-items: flex-end;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
         }
 
         .chat-input {
@@ -186,30 +248,32 @@
             outline: none;
             padding: 15px 20px;
             font-size: 16px;
-            font-family: 'Graphik', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             border-radius: 20px;
             resize: none;
             max-height: 120px;
-            min-height: 50px;
+            min-height: 80px;
         }
 
         .send-button {
-            background-color: #007bff;
-            color: white;
+            background-color: #edf2f4;
+            color: #333;
             border: none;
             border-radius: 50%;
             width: 40px;
             height: 40px;
             margin-right: 5px;
+            margin-bottom: 5px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: background-color 0.2s;
+            flex-shrink: 0;
         }
 
         .send-button:hover {
-            background-color: #0056b3;
+            background-color: #d1d9db;
         }
 
         .send-button:disabled {
@@ -241,10 +305,11 @@
             margin-bottom: 15px;
             padding: 12px 18px;
             border-radius: 18px;
-            background-color: #f0fbff;
+            background-color: white;
+            border: 1px solid #ddd;
             align-self: flex-start;
             border-bottom-left-radius: 4px;
-            font-family: 'Graphik', sans-serif;
+            font-family: 'Montserrat', sans-serif;
         }
 
         /* Responsive */
@@ -276,11 +341,27 @@
     <div class="container">
         <!-- Menú lateral -->
         <div class="sidebar">
-            <h3>Conversaciones</h3>
-            <div class="conversation-item">Nueva conversación</div>
-            <div class="conversation-item">Buscar casa en Madrid</div>
-            <div class="conversation-item">Alquiler estudiantes</div>
-            <div class="conversation-item">Financiación hipoteca</div>
+            <button class="new-chat-button" onclick="newChat()">
+                <span>💬</span>
+                <span>Nuevo Chat</span>
+            </button>
+            
+            <div class="conversation-section">
+                <div class="conversation-section-title">Hoy</div>
+                <div class="conversation-item">Buscar casa en Madrid</div>
+                <div class="conversation-item">Alquiler estudiantes</div>
+            </div>
+            
+            <div class="conversation-section">
+                <div class="conversation-section-title">Ayer</div>
+                <div class="conversation-item">Financiación hipoteca</div>
+                <div class="conversation-item">Tasación vivienda</div>
+            </div>
+            
+            <div class="conversation-section">
+                <div class="conversation-section-title">La semana pasada</div>
+                <div class="conversation-item">Inversión inmobiliaria</div>
+            </div>
         </div>
 
         <!-- Área principal -->
@@ -335,15 +416,30 @@
         let isWaitingForResponse = false;
 
         function selectOption(optionText) {
-            // Cambiar a pantalla de chat
-            document.getElementById('welcomeScreen').style.display = 'none';
-            document.getElementById('chatScreen').style.display = 'flex';
+            // Fade out de la pantalla de bienvenida
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            welcomeScreen.classList.add('fade-out');
             
-            // Añadir mensaje del usuario
-            addMessage(optionText, 'user');
-            
-            // Enviar webhook
-            sendWebhook(optionText);
+            setTimeout(() => {
+                // Cambiar a pantalla de chat
+                welcomeScreen.style.display = 'none';
+                const chatScreen = document.getElementById('chatScreen');
+                chatScreen.style.display = 'flex';
+                
+                // Añadir mensaje del asistente primero
+                addMessage('Hola, soy Lucy. ¿Con qué te puedo ayudar?', 'assistant');
+                
+                // Añadir mensaje del usuario
+                addMessage(optionText, 'user');
+                
+                // Fade in del chat
+                setTimeout(() => {
+                    chatScreen.classList.add('fade-in');
+                }, 50);
+                
+                // Enviar webhook
+                sendWebhook(optionText);
+            }, 300);
         }
 
         function addMessage(text, sender) {
@@ -411,11 +507,20 @@
             })
             .catch(error => {
                 hideLoading();
-                addMessage('Error de conexión, inténtalo de nuevo más tarde', 'assistant');
+                addErrorMessage('Error de conexión, inténtalo de nuevo más tarde');
                 isWaitingForResponse = false;
                 updateSendButton();
                 console.error('Error:', error);
             });
+        }
+
+        function addErrorMessage(text) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message error';
+            messageDiv.textContent = text;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
         function sendMessage() {
@@ -425,6 +530,7 @@
             if (message && !isWaitingForResponse) {
                 addMessage(message, 'user');
                 input.value = '';
+                input.style.height = 'auto';
                 sendWebhook(message);
             }
         }
@@ -432,6 +538,11 @@
         function updateSendButton() {
             const sendButton = document.getElementById('sendButton');
             sendButton.disabled = isWaitingForResponse;
+        }
+
+        function newChat() {
+            // Recargar la página para volver al estado inicial
+            location.reload();
         }
 
         // Event listeners
