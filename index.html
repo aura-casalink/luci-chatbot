@@ -411,22 +411,33 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/supabase-js/2.39.3/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Configuración de Supabase
-        const SUPABASE_URL = 'https://uxyxxhsgkprnuxohjhbc.supabase.co';
-        const SUPABASE_KEY = '[dejame espacio para mi key]';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
         // Variables globales
         let isWaitingForResponse = false;
         let currentSessionId = null;
         let deviceId = null;
         let userIP = null;
         let currentConversation = [];
+        let supabase = null;
+
+        // Configuración de Supabase
+        const SUPABASE_URL = 'https://uxyxxhsgkprnuxohjhbc.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4eXh4aHNna3BybnV4b2hqaGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI1NTM3ODEsImV4cCI6MjA1ODEyOTc4MX0.P_ggSy3oU2AvS55fQdwpnk3aFgznfVr6uCdqWH36IwY';
+        
+        // Inicializar Supabase cuando la librería esté cargada
+        function initializeSupabase() {
+            try {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                console.log('Supabase inicializado correctamente');
+            } catch (error) {
+                console.error('Error al inicializar Supabase:', error);
+            }
+        }
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', async function() {
+            initializeSupabase();
             await initializeApp();
         });
 
@@ -480,6 +491,11 @@
 
         // Función para cargar conversaciones previas
         async function loadPreviousConversations() {
+            if (!supabase) {
+                console.log('Supabase no está inicializado aún');
+                return;
+            }
+            
             try {
                 const { data, error } = await supabase
                     .from('chat_sessions')
@@ -620,6 +636,11 @@
 
         // Función para guardar conversación en Supabase
         async function saveConversationToSupabase() {
+            if (!supabase) {
+                console.log('Supabase no está disponible para guardar');
+                return;
+            }
+            
             try {
                 const conversationData = {
                     device_id: deviceId,
@@ -638,6 +659,8 @@
 
                 if (error) {
                     console.error('Error al guardar conversación:', error);
+                } else {
+                    console.log('Conversación guardada correctamente');
                 }
             } catch (error) {
                 console.error('Error al guardar conversación:', error);
