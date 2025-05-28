@@ -447,6 +447,9 @@
             if (!deviceId) {
                 deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                 localStorage.setItem('lucy_device_id', deviceId);
+                console.log('Nuevo device_id generado:', deviceId);
+            } else {
+                console.log('Device_id existente:', deviceId);
             }
             return deviceId;
         }
@@ -486,7 +489,13 @@
         async function initializeApp() {
             deviceId = generateDeviceId();
             userIP = await getUserIP();
-            await loadPreviousConversations();
+            
+            console.log('App inicializada - Device ID:', deviceId, 'IP:', userIP);
+            
+            // Esperar un poco para asegurar que Supabase esté listo
+            setTimeout(async () => {
+                await loadPreviousConversations();
+            }, 500);
         }
 
         // Función para cargar conversaciones previas
@@ -497,18 +506,20 @@
             }
             
             try {
+                console.log('Cargando conversaciones para device_id:', deviceId);
+                
                 const { data, error } = await supabase
                     .from('chat_sessions')
                     .select('*')
                     .eq('device_id', deviceId)
-                    .eq('ip', userIP)
                     .order('updated_at', { ascending: false });
-
+        
                 if (error) {
                     console.error('Error al cargar conversaciones:', error);
                     return;
                 }
-
+        
+                console.log('Conversaciones cargadas:', data);
                 displayConversations(data);
             } catch (error) {
                 console.error('Error al cargar conversaciones:', error);
