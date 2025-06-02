@@ -530,7 +530,7 @@
             }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="container">
@@ -613,17 +613,29 @@
         
         // Inicializar Supabase cuando la librería esté cargada
         function initializeSupabase() {
-            try {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                console.log('Supabase inicializado correctamente');
-            } catch (error) {
-                console.error('Error al inicializar Supabase:', error);
-            }
+            return new Promise((resolve) => {
+                const checkSupabase = () => {
+                    if (window.supabase && window.supabase.createClient) {
+                        try {
+                            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                            console.log('Supabase inicializado correctamente');
+                            resolve(true);
+                        } catch (error) {
+                            console.error('Error al inicializar Supabase:', error);
+                            resolve(false);
+                        }
+                    } else {
+                        console.log('Esperando a que Supabase se cargue...');
+                        setTimeout(checkSupabase, 100);
+                    }
+                };
+                checkSupabase();
+            });
         }
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', async function() {
-            initializeSupabase();
+            await initializeSupabase();
             await initializeApp();
             // Variables (en scope local de DOMContentLoaded)
             const REA_SUPABASE_URL = 'https://uxyxxhsgkprnuxohjhbc.supabase.co';
