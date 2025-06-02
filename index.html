@@ -530,6 +530,7 @@
             }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/index.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -604,7 +605,7 @@
         let supabase = null;
         let currentTopic = null;
         let pendingCallback = false;
-        let eventSource = null;
+
         
         // Configuración de Supabase
         const SUPABASE_URL = 'https://uxyxxhsgkprnuxohjhbc.supabase.co';
@@ -922,52 +923,7 @@
             }
         }
 
-        function startSSEConnection() {
-          // 1) Si ya había un EventSource abierto, lo cerramos
-          if (eventSource) {
-            eventSource.close();
-          }
         
-          const url = `/api/events?sessionId=${currentSessionId}`;
-          console.log('Conectando SSE a:', url);
-          eventSource = new EventSource(url);
-        
-          eventSource.onmessage = function(event) {
-            console.log('Mensaje SSE recibido:', event.data);
-            try {
-              const data = JSON.parse(event.data);
-              console.log('Datos parseados:', data);
-        
-              if (data.type === 'callback') {
-                // 2) Si es un callback, lo procesamos y cerramos el SSE
-                console.log('Callback recibido:', data);
-                handleCallback(data);
-        
-                // CERRAMOS la conexión SSE para cortar el bucle de reconexión
-                eventSource.close();
-                console.log('EventSource cerrado tras recibir callback.');
-              } 
-              else if (data.type === 'heartbeat') {
-                console.log('Heartbeat recibido');
-              } 
-              else if (data.type === 'connected') {
-                console.log('SSE conectado, sesión:', data.sessionId);
-              }
-            } catch (error) {
-              console.error('Error procesando SSE:', error);
-            }
-          };
-        
-          eventSource.onerror = function(error) {
-            console.error('Error en SSE:', error);
-            // En caso de error (ej. timeout de servidor), cerramos igualmente para 
-            // evitar reconexiones infinitas
-            eventSource.close();
-          };
-        
-          console.log('Conexión SSE iniciada para sesión:', currentSessionId);
-        }
-
         function selectOption(optionText) {
             // Crear nueva sesión
             currentSessionId = generateSessionId();
@@ -1097,9 +1053,6 @@
                  // Verificar si se espera un callback
                 if (data.started_search === "yes") {
                     pendingCallback = true;
-                    console.log('Iniciando conexión SSE para sesión:', currentSessionId);
-                    startSSEConnection();
-                    console.log('Callback pendiente activado para sesión:', currentSessionId);
                 } else {
                     pendingCallback = false;
                 }
@@ -1197,12 +1150,6 @@
         }
 
         function newChat() {
-
-            // Cerrar conexión SSE si existe
-            if (eventSource) {
-                eventSource.close();
-                eventSource = null;
-            }
             currentSessionId = null;
             currentConversation = [];
             currentTopic = null;
@@ -1424,23 +1371,15 @@
                     });
                 }
             }
-            
-            console.log('Iniciando conexión SSE para modo test...');
-            startSSEConnection();
+
             console.log(`Modo test activado para sesión: ${sessionId}`);
             console.log(`Callback pendiente: ${pendingCallback}`);
-            console.log('Conexión SSE iniciada automáticamente');
             return true;
         };
         
         // Función para desactivar el modo test
         window.deactivateTestMode = function() {
             pendingCallback = false;
-            if (eventSource) {
-                console.log('Cerrando conexión SSE del modo test...');
-                eventSource.close();
-                eventSource = null;
-            }
             console.log('Modo test desactivado');
         };
         
@@ -1498,5 +1437,153 @@
             return result;
         };
     </script>
+    <script>
+          // *******************
+          // CONFIGURACIÓN DE SUPABASE EN EL CLIENTE
+          // *******************
+          const SUPABASE_URL = 'https://<tu-proyecto>.supabase.co';
+          const SUPABASE_KEY = '<tu-anon-key-de-supabase>';
+          const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+          let realtimeChannel = null;
+          let currentSessionId = null;
+        
+          /**
+           * startRealtimeSubscription(sessionId)
+           * → Suscribe al cliente a cambios INSERT/UPDATE en callbacks
+           *   donde session_id = sessionId y pending = true.
+           * → Cuando llegue un nuevo registro, llama a handleCallback()
+           *   y luego marca esa fila como procesada (POST /api/mark_processed).
+           */
+          function startRealtimeSubscription(sessionId) {
+            // 1) Si ya había un canal abierto, lo cancelamos primero
+            if (realtimeChannel) {
+              supabaseClient.removeChannel(realtimeChannel);
+              realtimeChannel = null;
+            }
+        
+            currentSessionId = sessionId;
+        
+            console.log('Iniciando suscripción Realtime para sesión:', sessionId);
+        
+            realtimeChannel = supabaseClient
+              .channel('public:callbacks') // canal “tabla pública callbacks”
+              .on(
+                'postgres_changes',
+                {
+                  event: 'INSERT',      // escuchamos nuevas filas
+                  schema: 'public',
+                  table: 'callbacks',
+                  filter: `session_id=eq.${sessionId},pending=eq.true`
+                },
+                (payload) => {
+                  console.log('Evento Realtime recibido (INSERT):', payload);
+        
+                  // 2) Extraemos id y payload del nuevo registro
+                  const row = payload.new;
+                  const messageObj = row.payload; // es el JSON que guardamos en /api/callback
+                  const id = row.id;
+        
+                  // 3) Mostramos el mensaje en el chat
+                  handleCallback({ type: 'callback', ...messageObj });
+        
+                  // 4) Marcamos la fila como procesada
+                  markProcessed(id);
+        
+                  // 5) Opcional: si NO esperas más mensajes para esa sesión, puedes desuscribirte:
+                  supabaseClient.removeChannel(realtimeChannel);
+                  realtimeChannel = null;
+                }
+              )
+              .subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                  console.log('Suscripción Realtime activa para sesión:', sessionId);
+                }
+              });
+          }
+        
+          /**
+           * markProcessed(id)
+           * → Llama al endpoint /api/mark_processed para poner pending=false
+           */
+          async function markProcessed(id) {
+            try {
+              const response = await fetch(`/api/mark_processed?id=${id}`, {
+                method: 'POST'
+              });
+              const json = await response.json();
+              console.log('markProcessed response:', json);
+            } catch (err) {
+              console.error('Error marcando como procesado:', err);
+            }
+          }
+        
+          /**
+           * handleCallback(data)
+           * → Muestra el mensaje que llegó vía Realtime en el chat
+           *   data.type === 'callback', data.message, data.session_id, etc.
+           */
+          function handleCallback(data) {
+            console.log('Callback recibido en el front:', data);
+            // Aquí debes añadir el mensaje del “asistente” a tu chat UI
+            // Por ejemplo:
+            addMessage(data.message || 'Sin mensaje', 'assistant');
+          }
+        
+          /**
+           * activateTestMode(sessionId)
+           * → Llamarás a esta función en consola o al iniciar un chat real
+           */
+          function activateTestMode(sessionId) {
+            currentSessionId = sessionId;
+            // Opcional: muestra mensajes iniciales de asistente + usuario
+            addMessage('Hola, soy Lucy. ¿Con qué te puedo ayudar?', 'assistant');
+            addMessage(`Sesión de prueba: ${sessionId}`, 'user');
+            // 1) Abrimos Realtime para recibir callbacks
+            startRealtimeSubscription(sessionId);
+          }
+        
+          /**
+           * sendMessage() – tu manejador de “Enviar” en el chat
+           * → Después de mostrar el mensaje del usuario, llama a:
+           *    sendCallbackManually(textoUsuario)
+           */
+          async function sendCallbackManually(textoUsuario) {
+            if (!currentSessionId) return;
+            // 1) Mostrar el mensaje del usuario en el chat
+            addMessage(textoUsuario, 'user');
+            // 2) Llamar al endpoint para insertar en Supabase
+            try {
+              const response = await fetch(`/api/callback?sessionId=${currentSessionId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: textoUsuario, session_id: currentSessionId })
+              });
+              const json = await response.json();
+              console.log('Respuesta /api/callback:', json);
+              // No hacemos nada más; la suscripción Realtime detectará el nuevo row
+            } catch (err) {
+              console.error('Error enviando callback:', err);
+            }
+          }
+        
+          // Ejemplo: vincular el botón “Enviar” o el event listener de tu textarea:
+          document.getElementById('sendButton').addEventListener('click', () => {
+            const texto = document.getElementById('chatInput').value.trim();
+            if (texto) {
+              sendCallbackManually(texto);
+              document.getElementById('chatInput').value = '';
+            }
+          });
+        
+          // (Opcional) Si quieres cerrar la suscripción cuando el usuario abandone la página:
+          window.addEventListener('beforeunload', () => {
+            if (realtimeChannel) {
+              supabaseClient.removeChannel(realtimeChannel);
+              realtimeChannel = null;
+              console.log('Suscripción Realtime cancelada por navegación');
+            }
+          });
+        </script>
 </body>
 </html>
