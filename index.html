@@ -1438,152 +1438,106 @@
         };
     </script>
     <script>
-          // *******************
-          // CONFIGURACIÓN DE SUPABASE EN EL CLIENTE
-          // *******************
-          const SUPABASE_URL = 'https://uxyxxhsgkprnuxohjhbc.supabase.co';
-          const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4eXh4aHNna3BybnV4b2hqaGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI1NTM3ODEsImV4cCI6MjA1ODEyOTc4MX0.P_ggSy3oU2AvS55fQdwpnk3aFgznfVr6uCdqWH36IwY';
-          const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-          let realtimeChannel = null;
-          let currentSessionId = null;
-        
-          /**
-           * startRealtimeSubscription(sessionId)
-           * → Suscribe al cliente a cambios INSERT/UPDATE en callbacks
-           *   donde session_id = sessionId y pending = true.
-           * → Cuando llegue un nuevo registro, llama a handleCallback()
-           *   y luego marca esa fila como procesada (POST /api/mark_processed).
-           */
-          function startRealtimeSubscription(sessionId) {
-            // 1) Si ya había un canal abierto, lo cancelamos primero
-            if (realtimeChannel) {
-              supabaseClient.removeChannel(realtimeChannel);
-              realtimeChannel = null;
-            }
-        
-            currentSessionId = sessionId;
-        
-            console.log('Iniciando suscripción Realtime para sesión:', sessionId);
-        
-            realtimeChannel = supabaseClient
-              .channel('public:callbacks') // canal “tabla pública callbacks”
-              .on(
-                'postgres_changes',
-                {
-                  event: 'INSERT',      // escuchamos nuevas filas
-                  schema: 'public',
-                  table: 'callbacks',
-                  filter: `session_id=eq.${sessionId},pending=eq.true`
-                },
-                (payload) => {
-                  console.log('Evento Realtime recibido (INSERT):', payload);
-        
-                  // 2) Extraemos id y payload del nuevo registro
-                  const row = payload.new;
-                  const messageObj = row.payload; // es el JSON que guardamos en /api/callback
-                  const id = row.id;
-        
-                  // 3) Mostramos el mensaje en el chat
-                  handleCallback({ type: 'callback', ...messageObj });
-        
-                  // 4) Marcamos la fila como procesada
-                  markProcessed(id);
-        
-                  // 5) Opcional: si NO esperas más mensajes para esa sesión, puedes desuscribirte:
-                  supabaseClient.removeChannel(realtimeChannel);
-                  realtimeChannel = null;
-                }
-              )
-              .subscribe((status) => {
-                if (status === 'SUBSCRIBED') {
-                  console.log('Suscripción Realtime activa para sesión:', sessionId);
-                }
-              });
+      (function() {
+        const REA_SUPABASE_URL = 'https://uxyxxhsgkprnuxohjhbc.supabase.co';
+        const REA_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4eXh4aHNna3BybnV4b2hqaGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI1NTM3ODEsImV4cCI6MjA1ODEyOTc4MX0.P_ggSy3oU2AvS55fQdwpnk3aFgznfVr6uCdqWH36IwY';
+        const supabaseClient = supabase.createClient(REA_SUPABASE_URL, REA_SUPABASE_KEY);
+    
+        let realtimeChannel = null;
+        let currentSessionId = null;
+    
+        function startRealtimeSubscription(sessionId) {
+          if (realtimeChannel) {
+            supabaseClient.removeChannel(realtimeChannel);
+            realtimeChannel = null;
           }
-        
-          /**
-           * markProcessed(id)
-           * → Llama al endpoint /api/mark_processed para poner pending=false
-           */
-          async function markProcessed(id) {
-            try {
-              const response = await fetch(`/api/mark_processed?id=${id}`, {
-                method: 'POST'
-              });
-              const json = await response.json();
-              console.log('markProcessed response:', json);
-            } catch (err) {
-              console.error('Error marcando como procesado:', err);
-            }
+          currentSessionId = sessionId;
+          console.log('Iniciando suscripción Realtime para sesión:', sessionId);
+          realtimeChannel = supabaseClient
+            .channel('public:callbacks')
+            .on(
+              'postgres_changes',
+              {
+                event: 'INSERT',
+                schema: 'public',
+                table: 'callbacks',
+                filter: `session_id=eq.${sessionId},pending=eq.true`
+              },
+              (payload) => {
+                console.log('Evento Realtime recibido (INSERT):', payload);
+                const row = payload.new;
+                const messageObj = row.payload;
+                const id = row.id;
+                handleCallback({ type: 'callback', ...messageObj });
+                markProcessed(id);
+                supabaseClient.removeChannel(realtimeChannel);
+                realtimeChannel = null;
+              }
+            )
+            .subscribe((status) => {
+              if (status === 'SUBSCRIBED') {
+                console.log('Suscripción Realtime activa para sesión:', sessionId);
+              }
+            });
+        }
+    
+        async function markProcessed(id) {
+          try {
+            const response = await fetch(`/api/mark_processed?id=${id}`, {
+              method: 'POST'
+            });
+            const json = await response.json();
+            console.log('markProcessed response:', json);
+          } catch (err) {
+            console.error('Error marcando como procesado:', err);
           }
-        
-          /**
-           * handleCallback(data)
-           * → Muestra el mensaje que llegó vía Realtime en el chat
-           *   data.type === 'callback', data.message, data.session_id, etc.
-           */
-          function handleCallback(data) {
-            console.log('Callback recibido en el front:', data);
-            // Aquí debes añadir el mensaje del “asistente” a tu chat UI
-            // Por ejemplo:
-            addMessage(data.message || 'Sin mensaje', 'assistant');
+        }
+    
+        function handleCallback(data) {
+          console.log('Callback recibido en front:', data);
+          addMessage(data.message || 'Sin mensaje', 'assistant');
+        }
+    
+        window.activateTestMode = function(sessionId) {
+          currentSessionId = sessionId;
+          addMessage('Hola, soy Lucy. ¿Con qué te puedo ayudar?', 'assistant');
+          addMessage(`Sesión de prueba: ${sessionId}`, 'user');
+          startRealtimeSubscription(sessionId);
+        };
+    
+        window.sendCallbackManually = async function(textoUsuario) {
+          if (!currentSessionId) return;
+          addMessage(textoUsuario, 'user');
+          try {
+            const response = await fetch(`/api/callback?sessionId=${currentSessionId}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ message: textoUsuario, session_id: currentSessionId })
+            });
+            const json = await response.json();
+            console.log('Respuesta /api/callback:', json);
+          } catch (err) {
+            console.error('Error enviando callback:', err);
           }
-        
-          /**
-           * activateTestMode(sessionId)
-           * → Llamarás a esta función en consola o al iniciar un chat real
-           */
-          function activateTestMode(sessionId) {
-            currentSessionId = sessionId;
-            // Opcional: muestra mensajes iniciales de asistente + usuario
-            addMessage('Hola, soy Lucy. ¿Con qué te puedo ayudar?', 'assistant');
-            addMessage(`Sesión de prueba: ${sessionId}`, 'user');
-            // 1) Abrimos Realtime para recibir callbacks
-            startRealtimeSubscription(sessionId);
+        };
+    
+        document.getElementById('sendButton').addEventListener('click', () => {
+          const texto = document.getElementById('chatInput').value.trim();
+          if (texto) {
+            sendCallbackManually(texto);
+            document.getElementById('chatInput').value = '';
           }
-        
-          /**
-           * sendMessage() – tu manejador de “Enviar” en el chat
-           * → Después de mostrar el mensaje del usuario, llama a:
-           *    sendCallbackManually(textoUsuario)
-           */
-          async function sendCallbackManually(textoUsuario) {
-            if (!currentSessionId) return;
-            // 1) Mostrar el mensaje del usuario en el chat
-            addMessage(textoUsuario, 'user');
-            // 2) Llamar al endpoint para insertar en Supabase
-            try {
-              const response = await fetch(`/api/callback?sessionId=${currentSessionId}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: textoUsuario, session_id: currentSessionId })
-              });
-              const json = await response.json();
-              console.log('Respuesta /api/callback:', json);
-              // No hacemos nada más; la suscripción Realtime detectará el nuevo row
-            } catch (err) {
-              console.error('Error enviando callback:', err);
-            }
+        });
+    
+        window.addEventListener('beforeunload', () => {
+          if (realtimeChannel) {
+            supabaseClient.removeChannel(realtimeChannel);
+            realtimeChannel = null;
+            console.log('Suscripción Realtime cancelada por navegación');
           }
-        
-          // Ejemplo: vincular el botón “Enviar” o el event listener de tu textarea:
-          document.getElementById('sendButton').addEventListener('click', () => {
-            const texto = document.getElementById('chatInput').value.trim();
-            if (texto) {
-              sendCallbackManually(texto);
-              document.getElementById('chatInput').value = '';
-            }
-          });
-        
-          // (Opcional) Si quieres cerrar la suscripción cuando el usuario abandone la página:
-          window.addEventListener('beforeunload', () => {
-            if (realtimeChannel) {
-              supabaseClient.removeChannel(realtimeChannel);
-              realtimeChannel = null;
-              console.log('Suscripción Realtime cancelada por navegación');
-            }
-          });
-        </script>
+        });
+      })(); // fin IIFE
+    </script>
+
 </body>
 </html>
