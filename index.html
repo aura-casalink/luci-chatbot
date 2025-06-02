@@ -1208,109 +1208,6 @@
             };
             return handleCallback(testData);
         };
-
-        // Función para activar el modo test y simular estado de callback pendiente
-        window.activateTestMode = function(sessionId) {
-            if (!sessionId) {
-                console.error('Se necesita un session_id para activar el modo test');
-                return false;
-            }
-            
-            // Activar estado de test
-            currentSessionId = sessionId;
-            pendingCallback = true;
-            
-            // Si no hay conversación activa, crear una mínima
-            if (!currentConversation || currentConversation.length === 0) {
-                currentConversation = [
-                    {
-                        text: 'Hola, soy Lucy. ¿Con qué te puedo ayudar?',
-                        sender: 'assistant',
-                        timestamp: new Date().toISOString()
-                    },
-                    {
-                        text: 'Buscar propiedades para comprar',
-                        sender: 'user',
-                        timestamp: new Date().toISOString()
-                    }
-                ];
-                
-                // Mostrar chat screen si no está visible
-                if (document.getElementById('welcomeScreen').style.display !== 'none') {
-                    showChatScreen();
-                    // Mostrar los mensajes
-                    const messagesContainer = document.getElementById('chatMessages');
-                    messagesContainer.innerHTML = '';
-                    currentConversation.forEach(msg => {
-                        addMessage(msg.text, msg.sender, false);
-                    });
-                }
-            }
-            
-            console.log(`Modo test activado para sesión: ${sessionId}`);
-            console.log(`Callback pendiente: ${pendingCallback}`);
-            return true;
-        };
-        
-        // Función para desactivar el modo test
-        window.deactivateTestMode = function() {
-            pendingCallback = false;
-            console.log('Modo test desactivado');
-        };
-        
-        // Función combinada para test completo
-        window.fullTestCallback = function(sessionId, testData) {
-            console.log('=== INICIANDO TEST COMPLETO ===');
-            
-            // Activar modo test
-            if (!window.activateTestMode(sessionId)) {
-                return { success: false, message: 'No se pudo activar el modo test' };
-            }
-            
-            // Simular datos de test si no se proporcionan
-            const defaultTestData = {
-                session_id: sessionId,
-                message: "¡Claro Pablo! Aquí tienes tus propiedades!",
-                properties: [
-                    {
-                        title: "Piso en calle Goya",
-                        thumbnail: "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/e9/3a/4c/1340892243.webp",
-                        price: 310000,
-                        floor: "6",
-                        size: 79,
-                        rooms: 2,
-                        bathrooms: 1,
-                        images: [
-                            "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/e9/3a/4c/1340892243.webp",
-                            "https://img4.idealista.com/blur/WEB_DETAIL-XL-P/0/id.pro.es.image.master/c1/2d/8c/1340892242.webp"
-                        ]
-                    },
-                    {
-                        title: "Ático en Salamanca",
-                        thumbnail: "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/12/34/56/1340892244.webp",
-                        price: 450000,
-                        floor: "7",
-                        size: 95,
-                        rooms: 3,
-                        bathrooms: 2,
-                        images: [
-                            "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/12/34/56/1340892244.webp"
-                        ]
-                    }
-                ]
-            };
-            
-            const dataToUse = testData || defaultTestData;
-            
-            // Ejecutar callback
-            const result = handleCallback(dataToUse);
-            
-            console.log('=== RESULTADO DEL TEST ===');
-            console.log('Resultado:', result);
-            console.log('Estado pendingCallback después del test:', pendingCallback);
-            
-            return result;
-        };
         
         function addPropertiesMessage(properties) {
             const messagesContainer = document.getElementById('chatMessages');
@@ -1434,6 +1331,109 @@
             addMessage(message, 'user');
             sendWebhook(message);
         }
+
+        // Función para activar el modo test y simular estado de callback pendiente
+        window.activateTestMode = function(sessionId) {
+            if (!sessionId) {
+                console.error('Se necesita un session_id para activar el modo test');
+                return false;
+            }
+            
+            // Activar estado de test
+            currentSessionId = sessionId;
+            pendingCallback = true;
+            
+            // Si no hay conversación activa, crear una mínima
+            if (!currentConversation || currentConversation.length === 0) {
+                currentConversation = [
+                    {
+                        text: 'Hola, soy Lucy. ¿Con qué te puedo ayudar?',
+                        sender: 'assistant',
+                        timestamp: new Date().toISOString()
+                    },
+                    {
+                        text: 'Buscar propiedades para comprar',
+                        sender: 'user',
+                        timestamp: new Date().toISOString()
+                    }
+                ];
+                
+                // Mostrar chat screen si no está visible
+                if (document.getElementById('welcomeScreen').style.display !== 'none') {
+                    showChatScreen();
+                    // Mostrar los mensajes
+                    const messagesContainer = document.getElementById('chatMessages');
+                    messagesContainer.innerHTML = '';
+                    currentConversation.forEach(msg => {
+                        addMessage(msg.text, msg.sender, false);
+                    });
+                }
+            }
+            
+            console.log(`Modo test activado para sesión: ${sessionId}`);
+            console.log(`Callback pendiente: ${pendingCallback}`);
+            return true;
+        };
+        
+        // Función para desactivar el modo test
+        window.deactivateTestMode = function() {
+            pendingCallback = false;
+            console.log('Modo test desactivado');
+        };
+        
+        // Función combinada para test completo
+        window.fullTestCallback = function(sessionId, testData) {
+            console.log('=== INICIANDO TEST COMPLETO ===');
+            
+            // Activar modo test
+            if (!window.activateTestMode(sessionId)) {
+                return { success: false, message: 'No se pudo activar el modo test' };
+            }
+            
+            // Simular datos de test si no se proporcionan
+            const defaultTestData = {
+                session_id: sessionId,
+                message: "¡Claro Pablo! Aquí tienes tus propiedades!",
+                properties: [
+                    {
+                        title: "Piso en calle Goya",
+                        thumbnail: "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/e9/3a/4c/1340892243.webp",
+                        price: 310000,
+                        floor: "6",
+                        size: 79,
+                        rooms: 2,
+                        bathrooms: 1,
+                        images: [
+                            "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/e9/3a/4c/1340892243.webp",
+                            "https://img4.idealista.com/blur/WEB_DETAIL-XL-P/0/id.pro.es.image.master/c1/2d/8c/1340892242.webp"
+                        ]
+                    },
+                    {
+                        title: "Ático en Salamanca",
+                        thumbnail: "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/12/34/56/1340892244.webp",
+                        price: 450000,
+                        floor: "7",
+                        size: 95,
+                        rooms: 3,
+                        bathrooms: 2,
+                        images: [
+                            "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/12/34/56/1340892244.webp"
+                        ]
+                    }
+                ]
+            };
+            
+            const dataToUse = testData || defaultTestData;
+            
+            // Ejecutar callback
+            const result = handleCallback(dataToUse);
+            
+            console.log('=== RESULTADO DEL TEST ===');
+            console.log('Resultado:', result);
+            console.log('Estado pendingCallback después del test:', pendingCallback);
+            
+            return result;
+        };
     </script>
 </body>
 </html>
