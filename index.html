@@ -1409,6 +1409,12 @@
             // Store current image index
             window.currentImageIndex = window.currentImageIndex || {};
             window.currentImageIndex[index] = 0;
+
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closePropertyModal();
+                }
+            });
         }
         
         function closePropertyModal() {
@@ -1416,6 +1422,13 @@
             if (modal) {
                 modal.remove();
             }
+
+            // Cerrar modal con tecla Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closePropertyModal();
+                }
+            });
         }
         
         function changeImage(propertyIndex, direction) {
