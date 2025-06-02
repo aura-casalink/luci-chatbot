@@ -604,6 +604,7 @@
         let supabase = null;
         let currentTopic = null;
         let pendingCallback = false;
+        let eventSource = null;
         
         // Configuración de Supabase
         const SUPABASE_URL = 'https://uxyxxhsgkprnuxohjhbc.supabase.co';
@@ -921,6 +922,35 @@
             }
         }
 
+        function startSSEConnection() {
+            // Cerrar conexión existente si hay una
+            if (eventSource) {
+                eventSource.close();
+            }
+            
+            const url = `/api/events?sessionId=${currentSessionId}`;
+            eventSource = new EventSource(url);
+            
+            eventSource.onmessage = function(event) {
+                try {
+                    const data = JSON.parse(event.data);
+                    
+                    if (data.type === 'callback') {
+                        console.log('Callback recibido via SSE:', data);
+                        handleCallback(data);
+                    }
+                } catch (error) {
+                    console.error('Error procesando SSE:', error);
+                }
+            };
+            
+            eventSource.onerror = function(error) {
+                console.error('Error en SSE:', error);
+            };
+            
+            console.log('Conexión SSE iniciada para sesión:', currentSessionId);
+        }
+        
         function selectOption(optionText) {
             // Crear nueva sesión
             currentSessionId = generateSessionId();
@@ -1050,6 +1080,7 @@
                  // Verificar si se espera un callback
                 if (data.started_search === "yes") {
                     pendingCallback = true;
+                    startSSEConnection();
                     console.log('Callback pendiente activado para sesión:', currentSessionId);
                 } else {
                     pendingCallback = false;
@@ -1148,6 +1179,12 @@
         }
 
         function newChat() {
+
+            // Cerrar conexión SSE si existe
+            if (eventSource) {
+                eventSource.close();
+                eventSource = null;
+            }
             currentSessionId = null;
             currentConversation = [];
             currentTopic = null;
