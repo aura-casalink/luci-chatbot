@@ -651,9 +651,11 @@
             // Exponemos estas dos funciones para poder invocarlas desde consola o botones
             window.activateTestMode = function(sessionId) {
                 currentSessionId = sessionId;
+                pendingCallback = true; 
                 addMessage('Hola, soy Lucy. ¿Con qué te puedo ayudar?', 'assistant');
                 addMessage(`Sesión de prueba: ${sessionId}`, 'user');
                 startRealtimeSubscription(sessionId);
+                console.log('Modo test activado - pendingCallback:', pendingCallback);
             };
             
             window.sendCallbackManually = async function(textoUsuario) {
