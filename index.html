@@ -530,7 +530,7 @@
             }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="container">
@@ -612,10 +612,12 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4eXh4aHNna3BybnV4b2hqaGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI1NTM3ODEsImV4cCI6MjA1ODEyOTc4MX0.P_ggSy3oU2AvS55fQdwpnk3aFgznfVr6uCdqWH36IwY';
         
         // Inicializar Supabase cuando la librería esté cargada
-        function initializeSupabase() {
+       function initializeSupabase() {
             return new Promise((resolve) => {
                 const checkSupabase = () => {
-                    if (window.supabase && window.supabase.createClient) {
+                    console.log('Verificando window.supabase:', window.supabase);
+                    
+                    if (window.supabase) {
                         try {
                             supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                             console.log('Supabase inicializado correctamente');
@@ -625,11 +627,13 @@
                             resolve(false);
                         }
                     } else {
-                        console.log('Esperando a que Supabase se cargue...');
-                        setTimeout(checkSupabase, 100);
+                        console.log('window.supabase no está disponible aún, reintentando...');
+                        setTimeout(checkSupabase, 200);
                     }
                 };
-                checkSupabase();
+                
+                // Esperar un poco antes de la primera verificación
+                setTimeout(checkSupabase, 500);
             });
         }
 
