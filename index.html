@@ -364,18 +364,26 @@
         
         .property-close {
             position: absolute;
-            top: -40px;
-            right: 0;
-            background: none;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.7);
             border: none;
             color: white;
             font-size: 24px;
             cursor: pointer;
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: bold;
+            z-index: 1001;
+        }
+        
+        .property-close:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: scale(1.1);
         }
         
         .property-title {
