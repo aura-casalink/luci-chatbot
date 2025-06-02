@@ -923,39 +923,51 @@
         }
 
         function startSSEConnection() {
-            // Cerrar conexión existente si hay una
-            if (eventSource) {
-                eventSource.close();
-            }
-            
-            const url = `/api/events?sessionId=${currentSessionId}`;
-            console.log('Conectando SSE a:', url);
-            eventSource = new EventSource(url);
-            
-            eventSource.onmessage = function(event) {
-                console.log('Mensaje SSE recibido:', event.data);
-                try {
-                    const data = JSON.parse(event.data);
-                    console.log('Datos parseados:', data);
-                    
-                    if (data.type === 'callback') {
-                        console.log('Callback recibido via SSE:', data);
-                        handleCallback(data);
-                    } else if (data.type === 'heartbeat') {
-                        console.log('Heartbeat recibido');
-                    }
-                } catch (error) {
-                    console.error('Error procesando SSE:', error);
-                }
-            };
-            
-            eventSource.onerror = function(error) {
-                console.error('Error en SSE:', error);
-            };
-            
-            console.log('Conexión SSE iniciada para sesión:', currentSessionId);
-        }
+          // 1) Si ya había un EventSource abierto, lo cerramos
+          if (eventSource) {
+            eventSource.close();
+          }
         
+          const url = `/api/events?sessionId=${currentSessionId}`;
+          console.log('Conectando SSE a:', url);
+          eventSource = new EventSource(url);
+        
+          eventSource.onmessage = function(event) {
+            console.log('Mensaje SSE recibido:', event.data);
+            try {
+              const data = JSON.parse(event.data);
+              console.log('Datos parseados:', data);
+        
+              if (data.type === 'callback') {
+                // 2) Si es un callback, lo procesamos y cerramos el SSE
+                console.log('Callback recibido:', data);
+                handleCallback(data);
+        
+                // CERRAMOS la conexión SSE para cortar el bucle de reconexión
+                eventSource.close();
+                console.log('EventSource cerrado tras recibir callback.');
+              } 
+              else if (data.type === 'heartbeat') {
+                console.log('Heartbeat recibido');
+              } 
+              else if (data.type === 'connected') {
+                console.log('SSE conectado, sesión:', data.sessionId);
+              }
+            } catch (error) {
+              console.error('Error procesando SSE:', error);
+            }
+          };
+        
+          eventSource.onerror = function(error) {
+            console.error('Error en SSE:', error);
+            // En caso de error (ej. timeout de servidor), cerramos igualmente para 
+            // evitar reconexiones infinitas
+            eventSource.close();
+          };
+        
+          console.log('Conexión SSE iniciada para sesión:', currentSessionId);
+        }
+
         function selectOption(optionText) {
             // Crear nueva sesión
             currentSessionId = generateSessionId();
