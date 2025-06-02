@@ -1413,14 +1413,22 @@
                 }
             }
             
+            console.log('Iniciando conexión SSE para modo test...');
+            startSSEConnection();
             console.log(`Modo test activado para sesión: ${sessionId}`);
             console.log(`Callback pendiente: ${pendingCallback}`);
+            console.log('Conexión SSE iniciada automáticamente');
             return true;
         };
         
         // Función para desactivar el modo test
         window.deactivateTestMode = function() {
             pendingCallback = false;
+            if (eventSource) {
+                console.log('Cerrando conexión SSE del modo test...');
+                eventSource.close();
+                eventSource = null;
+            }
             console.log('Modo test desactivado');
         };
         
