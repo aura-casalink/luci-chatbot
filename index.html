@@ -605,7 +605,7 @@
         let supabaseClient = null;
         let currentTopic = null;
         let pendingCallback = false;
-
+        let realtimeChannel = null;
         
         // Configuración de Supabase
         const SUPABASE_URL = 'https://uxyxxhsgkprnuxohjhbc.supabase.co';
@@ -647,59 +647,6 @@
             
             supabaseClient = window.supabase.createClient(REA_SUPABASE_URL, REA_SUPABASE_KEY);
             
-            let realtimeChannel = null;
-            
-            function startRealtimeSubscription(sessionId) {
-                if (realtimeChannel) {
-                    supabaseClient.removeChannel(realtimeChannel);
-                    realtimeChannel = null;
-                }
-                currentSessionId = sessionId;
-                console.log('Iniciando suscripción Realtime para sesión:', sessionId);
-                realtimeChannel = supabaseClient
-                    .channel('public:callbacks')
-                    .on(
-                    'postgres_changes',
-                    {
-                        event: 'INSERT',
-                        schema: 'public',
-                        table: 'callbacks',
-                        filter: `session_id=eq.${sessionId},pending=eq.true`
-                    },
-                    (payload) => {
-                        console.log('Evento Realtime recibido (INSERT):', payload);
-                        const row = payload.new;
-                        const messageObj = row.payload;
-                        const id = row.id;
-                        handleCallback({ type: 'callback', ...messageObj });
-                        markProcessed(id);
-                        supabaseClient.removeChannel(realtimeChannel);
-                        realtimeChannel = null;
-                    }
-                    )
-                    .subscribe((status) => {
-                    if (status === 'SUBSCRIBED') {
-                        console.log('Suscripción Realtime activa para sesión:', sessionId);
-                    }
-                    });
-                }
-            
-            async function markProcessed(id) {
-                try {
-                    const response = await fetch(`/api/mark_processed?id=${id}`, {
-                        method: 'POST'
-                    });
-                    const json = await response.json();
-                    console.log('markProcessed response:', json);
-                } catch (err) {
-                    console.error('Error marcando como procesado:', err);
-                }
-                }
-            
-            function handleCallback(data) {
-                console.log('Callback recibido en front:', data);
-                addMessage(data.message || 'Sin mensaje', 'assistant');
-            }
             
             // Exponemos estas dos funciones para poder invocarlas desde consola o botones
             window.activateTestMode = function(sessionId) {
@@ -744,7 +691,59 @@
                 }
               });
         });
-        
+
+        function startRealtimeSubscription(sessionId) {
+            if (realtimeChannel) {
+                supabaseClient.removeChannel(realtimeChannel);
+                realtimeChannel = null;
+            }
+            currentSessionId = sessionId;
+            console.log('Iniciando suscripción Realtime para sesión:', sessionId);
+            realtimeChannel = supabaseClient
+                .channel('public:callbacks')
+                .on(
+                'postgres_changes',
+                {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'callbacks',
+                    filter: `session_id=eq.${sessionId},pending=eq.true`
+                },
+                (payload) => {
+                    console.log('Evento Realtime recibido (INSERT):', payload);
+                    const row = payload.new;
+                    const messageObj = row.payload;
+                    const id = row.id;
+                    handleCallback({ type: 'callback', ...messageObj });
+                    markProcessed(id);
+                    supabaseClient.removeChannel(realtimeChannel);
+                    realtimeChannel = null;
+                }
+                )
+                .subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    console.log('Suscripción Realtime activa para sesión:', sessionId);
+                }
+                });
+            }
+            
+        async function markProcessed(id) {
+            try {
+                const response = await fetch(`/api/mark_processed?id=${id}`, {
+                    method: 'POST'
+                });
+                const json = await response.json();
+                console.log('markProcessed response:', json);
+            } catch (err) {
+                console.error('Error marcando como procesado:', err);
+            }
+            }
+            
+        function handleCallback(data) {
+            console.log('Callback recibido en front:', data);
+            addMessage(data.message || 'Sin mensaje', 'assistant');
+        }
+
         // Función para generar device_id único
         function generateDeviceId() {
             // Primero intentar obtener desde localStorage
