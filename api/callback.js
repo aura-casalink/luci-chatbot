@@ -1,3 +1,5 @@
+import { sendToSession } from './events.js';
+
 export default async function handler(req, res) {
   // Configurar CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -23,12 +25,16 @@ export default async function handler(req, res) {
     
     console.log('Callback recibido:', { sessionId, data: callbackData });
 
+    const sent = sendToSession(sessionId, {
+      type: 'callback',
+      ...callbackData
+    })
+
     // Responder con éxito y datos para el frontend
     return res.status(200).json({
       success: true,
-      message: 'Callback received successfully',
-      data: callbackData,
-      sessionId: sessionId
+      message: 'Callback processed',
+      sent: sent
     });
 
   } catch (error) {
