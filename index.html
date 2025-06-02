@@ -293,6 +293,188 @@
             cursor: not-allowed;
         }
 
+        /* Estilos para las tarjetas de propiedades */
+        .properties-container {
+            display: flex;
+            gap: 15px;
+            margin: 10px 0;
+            justify-content: flex-start;
+        }
+        
+        .property-thumbnail {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .property-thumbnail::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.7);
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+        
+        .property-thumbnail:hover::before {
+            opacity: 0;
+        }
+        
+        .property-thumbnail:hover {
+            transform: scale(1.1);
+        }
+        
+        .property-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Modal de propiedad */
+        .property-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .property-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .property-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .property-title {
+            font-family: 'Graphik', sans-serif;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: black;
+        }
+        
+        .property-price {
+            font-size: 16px;
+            color: #007bff;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .property-images {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .property-carousel {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            border-radius: 8px;
+            position: relative;
+        }
+        
+        .property-carousel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+        
+        .property-carousel img.active {
+            display: block;
+        }
+        
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .carousel-prev {
+            left: 10px;
+        }
+        
+        .carousel-next {
+            right: 10px;
+        }
+        
+        .property-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .property-specs {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-family: 'Graphik', sans-serif;
+            font-size: 14px;
+        }
+        
+        .property-spec {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .property-info-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: 'Graphik', sans-serif;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .property-info-button:hover {
+            background-color: #0056b3;
+        }
+
         /* Loader */
         .loader {
             border: 2px solid #f3f3f3;
@@ -911,8 +1093,15 @@
                 console.log('Topic actualizado via callback a:', currentTopic);
             }
             
-            // Añadir mensaje del asistente
-            addMessage(data.message || data.response || 'Respuesta recibida', 'assistant');
+            // Si hay propiedades, mostrar las tarjetas
+            if (data.properties && Array.isArray(data.properties)) {
+                addPropertiesMessage(data.properties);
+            }
+            
+            // Añadir mensaje del asistente después de las propiedades
+            if (data.message) {
+                addMessage(data.message, 'assistant');
+            }
             
             // Resetear estado de callback pendiente
             pendingCallback = false;
@@ -1013,6 +1202,129 @@
             };
             return handleCallback(testData);
         };
+
+        function addPropertiesMessage(properties) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message assistant';
+            
+            const propertiesContainer = document.createElement('div');
+            propertiesContainer.className = 'properties-container';
+            
+            properties.forEach((property, index) => {
+                const thumbnail = document.createElement('div');
+                thumbnail.className = 'property-thumbnail';
+                thumbnail.onclick = () => openPropertyModal(property, index);
+                
+                const img = document.createElement('img');
+                img.src = property.thumbnail;
+                img.alt = property.title;
+                
+                thumbnail.appendChild(img);
+                propertiesContainer.appendChild(thumbnail);
+            });
+            
+            messageDiv.appendChild(propertiesContainer);
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Guardar en conversación
+            currentConversation.push({
+                text: '[Propiedades mostradas]',
+                sender: 'assistant',
+                timestamp: new Date().toISOString(),
+                properties: properties
+            });
+            
+            saveConversationToSupabase();
+        }
+        
+        function openPropertyModal(property, index) {
+            const modal = document.createElement('div');
+            modal.className = 'property-modal';
+            modal.id = 'propertyModal';
+            
+            modal.innerHTML = `
+                <div class="property-card">
+                    <button class="property-close" onclick="closePropertyModal()">×</button>
+                    <div class="property-title">${property.title}</div>
+                    <div class="property-price">${formatPrice(property.price)}</div>
+                    
+                    <div class="property-images">
+                        <div class="property-carousel" id="carousel-${index}">
+                            ${property.images.map((img, imgIndex) => 
+                                `<img src="${img}" alt="${property.title}" ${imgIndex === 0 ? 'class="active"' : ''}>`
+                            ).join('')}
+                            ${property.images.length > 1 ? `
+                                <button class="carousel-nav carousel-prev" onclick="changeImage(${index}, -1)">‹</button>
+                                <button class="carousel-nav carousel-next" onclick="changeImage(${index}, 1)">›</button>
+                            ` : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="property-details">
+                        <div class="property-specs">
+                            <div class="property-spec">🛏️ ${property.rooms} habitaciones</div>
+                            <div class="property-spec">🚿 ${property.bathrooms} baños</div>
+                            <div class="property-spec">📏 ${property.size} m²</div>
+                            <div class="property-spec">🏢 Planta ${property.floor}</div>
+                        </div>
+                    </div>
+                    
+                    <button class="property-info-button" onclick="requestMoreInfo('${property.title}')">
+                        Más información
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            modal.style.display = 'flex';
+            
+            // Store current image index
+            window.currentImageIndex = window.currentImageIndex || {};
+            window.currentImageIndex[index] = 0;
+        }
+        
+        function closePropertyModal() {
+            const modal = document.getElementById('propertyModal');
+            if (modal) {
+                modal.remove();
+            }
+        }
+        
+        function changeImage(propertyIndex, direction) {
+            const carousel = document.getElementById(`carousel-${propertyIndex}`);
+            const images = carousel.querySelectorAll('img');
+            
+            if (!window.currentImageIndex) window.currentImageIndex = {};
+            
+            images[window.currentImageIndex[propertyIndex]].classList.remove('active');
+            
+            window.currentImageIndex[propertyIndex] += direction;
+            
+            if (window.currentImageIndex[propertyIndex] >= images.length) {
+                window.currentImageIndex[propertyIndex] = 0;
+            } else if (window.currentImageIndex[propertyIndex] < 0) {
+                window.currentImageIndex[propertyIndex] = images.length - 1;
+            }
+            
+            images[window.currentImageIndex[propertyIndex]].classList.add('active');
+        }
+        
+        function formatPrice(price) {
+            return new Intl.NumberFormat('es-ES', {
+                style: 'currency',
+                currency: 'EUR',
+                maximumFractionDigits: 0
+            }).format(price);
+        }
+        
+        function requestMoreInfo(propertyTitle) {
+            closePropertyModal();
+            const message = `Quiero más información sobre: ${propertyTitle}`;
+            addMessage(message, 'user');
+            sendWebhook(message);
+        }
     </script>
 </body>
 </html>
