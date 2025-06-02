@@ -1,3 +1,5 @@
+// api/events.js
+
 // Mapa global para almacenar conexiones SSE activas
 const connections = new Map();
 
@@ -17,7 +19,7 @@ export default async function handler(req, res) {
 
   console.log('Estableciendo conexión SSE para sesión:', sessionId);
 
-  // 2) Ajustamos encabezados SSE
+  // 2) Ajustamos los encabezados para SSE
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
@@ -25,7 +27,7 @@ export default async function handler(req, res) {
     'Access-Control-Allow-Origin': '*',
   });
 
-  // 3) Cada 30 segundos enviamos un heartbeat para mantener viva la conexión
+  // 3) Enviamos un heartbeat cada 30 segundos para mantener la conexión viva
   const heartbeat = setInterval(() => {
     try {
       res.write(`data: ${JSON.stringify({ type: 'heartbeat' })}\n\n`);
@@ -36,22 +38,29 @@ export default async function handler(req, res) {
     }
   }, 30000);
 
-  // 4) Guardamos la conexión en el mapa, junto con el intervalo del heartbeat
+  // 4) Guardamos la conexión (res + heartbeat) en el mapa global
   connections.set(sessionId, { res, heartbeat });
   console.log('Conexiones activas:', connections.size);
 
-  // 5) Enviamos inmediatamente el evento “connected”
+  // 5) Enviamos de inmediato el evento “connected”
   res.write(`data: ${JSON.stringify({ type: 'connected', sessionId })}\n\n`);
 
-  // 6) Cuando el cliente cierra la conexión, limpiamos todo
+  // 6) Si el cliente cierra la conexión, limpiamos intervalos y mapa
   req.on('close', () => {
     console.log('Conexión SSE cerrada (cliente desconectado):', sessionId);
     clearInterval(heartbeat);
     connections.delete(sessionId);
   });
+
+  // 7) Mantenemos esta función “viva” hasta que ocurra el close
+  return new Promise((resolve) => {
+    req.on('close', () => {
+      resolve();
+    });
+  });
 }
 
-// Función para enviar datos a una sesión específica (callback)
+// Función que enviará el callback a la sesión correspondiente
 export function sendToSession(sessionId, data) {
   console.log('Intentando enviar a sesión:', sessionId, 'Data:', data);
   console.log('Conexiones disponibles:', Array.from(connections.keys()));
@@ -63,13 +72,13 @@ export function sendToSession(sessionId, data) {
   }
 
   try {
-    // 1) Enviamos el evento “callback”
+    // 1) Enviamos el evento “callback” al cliente
     entry.res.write(`data: ${JSON.stringify(data)}\n\n`);
 
-    // 2) Una vez enviado el callback, cerramos el heartbeat y terminamos la respuesta
+    // 2) Una vez enviado el callback, cerramos el heartbeat y finalizamos la respuesta SSE
     clearInterval(entry.heartbeat);
-    entry.res.write(`event: end\n\n`); // opcional: un evento final
-    entry.res.end();                  // cerramos el SSE
+    entry.res.write(`event: end\n\n`); // (opcional, marca un evento final)
+    entry.res.end();                  // cerramos la conexión SSE
 
     connections.delete(sessionId);
     console.log('SSE cerrado tras enviar callback para sesión:', sessionId);
