@@ -929,15 +929,20 @@
             }
             
             const url = `/api/events?sessionId=${currentSessionId}`;
+            console.log('Conectando SSE a:', url);
             eventSource = new EventSource(url);
             
             eventSource.onmessage = function(event) {
+                console.log('Mensaje SSE recibido:', event.data);
                 try {
                     const data = JSON.parse(event.data);
+                    console.log('Datos parseados:', data);
                     
                     if (data.type === 'callback') {
                         console.log('Callback recibido via SSE:', data);
                         handleCallback(data);
+                    } else if (data.type === 'heartbeat') {
+                        console.log('Heartbeat recibido');
                     }
                 } catch (error) {
                     console.error('Error procesando SSE:', error);
@@ -1080,6 +1085,7 @@
                  // Verificar si se espera un callback
                 if (data.started_search === "yes") {
                     pendingCallback = true;
+                    console.log('Iniciando conexión SSE para sesión:', currentSessionId);
                     startSSEConnection();
                     console.log('Callback pendiente activado para sesión:', currentSessionId);
                 } else {
