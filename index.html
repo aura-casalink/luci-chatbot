@@ -624,79 +624,76 @@
         document.addEventListener('DOMContentLoaded', async function() {
             initializeSupabase();
             await initializeApp();
-        });
-
-             // Variables (en scope local de DOMContentLoaded)
-              const REA_SUPABASE_URL = 'https://uxyxxhsgkprnuxohjhbc.supabase.co';
-              const REA_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4eXh4aHNna3BybnV4b2hqaGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI1NTM3ODEsImV4cCI6MjA1ODEyOTc4MX0.P_ggSy3oU2AvS55fQdwpnk3aFgznfVr6uCdqWH36IwY';
+            // Variables (en scope local de DOMContentLoaded)
+            const REA_SUPABASE_URL = 'https://uxyxxhsgkprnuxohjhbc.supabase.co';
+            const REA_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4eXh4aHNna3BybnV4b2hqaGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI1NTM3ODEsImV4cCI6MjA1ODEyOTc4MX0.P_ggSy3oU2AvS55fQdwpnk3aFgznfVr6uCdqWH36IwY';
             
-              // Creamos el cliente de Supabase solo para Realtime
-              const supabaseClient = supabase.createClient(REA_SUPABASE_URL, REA_SUPABASE_KEY);
+            // Creamos el cliente de Supabase solo para Realtime
+            const supabaseClient = supabase.createClient(REA_SUPABASE_URL, REA_SUPABASE_KEY);
             
-              let realtimeChannel = null;
-              let currentSessionId = null;
+            let realtimeChannel = null;
             
-              function startRealtimeSubscription(sessionId) {
+            function startRealtimeSubscription(sessionId) {
                 if (realtimeChannel) {
-                  supabaseClient.removeChannel(realtimeChannel);
-                  realtimeChannel = null;
+                    supabaseClient.removeChannel(realtimeChannel);
+                    realtimeChannel = null;
                 }
                 currentSessionId = sessionId;
                 console.log('Iniciando suscripción Realtime para sesión:', sessionId);
                 realtimeChannel = supabaseClient
-                  .channel('public:callbacks')
-                  .on(
+                    .channel('public:callbacks')
+                    .on(
                     'postgres_changes',
                     {
-                      event: 'INSERT',
-                      schema: 'public',
-                      table: 'callbacks',
-                      filter: `session_id=eq.${sessionId},pending=eq.true`
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'callbacks',
+                        filter: `session_id=eq.${sessionId},pending=eq.true`
                     },
                     (payload) => {
-                      console.log('Evento Realtime recibido (INSERT):', payload);
-                      const row = payload.new;
-                      const messageObj = row.payload;
-                      const id = row.id;
-                      handleCallback({ type: 'callback', ...messageObj });
-                      markProcessed(id);
-                      supabaseClient.removeChannel(realtimeChannel);
-                      realtimeChannel = null;
+                        console.log('Evento Realtime recibido (INSERT):', payload);
+                        const row = payload.new;
+                        const messageObj = row.payload;
+                        const id = row.id;
+                        handleCallback({ type: 'callback', ...messageObj });
+                        markProcessed(id);
+                        supabaseClient.removeChannel(realtimeChannel);
+                        realtimeChannel = null;
                     }
-                  )
-                  .subscribe((status) => {
+                    )
+                    .subscribe((status) => {
                     if (status === 'SUBSCRIBED') {
-                      console.log('Suscripción Realtime activa para sesión:', sessionId);
+                        console.log('Suscripción Realtime activa para sesión:', sessionId);
                     }
-                  });
-              }
-            
-              async function markProcessed(id) {
-                try {
-                  const response = await fetch(`/api/mark_processed?id=${id}`, {
-                    method: 'POST'
-                  });
-                  const json = await response.json();
-                  console.log('markProcessed response:', json);
-                } catch (err) {
-                  console.error('Error marcando como procesado:', err);
+                    });
                 }
-              }
             
-              function handleCallback(data) {
+            async function markProcessed(id) {
+                try {
+                    const response = await fetch(`/api/mark_processed?id=${id}`, {
+                        method: 'POST'
+                    });
+                    const json = await response.json();
+                    console.log('markProcessed response:', json);
+                } catch (err) {
+                    console.error('Error marcando como procesado:', err);
+                }
+                }
+            
+            function handleCallback(data) {
                 console.log('Callback recibido en front:', data);
                 addMessage(data.message || 'Sin mensaje', 'assistant');
-              }
+            }
             
-              // Exponemos estas dos funciones para poder invocarlas desde consola o botones
-              window.activateTestMode = function(sessionId) {
+            // Exponemos estas dos funciones para poder invocarlas desde consola o botones
+            window.activateTestMode = function(sessionId) {
                 currentSessionId = sessionId;
                 addMessage('Hola, soy Lucy. ¿Con qué te puedo ayudar?', 'assistant');
                 addMessage(`Sesión de prueba: ${sessionId}`, 'user');
                 startRealtimeSubscription(sessionId);
-              };
+            };
             
-              window.sendCallbackManually = async function(textoUsuario) {
+            window.sendCallbackManually = async function(textoUsuario) {
                 if (!currentSessionId) return;
                 addMessage(textoUsuario, 'user');
                 try {
@@ -730,7 +727,7 @@
                   console.log('Suscripción Realtime cancelada por navegación');
                 }
               });
-
+        });
         
         // Función para generar device_id único
         function generateDeviceId() {
