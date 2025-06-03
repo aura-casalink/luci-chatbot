@@ -1027,6 +1027,9 @@
                 if (error) {
                     console.error('Error al guardar conversación:', error);
             } 
+            } catch (error) {
+                console.error('Error al guardar conversación:', error);
+            }
         }
 
         
@@ -1206,23 +1209,18 @@
 
         // Función para manejar callbacks desde n8n
         function handleCallback(data) {
-            console.log('Callback recibido:', data);
-            
             // Verificar que el callback es para la sesión actual
             if (!data.session_id || data.session_id !== currentSessionId) {
-                console.log('Callback para sesión diferente o sin session_id. Esperado:', currentSessionId, 'Recibido:', data.session_id);
                 return { success: false, message: 'Session ID mismatch or missing' };
             }
             
             if (!currentSessionId || !pendingCallback) {
-                console.log('No hay sesión activa o no se esperaba callback');
                 return { success: false, message: 'No active session or callback not expected' };
             }
             
             // Actualizar topic si viene en la respuesta
             if (data.topic && data.topic !== currentTopic) {
                 currentTopic = data.topic;
-                console.log('Topic actualizado via callback a:', currentTopic);
             }
             
             // Si hay propiedades, mostrar las tarjetas
