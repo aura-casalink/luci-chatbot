@@ -750,6 +750,12 @@
             }
             
         function handleCallback(data) {
+            console.log('=== CALLBACK RECIBIDO ===');
+            console.log('Data completa:', data);
+            console.log('Session ID esperado:', currentSessionId);
+            console.log('Session ID recibido:', data.session_id);
+            console.log('Pending callback:', pendingCallback);
+            console.log('Properties:', data.properties);
             console.log('Callback recibido en front:', data);
             addMessage(data.message || 'Sin mensaje', 'assistant');
         }
@@ -1179,6 +1185,7 @@
                  // Verificar si se espera un callback
                 if (data.started_search === "yes") {
                     pendingCallback = true;
+                    startRealtimeSubscription(currentSessionId);
                 } else {
                     pendingCallback = false;
                 }
