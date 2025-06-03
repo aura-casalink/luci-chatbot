@@ -649,12 +649,7 @@
         document.addEventListener('DOMContentLoaded', async function() {
             await initializeSupabase();
             await initializeApp();
-            // Variables (en scope local de DOMContentLoaded)
-            const REA_SUPABASE_URL = 'https://uxyxxhsgkprnuxohjhbc.supabase.co';
-            const REA_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV4eXh4aHNna3BybnV4b2hqaGJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI1NTM3ODEsImV4cCI6MjA1ODEyOTc4MX0.P_ggSy3oU2AvS55fQdwpnk3aFgznfVr6uCdqWH36IwY';
-            
-            supabaseClient = window.supabase.createClient(REA_SUPABASE_URL, REA_SUPABASE_KEY);
-            
+            supabaseClient = supabase;
             
             // Exponemos estas dos funciones para poder invocarlas desde consola o botones
             window.activateTestMode = function(sessionId) {
@@ -695,7 +690,7 @@
             
               window.addEventListener('beforeunload', () => {
                 if (realtimeChannel) {
-                  supabaseClient.removeChannel(realtimeChannel);
+                  supabase.removeChannel(realtimeChannel);
                   realtimeChannel = null;
                   console.log('Suscripción Realtime cancelada por navegación');
                 }
@@ -704,12 +699,12 @@
 
         function startRealtimeSubscription(sessionId) {
             if (realtimeChannel) {
-                supabaseClient.removeChannel(realtimeChannel);
+                supabase.removeChannel(realtimeChannel);
                 realtimeChannel = null;
             }
             currentSessionId = sessionId;
             console.log('Iniciando suscripción Realtime para sesión:', sessionId);
-            realtimeChannel = supabaseClient
+            realtimeChannel = supabase
                 .channel('public:callbacks')
                 .on(
                 'postgres_changes',
@@ -735,7 +730,7 @@
                     console.log('Procesando callback con datos:', messageObj);
                     handleCallback({ type: 'callback', ...messageObj });
                     markProcessed(id);
-                    supabaseClient.removeChannel(realtimeChannel);
+                    supabase.removeChannel(realtimeChannel);
                     realtimeChannel = null;
                 }
                 )
