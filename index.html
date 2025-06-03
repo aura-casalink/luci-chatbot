@@ -622,13 +622,10 @@
         // Inicializar Supabase cuando la librería esté cargada
        function initializeSupabase() {
             return new Promise((resolve) => {
-                const checkSupabase = () => {
-                    console.log('Verificando window.supabase:', window.supabase);
-                    
+                const checkSupabase = () => {                    
                     if (window.supabase) {
                         try {
                             supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                            console.log('Supabase inicializado correctamente');
                             resolve(true);
                         } catch (error) {
                             console.error('Error al inicializar Supabase:', error);
@@ -703,7 +700,6 @@
                 realtimeChannel = null;
             }
             currentSessionId = sessionId;
-            console.log('Iniciando suscripción Realtime para sesión:', sessionId);
             realtimeChannel = supabase
                 .channel('public:callbacks')
                 .on(
@@ -714,20 +710,12 @@
                     table: 'callbacks',
                 },
                 (payload) => {
-                    console.log('=== EVENTO REALTIME RECIBIDO ===');
-                    console.log('Payload completo:', payload);
-                    console.log('Datos del nuevo registro:', payload.new);
-                    console.log('Session ID esperado:', sessionId);
-                    console.log('Session ID recibido:', payload.new?.session_id);
-                    console.log('Pending:', payload.new?.pending);
                     const row = payload.new;
                     if (row.session_id !== sessionId || !row.pending) {
-                        console.log('Evento filtrado - no coincide con sesión o no está pendiente');
                         return;
                     }
                     const messageObj = row.payload;
                     const id = row.id;
-                    console.log('Procesando callback con datos:', messageObj);
                     handleCallback({ type: 'callback', ...messageObj });
                     markProcessed(id);
                     supabase.removeChannel(realtimeChannel);
@@ -735,10 +723,7 @@
                 }
                 )
                 .subscribe((status) => {
-                console.log('Estado de suscripción Realtime:', status);
-                if (status === 'SUBSCRIBED') {
-                    console.log('Suscripción Realtime activa para sesión:', sessionId);
-                } else if (status === 'CHANNEL_ERROR') {
+                if (status === 'CHANNEL_ERROR') {
                     console.error('Error en canal Realtime');
                 } else if (status === 'TIMED_OUT') {
                     console.error('Timeout en suscripción Realtime');
@@ -752,20 +737,12 @@
                     method: 'POST'
                 });
                 const json = await response.json();
-                console.log('markProcessed response:', json);
             } catch (err) {
                 console.error('Error marcando como procesado:', err);
             }
             }
             
         function handleCallback(data) {
-            console.log('=== CALLBACK RECIBIDO ===');
-            console.log('Data completa:', data);
-            console.log('Session ID esperado:', currentSessionId);
-            console.log('Session ID recibido:', data.session_id);
-            console.log('Pending callback:', pendingCallback);
-            console.log('Properties:', data.properties);
-            console.log('Callback recibido en front:', data);
             addMessage(data.message || 'Sin mensaje', 'assistant');
         }
 
@@ -774,7 +751,6 @@
             // Primero intentar obtener desde localStorage
             let deviceId = localStorage.getItem('lucy_device_id');
             if (deviceId) {
-                console.log('Device_id existente:', deviceId);
                 return deviceId;
             }
             
@@ -799,7 +775,6 @@
             deviceId = Math.abs(hash).toString(16) + Date.now().toString(16);
             
             localStorage.setItem('lucy_device_id', deviceId);
-            console.log('Nuevo device_id generado:', deviceId);
             return deviceId;
         }
 
@@ -866,8 +841,6 @@
             deviceId = generateDeviceId();
             userIP = await getUserIP();
             
-            console.log('App inicializada - Device ID:', deviceId, 'IP:', userIP);
-            
             // Esperar un poco para asegurar que Supabase esté listo
             setTimeout(async () => {
                 await loadPreviousConversations();
@@ -882,7 +855,6 @@
             }
             
             try {
-                console.log('Cargando conversaciones para device_id:', deviceId);
                 
                 // Primero intentar por device_id
                 const { data, error } = await supabase
@@ -895,8 +867,6 @@
                     console.error('Error al cargar conversaciones:', error);
                     return;
                 }
-        
-                console.log('Conversaciones por device_id:', data);
                 
                 // Si no hay conversaciones por device_id, intentar recuperar por IP
                 let conversationsToShow = data;
@@ -1056,12 +1026,7 @@
 
                 if (error) {
                     console.error('Error al guardar conversación:', error);
-                } else {
-                    console.log('Conversación guardada correctamente');
-                }
-            } catch (error) {
-                console.error('Error al guardar conversación:', error);
-            }
+            } 
         }
 
         
@@ -1120,7 +1085,7 @@
             const loadingDiv = document.createElement('div');
             loadingDiv.className = 'loading-message';
             loadingDiv.id = 'loadingMessage';
-            loadingDiv.innerHTML = '<div class="loader"></div><span>Escribiendo...</span>';
+            loadingDiv.innerHTML = '<div class="loader"></div>';
             messagesContainer.appendChild(loadingDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
@@ -1129,6 +1094,23 @@
             const loadingMessage = document.getElementById('loadingMessage');
             if (loadingMessage) {
                 loadingMessage.remove();
+            }
+        }
+
+        function showSearchLoading() {
+            const messagesContainer = document.getElementById('chatMessages');
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading-message';
+            loadingDiv.id = 'searchLoadingMessage';
+            loadingDiv.innerHTML = '<div class="loader"></div><span style="color: #666;">Buscando propiedades</span>';
+            messagesContainer.appendChild(loadingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function hideSearchLoading() {
+            const searchLoadingMessage = document.getElementById('searchLoadingMessage');
+            if (searchLoadingMessage) {
+                searchLoadingMessage.remove();
             }
         }
 
@@ -1188,13 +1170,13 @@
                 // Actualizar topic si viene en la respuesta
                 if (data.topic && data.topic !== currentTopic) {
                     currentTopic = data.topic;
-                    console.log('Topic actualizado a:', currentTopic);
                 }
 
                  // Verificar si se espera un callback
                 if (data.started_search === "yes") {
                     pendingCallback = true;
                     startRealtimeSubscription(currentSessionId);
+                    showSearchLoading();
                 } else {
                     pendingCallback = false;
                 }
@@ -1255,6 +1237,7 @@
             
             // Resetear estado de callback pendiente
             pendingCallback = false;
+            hideSearchLoading(); 
             
             return { success: true, message: 'Callback procesado correctamente' };
         }
