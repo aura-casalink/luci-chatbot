@@ -717,13 +717,22 @@
                     event: 'INSERT',
                     schema: 'public',
                     table: 'callbacks',
-                    filter: `session_id=eq.${sessionId},pending=eq.true`
                 },
                 (payload) => {
-                    console.log('Evento Realtime recibido (INSERT):', payload);
+                    console.log('=== EVENTO REALTIME RECIBIDO ===');
+                    console.log('Payload completo:', payload);
+                    console.log('Datos del nuevo registro:', payload.new);
+                    console.log('Session ID esperado:', sessionId);
+                    console.log('Session ID recibido:', payload.new?.session_id);
+                    console.log('Pending:', payload.new?.pending);
                     const row = payload.new;
+                    if (row.session_id !== sessionId || !row.pending) {
+                        console.log('Evento filtrado - no coincide con sesión o no está pendiente');
+                        return;
+                    }
                     const messageObj = row.payload;
                     const id = row.id;
+                    console.log('Procesando callback con datos:', messageObj);
                     handleCallback({ type: 'callback', ...messageObj });
                     markProcessed(id);
                     supabaseClient.removeChannel(realtimeChannel);
@@ -731,8 +740,13 @@
                 }
                 )
                 .subscribe((status) => {
+                console.log('Estado de suscripción Realtime:', status);
                 if (status === 'SUBSCRIBED') {
                     console.log('Suscripción Realtime activa para sesión:', sessionId);
+                } else if (status === 'CHANNEL_ERROR') {
+                    console.error('Error en canal Realtime');
+                } else if (status === 'TIMED_OUT') {
+                    console.error('Timeout en suscripción Realtime');
                 }
                 });
             }
