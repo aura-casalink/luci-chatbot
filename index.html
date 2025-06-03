@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lucy - Asistente Inmobiliario</title>
+    <title>Luci - Asistente Inmobiliario</title>
     <link href="https://fonts.googleapis.com/css2?family=Graphik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -558,7 +558,7 @@
         <div class="main-area">
             <!-- Pantalla de bienvenida -->
             <div class="welcome-screen" id="welcomeScreen">
-                <h1 class="welcome-title">Hola, soy Lucy. ¿Con qué te puedo ayudar?</h1>
+                <h1 class="welcome-title">Hola, soy Luci. ¿Con qué te puedo ayudar?</h1>
                 <div class="buttons-container">
                     <button class="option-button" onclick="selectOption('Buscar propiedades para comprar')">
                         Buscar propiedades para comprar
@@ -578,7 +578,7 @@
             <!-- Pantalla de chat -->
             <div class="chat-screen" id="chatScreen">
                 <div class="chat-header">
-                    <h2 class="chat-title">Hola, soy Lucy. ¿Con qué te puedo ayudar?</h2>
+                    <h2 class="chat-title">Hola, soy Luci. ¿Con qué te puedo ayudar?</h2>
                 </div>
                 
                 <div class="chat-messages" id="chatMessages">
@@ -652,7 +652,7 @@
             window.activateTestMode = function(sessionId) {
                 currentSessionId = sessionId;
                 pendingCallback = true; 
-                addMessage('Hola, soy Lucy. ¿Con qué te puedo ayudar?', 'assistant');
+                addMessage('Hola, soy Luci. ¿Con qué te puedo ayudar?', 'assistant');
                 addMessage(`Sesión de prueba: ${sessionId}`, 'user');
                 startRealtimeSubscription(sessionId);
                 console.log('Modo test activado - pendingCallback:', pendingCallback);
@@ -1044,7 +1044,7 @@
                 showChatScreen();
                 
                 // Añadir mensaje del asistente primero
-                addMessage('Hola, soy Lucy. ¿Con qué te puedo ayudar?', 'assistant');
+                addMessage('Hola, soy Luci. ¿Con qué te puedo ayudar?', 'assistant');
                 
                 // Añadir mensaje del usuario
                 addMessage(optionText, 'user');
@@ -1118,7 +1118,7 @@
             let conversationText = "Historial de conversación:\n\n";
             
             currentConversation.forEach((msg, index) => {
-                const role = msg.sender === 'user' ? 'Usuario' : 'Lucy';
+                const role = msg.sender === 'user' ? 'Usuario' : 'Luci';
                 conversationText += `${role}: ${msg.text}\n\n`;
             });
             
@@ -1258,7 +1258,7 @@
                     // Si estamos en pantalla de bienvenida, cambiar a chat
                     if (document.getElementById('welcomeScreen').style.display !== 'none') {
                         showChatScreen();
-                        addMessage('Hola, soy Lucy. ¿Con qué te puedo ayudar?', 'assistant');
+                        addMessage('Hola, soy Luci. ¿Con qué te puedo ayudar?', 'assistant');
                     }
                 }
 
@@ -1487,7 +1487,7 @@
             if (!currentConversation || currentConversation.length === 0) {
                 currentConversation = [
                     {
-                        text: 'Hola, soy Lucy. ¿Con qué te puedo ayudar?',
+                        text: 'Hola, soy Luci. ¿Con qué te puedo ayudar?',
                         sender: 'assistant',
                         timestamp: new Date().toISOString()
                     },
