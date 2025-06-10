@@ -971,6 +971,10 @@
             await initializeSupabase();
             await initializeApp();
             supabaseClient = supabase;
+
+            // Event listeners para sidebar
+            document.getElementById('toggleSidebar').addEventListener('click', toggleSidebar);
+            document.getElementById('showChatsBtn').addEventListener('click', expandSidebar);
             
             // Exponemos estas dos funciones para poder invocarlas desde consola o botones
             window.activateTestMode = function(sessionId) {
@@ -1238,7 +1242,7 @@
                     deleteBtn.onclick = (e) => {
                         e.stopPropagation();
                         hideConversation(conv.session_id);
-                });
+                };
                 
                 item.appendChild(deleteBtn);
                 section.appendChild(item);
