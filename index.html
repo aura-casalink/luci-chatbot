@@ -167,6 +167,7 @@
         .option-button:hover {
             background-color: #f8f9fa;
             border-color: #007bff;
+            color: black;
         }
 
         .option-button:last-child {
@@ -547,6 +548,16 @@
         .toggle-sidebar-btn:hover {
             background-color: rgba(255, 255, 255, 0.3);
         }
+
+        .toggle-sidebar-btn {
+            z-index: 10;
+            position: relative;
+        }
+        
+        .show-chats-btn {
+            z-index: 10;
+            position: relative;
+        }
         
         .brand-name {
             font-family: 'Montserrat', sans-serif;
@@ -849,7 +860,7 @@
             </button>
             
             <button class="show-chats-btn tooltip" id="showChatsBtn" data-tooltip="Mostrar conversaciones">
-                💬
+                📋
             </button>
             
             <div id="conversationsContainer">
@@ -960,9 +971,6 @@
             await initializeSupabase();
             await initializeApp();
             supabaseClient = supabase;
-            // Event listeners para sidebar
-            document.getElementById('toggleSidebar').addEventListener('click', toggleSidebar);
-            document.getElementById('showChatsBtn').addEventListener('click', expandSidebar);
             
             // Exponemos estas dos funciones para poder invocarlas desde consola o botones
             window.activateTestMode = function(sessionId) {
