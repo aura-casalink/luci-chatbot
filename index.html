@@ -1404,13 +1404,11 @@
                 if (!msg.classList.contains('old')) {
                     msg.classList.add('old');
                 }
-                 msg.style.fontWeight = 'normal';
             });
             
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${sender}`;
             messageDiv.textContent = text;
-            messageDiv.style.fontWeight = 'bold';
             messagesContainer.appendChild(messageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         
