@@ -514,6 +514,298 @@
             font-family: 'Graphik', sans-serif;
         }
 
+        /* Sidebar colapsada */
+        .sidebar.collapsed {
+            width: 60px;
+            transition: width 0.3s ease;
+        }
+        
+        .sidebar {
+            transition: width 0.3s ease;
+        }
+        
+        /* Header de la sidebar */
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 10px 0;
+        }
+        
+        .toggle-sidebar-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+            color: #666;
+        }
+        
+        .toggle-sidebar-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .brand-name {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            font-size: 16px;
+            color: black;
+            white-space: nowrap;
+        }
+        
+        .sidebar.collapsed .brand-name {
+            display: none;
+        }
+        
+        .sidebar.collapsed .conversation-section-title,
+        .sidebar.collapsed .conversation-item {
+            display: none;
+        }
+        
+        .sidebar.collapsed .new-chat-button span:last-child {
+            display: none;
+        }
+        
+        .sidebar.collapsed .new-chat-button {
+            justify-content: center;
+            padding: 12px;
+            width: 40px;
+            height: 40px;
+            margin: 10px auto;
+        }
+        
+        .sidebar.collapsed .new-chat-button:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Botón para mostrar conversaciones */
+        .show-chats-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            color: #666;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px auto;
+        }
+        
+        .show-chats-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .sidebar:not(.collapsed) .show-chats-btn {
+            display: none;
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+        }
+        
+        .tooltip::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+        
+        .tooltip:hover::after {
+            opacity: 1;
+        }
+        
+        /* Botón eliminar conversación */
+        .conversation-item {
+            position: relative;
+        }
+        
+        .conversation-item:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .delete-conversation {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 16px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+        
+        .conversation-item:hover .delete-conversation {
+            opacity: 1;
+        }
+        
+        .delete-conversation:hover {
+            background-color: rgba(255, 0, 0, 0.1);
+            color: #ff4444;
+        }
+        
+        /* Mensajes antiguos en gris */
+        .message.old {
+            color: #888;
+        }
+        
+        /* Loading con animación */
+        .search-loading-messages {
+            animation: fadeInOut 4s infinite;
+        }
+        
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+        
+        /* Pop-ups */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .popup-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .popup-title {
+            font-family: 'Graphik', sans-serif;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: black;
+        }
+        
+        .popup-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Graphik', sans-serif;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        
+        .popup-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+        
+        .popup-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Graphik', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .popup-btn.primary {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .popup-btn.secondary {
+            background-color: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        
+        .popup-btn:hover {
+            transform: translateY(-1px);
+        }
+        
+        .contact-method-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        
+        .contact-method-btn {
+            padding: 10px 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .contact-method-btn.selected {
+            border-color: #007bff;
+            background-color: #e3f2fd;
+        }
+        
+        .input-with-send {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .input-with-send input {
+            flex: 1;
+        }
+        
+        .send-icon-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Hover mejorado para nuevo chat expandido */
+        .sidebar:not(.collapsed) .new-chat-button:hover {
+            background-color: rgba(0, 123, 255, 0.1);
+            border-color: #007bff;
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -543,10 +835,21 @@
 <body>
     <div class="container">
         <!-- Menú lateral -->
-        <div class="sidebar">
-            <button class="new-chat-button" onclick="newChat()">
+        <div class="sidebar collapsed" id="sidebar">
+            <div class="sidebar-header">
+                <button class="toggle-sidebar-btn tooltip" id="toggleSidebar" data-tooltip="Expandir barra principal">
+                    ☰
+                </button>
+                <span class="brand-name">AURA</span>
+            </div>
+            
+            <button class="new-chat-button tooltip" onclick="newChat()" data-tooltip="Nuevo Chat">
                 <span>💬</span>
                 <span>Nuevo Chat</span>
+            </button>
+            
+            <button class="show-chats-btn tooltip" id="showChatsBtn" data-tooltip="Mostrar conversaciones">
+                💬
             </button>
             
             <div id="conversationsContainer">
@@ -614,6 +917,16 @@
         let currentTopic = null;
         let pendingCallback = false;
         let realtimeChannel = null;
+        // Variables para timeout y popup
+        let callbackTimeout = null;
+        let searchMessageInterval = null;
+        let currentSearchMessageIndex = 0;
+        
+        const searchMessages = [
+            "Buscando Propiedades",
+            "Tardamos 3 minutos de media",
+            "Ajustando búsqueda a tus Criterios"
+        ];
         
         // Configuración de Supabase
         const SUPABASE_URL = 'https://uxyxxhsgkprnuxohjhbc.supabase.co';
@@ -647,6 +960,9 @@
             await initializeSupabase();
             await initializeApp();
             supabaseClient = supabase;
+            // Event listeners para sidebar
+            document.getElementById('toggleSidebar').addEventListener('click', toggleSidebar);
+            document.getElementById('showChatsBtn').addEventListener('click', expandSidebar);
             
             // Exponemos estas dos funciones para poder invocarlas desde consola o botones
             window.activateTestMode = function(sessionId) {
@@ -861,6 +1177,7 @@
                     .from('chat_sessions')
                     .select('*')
                     .eq('device_id', deviceId)
+                    .neq('hide', true)
                     .order('updated_at', { ascending: false });
         
                 if (error) {
@@ -907,8 +1224,17 @@
                     item.className = 'conversation-item';
                     item.textContent = getConversationTitle(conv);
                     item.onclick = () => loadConversation(conv);
-                    section.appendChild(item);
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = 'delete-conversation';
+                    deleteBtn.innerHTML = '×';
+                    deleteBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        hideConversation(conv.session_id);
                 });
+                
+                item.appendChild(deleteBtn);
+                section.appendChild(item);
+            });
 
                 container.appendChild(section);
             }
@@ -1059,24 +1385,30 @@
 
         function addMessage(text, sender, save = true) {
             const messagesContainer = document.getElementById('chatMessages');
+            
+            // Marcar todos los mensajes existentes como antiguos
+            const existingMessages = messagesContainer.querySelectorAll('.message:not(.loading-message)');
+            existingMessages.forEach(msg => {
+                if (!msg.classList.contains('old')) {
+                    msg.classList.add('old');
+                }
+            });
+            
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${sender}`;
             messageDiv.textContent = text;
             messagesContainer.appendChild(messageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
+        
             if (save) {
-                // Añadir mensaje a la conversación actual
                 currentConversation.push({
                     text: text,
                     sender: sender,
                     timestamp: new Date().toISOString()
                 });
-
-                // Guardar en Supabase
+        
                 saveConversationToSupabase();
-
-                // Recargar conversaciones si es un mensaje nuevo del usuario
+        
                 if (sender === 'user') {
                     setTimeout(() => loadPreviousConversations(), 1000);
                 }
@@ -1103,17 +1435,42 @@
         function showSearchLoading() {
             const messagesContainer = document.getElementById('chatMessages');
             const loadingDiv = document.createElement('div');
-            loadingDiv.className = 'loading-message';
+            loadingDiv.className = 'loading-message search-loading-messages';
             loadingDiv.id = 'searchLoadingMessage';
-            loadingDiv.innerHTML = '<div class="loader"></div><span style="color: #666;">Buscando propiedades</span>';
+            loadingDiv.innerHTML = '<div class="loader"></div><span id="searchMessageText" style="color: #666;">Buscando Propiedades</span>';
             messagesContainer.appendChild(loadingDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Iniciar rotación de mensajes
+            currentSearchMessageIndex = 0;
+            searchMessageInterval = setInterval(() => {
+                currentSearchMessageIndex = (currentSearchMessageIndex + 1) % searchMessages.length;
+                const messageText = document.getElementById('searchMessageText');
+                if (messageText) {
+                    messageText.textContent = searchMessages[currentSearchMessageIndex];
+                }
+            }, 4000);
+            
+            // Iniciar timeout de 4 minutos
+            callbackTimeout = setTimeout(() => {
+                showTimeoutPopup();
+            }, 240000); // 4 minutos
         }
         
         function hideSearchLoading() {
             const searchLoadingMessage = document.getElementById('searchLoadingMessage');
             if (searchLoadingMessage) {
                 searchLoadingMessage.remove();
+            }
+            
+            if (searchMessageInterval) {
+                clearInterval(searchMessageInterval);
+                searchMessageInterval = null;
+            }
+            
+            if (callbackTimeout) {
+                clearTimeout(callbackTimeout);
+                callbackTimeout = null;
             }
         }
 
@@ -1465,9 +1822,7 @@
         
         function requestMoreInfo(propertyTitle) {
             closePropertyModal();
-            const message = `Quiero más información sobre: ${propertyTitle}`;
-            addMessage(message, 'user');
-            sendWebhook(message);
+            showContactInfoPopup(propertyTitle);
         }
 
         // Función para activar el modo test y simular estado de callback pendiente
@@ -1572,6 +1927,191 @@
             
             return result;
         };
+
+
+        // Funciones para sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('toggleSidebar');
+            
+            sidebar.classList.toggle('collapsed');
+            
+            if (sidebar.classList.contains('collapsed')) {
+                toggleBtn.setAttribute('data-tooltip', 'Expandir barra principal');
+            } else {
+                toggleBtn.setAttribute('data-tooltip', 'Recoger barra principal');
+            }
+        }
+        
+        function expandSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('toggleSidebar');
+            
+            sidebar.classList.remove('collapsed');
+            toggleBtn.setAttribute('data-tooltip', 'Recoger barra principal');
+        }
+        
+        // Función para ocultar conversaciones
+        async function hideConversation(sessionId) {
+            if (!supabase) return;
+            
+            try {
+                const { error } = await supabase
+                    .from('chat_sessions')
+                    .update({ hide: true })
+                    .eq('session_id', sessionId);
+        
+                if (error) {
+                    console.error('Error al ocultar conversación:', error);
+                    return;
+                }
+                
+                // Recargar conversaciones
+                await loadPreviousConversations();
+            } catch (error) {
+                console.error('Error al ocultar conversación:', error);
+            }
+        }
+        
+        // Función para mostrar popup de timeout
+        function showTimeoutPopup() {
+            const popup = document.createElement('div');
+            popup.className = 'popup-overlay';
+            popup.id = 'timeoutPopup';
+            
+            popup.innerHTML = `
+                <div class="popup-content">
+                    <div class="popup-title">¡Continuamos con tu búsqueda exhaustiva, pero nos va a llevar algún minuto más!</div>
+                    <p>Si lo prefieres, te podemos mandar los resultados por correo electrónico.</p>
+                    
+                    <div class="input-with-send">
+                        <input type="email" class="popup-input" id="timeoutEmail" placeholder="tu@email.com">
+                        <button class="send-icon-btn" onclick="sendEmailNotification()">➤</button>
+                    </div>
+                    
+                    <div class="popup-buttons">
+                        <button class="popup-btn secondary" onclick="continueWaiting()">Continuar esperando</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(popup);
+            popup.style.display = 'flex';
+        }
+        
+        function continueWaiting() {
+            const popup = document.getElementById('timeoutPopup');
+            if (popup) popup.remove();
+            
+            // Renovar timeout por otros 4 minutos
+            callbackTimeout = setTimeout(() => {
+                showTimeoutPopup();
+            }, 240000);
+            
+            // Renovar suscripción realtime
+            if (currentSessionId) {
+                startRealtimeSubscription(currentSessionId);
+            }
+        }
+        
+        function sendEmailNotification() {
+            const email = document.getElementById('timeoutEmail').value;
+            if (!email) {
+                alert('Por favor, introduce un email válido');
+                return;
+            }
+            
+            // Aquí puedes enviar el email al webhook
+            console.log('Enviando notificación a:', email);
+            
+            const popup = document.getElementById('timeoutPopup');
+            if (popup) popup.remove();
+            
+            addMessage('Te enviaremos los resultados por email cuando estén listos.', 'assistant');
+        }
+        
+        // Función para mostrar popup de información de contacto
+        function showContactInfoPopup(propertyTitle) {
+            const popup = document.createElement('div');
+            popup.className = 'popup-overlay';
+            popup.id = 'contactInfoPopup';
+            
+            popup.innerHTML = `
+                <div class="popup-content">
+                    <div class="popup-title">¡Gracias por tu interés en esta propiedad!</div>
+                    <p>Te enviaremos los datos completos al método de envío que selecciones a continuación</p>
+                    
+                    <input type="text" class="popup-input" id="userName" placeholder="Tu nombre">
+                    
+                    <p style="margin: 20px 0 10px 0;">Elige entre estos dos métodos de envío:</p>
+                    
+                    <div class="contact-method-buttons">
+                        <button class="contact-method-btn" id="whatsappBtn" onclick="selectContactMethod('whatsapp')">WhatsApp</button>
+                        <button class="contact-method-btn" id="emailBtn" onclick="selectContactMethod('email')">Email</button>
+                    </div>
+                    
+                    <div id="contactInput" style="display: none;">
+                        <div class="input-with-send">
+                            <input type="text" class="popup-input" id="contactValue" placeholder="">
+                            <button class="send-icon-btn" onclick="sendContactInfo('${propertyTitle}')">➤</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(popup);
+            popup.style.display = 'flex';
+            
+            // Cerrar con click fuera
+            popup.addEventListener('click', function(e) {
+                if (e.target === popup) {
+                    popup.remove();
+                }
+            });
+        }
+        
+        function selectContactMethod(method) {
+            const whatsappBtn = document.getElementById('whatsappBtn');
+            const emailBtn = document.getElementById('emailBtn');
+            const contactInput = document.getElementById('contactInput');
+            const contactValue = document.getElementById('contactValue');
+            
+            // Resetear selección
+            whatsappBtn.classList.remove('selected');
+            emailBtn.classList.remove('selected');
+            
+            // Seleccionar método
+            if (method === 'whatsapp') {
+                whatsappBtn.classList.add('selected');
+                contactValue.placeholder = 'Tu número de WhatsApp';
+                contactValue.type = 'tel';
+            } else {
+                emailBtn.classList.add('selected');
+                contactValue.placeholder = 'Tu email';
+                contactValue.type = 'email';
+            }
+            
+            contactInput.style.display = 'block';
+        }
+        
+        function sendContactInfo(propertyTitle) {
+            const name = document.getElementById('userName').value;
+            const contactValue = document.getElementById('contactValue').value;
+            const method = document.getElementById('whatsappBtn').classList.contains('selected') ? 'WhatsApp' : 'Email';
+            
+            if (!name || !contactValue) {
+                alert('Por favor, completa todos los campos');
+                return;
+            }
+            
+            // Enviar información al webhook
+            console.log('Enviando info de contacto:', { name, contactValue, method, propertyTitle });
+            
+            const popup = document.getElementById('contactInfoPopup');
+            if (popup) popup.remove();
+            
+            addMessage(`Te enviaremos información de "${propertyTitle}" por ${method}.`, 'assistant');
+        }
     </script>
 </body>
 </html>
