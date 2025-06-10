@@ -926,6 +926,7 @@
         let supabase = null;
         let supabaseClient = null;
         let currentTopic = null;
+        let currentConversationTitle = null;
         let pendingCallback = false;
         let realtimeChannel = null;
         // Variables para timeout y popup
@@ -1293,6 +1294,12 @@
 
         // Función para obtener el título de una conversación
         function getConversationTitle(conversation) {
+            // Usar conversation_title si está disponible
+            if (conversation.conversation_title) {
+                return conversation.conversation_title;
+            }
+            
+            // Fallback al comportamiento anterior
             if (conversation.conversations && conversation.conversations.length > 0) {
                 const firstUserMessage = conversation.conversations.find(msg => msg.sender === 'user');
                 if (firstUserMessage) {
@@ -1351,6 +1358,7 @@
                     session_id: currentSessionId,
                     ip: userIP,
                     topic: currentTopic,
+                    conversation_title: currentConversationTitle,
                     conversations: currentConversation,
                     browser_info: getBrowserInfo(),
                     updated_at: new Date().toISOString()
@@ -1542,6 +1550,11 @@
                 // Actualizar topic si viene en la respuesta
                 if (data.topic && data.topic !== currentTopic) {
                     currentTopic = data.topic;
+                }
+
+                // Actualizar título de conversación si viene en la respuesta
+                if (data.conversation_title) {
+                    currentConversationTitle = data.conversation_title;
                 }
 
                  // Verificar si se espera un callback
