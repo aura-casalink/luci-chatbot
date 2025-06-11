@@ -1362,6 +1362,12 @@
                     addMessage(msg.text, msg.sender, false);
                 }
             });
+            // Marcar conversación como activa
+                document.querySelectorAll('.conversation-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                event.target.classList.add('active');
+            }
 
         // Función para mostrar la pantalla de chat
         function showChatScreen() {
