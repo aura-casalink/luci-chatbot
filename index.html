@@ -580,9 +580,6 @@
             display: none;
         }
         
-        .sidebar.collapsed .new-chat-button span:last-child {
-            display: none;
-        }
         
         .sidebar.collapsed .new-chat-button {
             justify-content: center;
@@ -596,7 +593,20 @@
             position: relative;
             display: flex;
         }
-        
+
+        .sidebar.collapsed .new-chat-button span:last-child {
+            display: none;
+        }
+
+        .sidebar.collapsed .new-chat-button span:first-child {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+                
         .sidebar.collapsed .new-chat-button:hover {
             transform: scale(1.1);
             background-color: rgba(255, 255, 255, 0.4);
@@ -948,6 +958,7 @@
         /* Ajuste específico para el botón collapsed */
         .sidebar.collapsed .new-chat-button img {
             margin: 0;
+            display: block;
         }
         
         /* Mejorar el comportamiento del tooltip cuando hay imágenes */
