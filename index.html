@@ -696,6 +696,13 @@
             z-index: 1000;
         }
         
+        /* Ajustar tooltips cuando la sidebar está expandida */
+        .sidebar:not(.collapsed) .tooltip::after {
+            top: calc(100% + 10px);
+            left: 0;
+            transform: none;
+        }
+        
         .tooltip:hover::after {
             opacity: 1;
         }
@@ -872,7 +879,7 @@
             justify-content: flex-start;
             gap: 10px;
             padding: 12px;
-            padding-left: 1px;
+            padding-left: 8px;
             margin-bottom: 20px;
             background-color: rgba(255, 255, 255, 0.3);
             border-radius: 10px;
@@ -983,6 +990,48 @@
             justify-content: flex-start !important;
         }
         
+        /* Efectos de aparición suave para textos */
+        .sidebar:not(.collapsed) .new-chat-button span:last-child,
+        .sidebar:not(.collapsed) .brand-name,
+        .sidebar:not(.collapsed) .conversation-section-title,
+        .sidebar:not(.collapsed) .conversation-item {
+            animation: fadeInText 0.4s ease-in-out;
+            animation-fill-mode: both;
+        }
+        
+        .sidebar:not(.collapsed) .new-chat-button span:last-child {
+            animation-delay: 0.1s;
+        }
+        
+        .sidebar:not(.collapsed) .brand-name {
+            animation-delay: 0.05s;
+        }
+        
+        .sidebar:not(.collapsed) .conversation-section-title {
+            animation-delay: 0.15s;
+        }
+        
+        .sidebar:not(.collapsed) .conversation-item {
+            animation-delay: 0.2s;
+        }
+        
+        @keyframes fadeInText {
+            0% {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        /* Para el container de conversaciones también */
+        .conversations-toggle-container .new-chat-button span:last-child {
+            animation: fadeInText 0.4s ease-in-out 0.1s;
+            animation-fill-mode: both;
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -1005,6 +1054,11 @@
             .message {
                 max-width: 85%;
             }
+        }
+
+        .sidebar:not(.collapsed) .new-chat-button,
+        .sidebar:not(.collapsed) .conversations-toggle-container .new-chat-button {
+            padding-left: 8px !important;
         }
     </style>
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
