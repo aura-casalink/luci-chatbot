@@ -871,7 +871,7 @@
             align-items: center;
             gap: 10px;
             padding: 12px;
-            padding-left: 18px;
+            padding-left: 1px;
             margin-bottom: 20px;
             background-color: rgba(255, 255, 255, 0.3);
             border-radius: 10px;
@@ -1395,18 +1395,24 @@
                     
                 section.appendChild(title);
 
-                if (Object.keys(grouped)[0] === dateLabel && !document.getElementById('sidebar').classList.contains('collapsed')) {
-                    const conversationsBtn = document.createElement('button');
-                    conversationsBtn.className = 'show-conversations-btn tooltip';
-                    conversationsBtn.setAttribute('data-tooltip', 'Mostrar conversaciones');
-                    conversationsBtn.onclick = () => toggleConversations(conversationsBtn);
-                    conversationsBtn.innerHTML = '<img src="https://cdn-icons-png.flaticon.com/512/1178/1178067.png" alt="Conversations" style="width: 21.6px; height: 21.6px; filter: opacity(0.7);">';
-                    
-                    // Posicionar a la izquierda del título
-                    title.style.display = 'flex';
-                    title.style.alignItems = 'center';
-                    title.style.gap = '10px';
-                    title.insertBefore(conversationsBtn, title.firstChild);
+                if (Object.keys(grouped)[0] === dateLabel) {
+                    const sidebar = document.getElementById('sidebar');
+                    if (!sidebar.classList.contains('collapsed')) {
+                        const conversationsBtn = document.createElement('button');
+                        conversationsBtn.className = 'show-conversations-btn tooltip';
+                        conversationsBtn.setAttribute('data-tooltip', 'Mostrar conversaciones');
+                        conversationsBtn.onclick = () => toggleConversations(conversationsBtn);
+                        conversationsBtn.innerHTML = '<img src="https://cdn-icons-png.flaticon.com/512/1178/1178067.png" alt="Conversations" style="width: 21.6px; height: 21.6px; filter: opacity(0.7);">';
+                        
+                        // Posicionar a la izquierda del título
+                        title.style.display = 'flex';
+                        title.style.alignItems = 'center';
+                        title.style.gap = '10px';
+                        title.insertBefore(conversationsBtn, title.firstChild);
+                    } else {
+                        // Cuando está collapsed, asegurar que el título no tenga flex
+                        title.style.display = 'block';
+                    }
                 }
         
                 const conversationsDiv = document.createElement('div');
@@ -2208,8 +2214,10 @@
             
             if (sidebar.classList.contains('collapsed')) {
                 toggleBtn.setAttribute('data-tooltip', 'Expandir barra principal');
+                loadPreviousConversations();
             } else {
                 toggleBtn.setAttribute('data-tooltip', 'Recoger barra principal');
+                loadPreviousConversations();
             }
         }
         
