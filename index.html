@@ -566,7 +566,7 @@
         .brand-name {
             font-family: 'Montserrat', sans-serif;
             font-weight: bold;
-            font-size: 16px;
+            font-size: 32px;
             color: black;
             white-space: nowrap;
         }
@@ -1382,6 +1382,21 @@
                 return;
             }
         
+            // Añadir botón "Mostrar Conversaciones" solo cuando sidebar está expandido
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar.classList.contains('collapsed')) {
+                const showConversationsContainer = document.createElement('div');
+                showConversationsContainer.innerHTML = `
+                    <button class="new-chat-button" onclick="toggleAllConversations(this)">
+                        <span>
+                            <img src="https://cdn-icons-png.flaticon.com/512/1178/1178067.png" alt="Conversations" style="width: 21.6px; height: 21.6px; filter: opacity(0.7);">
+                        </span>
+                        <span>Mostrar Conversaciones</span>
+                    </button>
+                `;
+                container.appendChild(showConversationsContainer);
+            }
+        
             // Agrupar conversaciones por fecha
             const grouped = groupConversationsByDate(conversations);
         
@@ -1392,28 +1407,7 @@
                 const title = document.createElement('div');
                 title.className = 'conversation-section-title';
                 title.innerHTML = `<span>${dateLabel}</span>`;
-                    
                 section.appendChild(title);
-
-                if (Object.keys(grouped)[0] === dateLabel) {
-                    const sidebar = document.getElementById('sidebar');
-                    if (!sidebar.classList.contains('collapsed')) {
-                        const conversationsBtn = document.createElement('button');
-                        conversationsBtn.className = 'show-conversations-btn tooltip';
-                        conversationsBtn.setAttribute('data-tooltip', 'Mostrar conversaciones');
-                        conversationsBtn.onclick = () => toggleConversations(conversationsBtn);
-                        conversationsBtn.innerHTML = '<img src="https://cdn-icons-png.flaticon.com/512/1178/1178067.png" alt="Conversations" style="width: 21.6px; height: 21.6px; filter: opacity(0.7);">';
-                        
-                        // Posicionar a la izquierda del título
-                        title.style.display = 'flex';
-                        title.style.alignItems = 'center';
-                        title.style.gap = '10px';
-                        title.insertBefore(conversationsBtn, title.firstChild);
-                    } else {
-                        // Cuando está collapsed, asegurar que el título no tenga flex
-                        title.style.display = 'block';
-                    }
-                }
         
                 const conversationsDiv = document.createElement('div');
                 conversationsDiv.className = 'conversations-list';
@@ -2192,16 +2186,24 @@
         };
 
 
-        function toggleConversations(button) {
-            const section = button.closest('.conversation-section');
-            const conversationsList = section.querySelector('.conversations-list');
+        function toggleAllConversations(button) {
+            const allConversationsLists = document.querySelectorAll('.conversations-list');
+            const isAnyVisible = Array.from(allConversationsLists).some(list => list.style.display !== 'none');
             
-            if (conversationsList.style.display === 'none') {
-                conversationsList.style.display = 'block';
-                button.style.transform = 'rotate(0deg)';
+            allConversationsLists.forEach(list => {
+                if (isAnyVisible) {
+                    list.style.display = 'none';
+                } else {
+                    list.style.display = 'block';
+                }
+            });
+            
+            // Cambiar el texto del botón
+            const buttonText = button.querySelector('span:last-child');
+            if (isAnyVisible) {
+                buttonText.textContent = 'Mostrar Conversaciones';
             } else {
-                conversationsList.style.display = 'none';
-                button.style.transform = 'rotate(180deg)';
+                buttonText.textContent = 'Ocultar Conversaciones';
             }
         }
         
@@ -2214,11 +2216,12 @@
             
             if (sidebar.classList.contains('collapsed')) {
                 toggleBtn.setAttribute('data-tooltip', 'Expandir barra principal');
-                loadPreviousConversations();
             } else {
                 toggleBtn.setAttribute('data-tooltip', 'Recoger barra principal');
-                loadPreviousConversations();
             }
+            
+            // Recargar conversaciones para mostrar/ocultar el botón correctamente
+            loadPreviousConversations();
         }
         
         function expandSidebar() {
