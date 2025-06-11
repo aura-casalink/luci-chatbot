@@ -336,6 +336,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            cursor: zoom-in;
         }
         
         /* Modal de propiedad */
@@ -815,6 +816,37 @@
         .sidebar:not(.collapsed) .new-chat-button:hover {
             background-color: rgba(0, 123, 255, 0.1);
             border-color: #007bff;
+        }
+
+        /* Modal de zoom para imágenes */
+        .image-zoom-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            cursor: zoom-out;
+        }
+        
+        .image-zoom-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+        
+        .zoom-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            z-index: 2001;
         }
         
         /* Responsive */
@@ -1314,24 +1346,22 @@
             currentSessionId = conversation.session_id;
             currentConversation = conversation.conversations || [];
             currentTopic = conversation.topic || null;
-
+        
             // Cambiar a vista de chat
             showChatScreen();
-
+        
             // Cargar mensajes
             const messagesContainer = document.getElementById('chatMessages');
             messagesContainer.innerHTML = '';
-
+        
             currentConversation.forEach(msg => {
-                addMessage(msg.text, msg.sender, false);
+                if (msg.properties && Array.isArray(msg.properties)) {
+                    // Si el mensaje tiene propiedades, mostrarlas
+                    addPropertiesMessage(msg.properties);
+                } else {
+                    addMessage(msg.text, msg.sender, false);
+                }
             });
-
-            // Marcar conversación como activa
-            document.querySelectorAll('.conversation-item').forEach(item => {
-                item.classList.remove('active');
-            });
-            event.target.classList.add('active');
-        }
 
         // Función para mostrar la pantalla de chat
         function showChatScreen() {
@@ -1732,6 +1762,10 @@
                 const img = document.createElement('img');
                 img.src = property.thumbnail;
                 img.alt = property.title;
+                img.onclick = (e) => {
+                    e.stopPropagation();
+                    openImageZoom(property.thumbnail);
+                };
                 
                 thumbnail.appendChild(img);
                 propertiesContainer.appendChild(thumbnail);
@@ -1784,7 +1818,7 @@
                         </div>
                     </div>
                     
-                    <button class="property-info-button" onclick="requestMoreInfo('${property.title}')">
+                    <button class="property-info-button" onclick="requestMoreInfo(\`${property.title}\`)">
                         Más información
                     </button>
                 </div>
@@ -2137,6 +2171,33 @@
             
             addMessage(`Te enviaremos información de "${propertyTitle}" por ${method}.`, 'assistant');
         }
+
+        function openImageZoom(imageSrc) {
+            const modal = document.createElement('div');
+            modal.className = 'image-zoom-modal';
+            modal.innerHTML = `
+                <span class="zoom-close">&times;</span>
+                <img src="${imageSrc}" alt="Imagen ampliada">
+            `;
+            
+            document.body.appendChild(modal);
+            modal.style.display = 'flex';
+            
+            // Cerrar con click
+            modal.addEventListener('click', function() {
+                modal.remove();
+            });
+            
+            // Cerrar con Escape
+            const escapeHandler = function(e) {
+                if (e.key === 'Escape') {
+                    modal.remove();
+                    document.removeEventListener('keydown', escapeHandler);
+                }
+            };
+            document.addEventListener('keydown', escapeHandler);
+        }
+            
     </script>
 </body>
 </html>
