@@ -1460,22 +1460,6 @@
                 return;
             }
         
-            // Añadir botón "Conversaciones" solo cuando sidebar está expandido
-            const sidebar = document.getElementById('sidebar');
-            if (!sidebar.classList.contains('collapsed')) {
-                const showConversationsContainer = document.createElement('div');
-                showConversationsContainer.className = 'conversations-toggle-container';
-                showConversationsContainer.innerHTML = `
-                    <button class="new-chat-button tooltip" onclick="toggleAllConversations(this)" data-tooltip="Ocultar conversaciones">
-                        <span>
-                            <img src="https://cdn-icons-png.flaticon.com/512/1178/1178067.png" alt="Conversations" style="width: 21.6px; height: 21.6px; filter: opacity(0.7);">
-                        </span>
-                        <span>Conversaciones</span>
-                    </button>
-                `;
-                container.appendChild(showConversationsContainer);
-            }
-        
             // Agrupar conversaciones por fecha
             const grouped = groupConversationsByDate(conversations);
         
@@ -1485,11 +1469,8 @@
                 
                 const title = document.createElement('div');
                 title.className = 'conversation-section-title';
-                title.innerHTML = `<span>${dateLabel}</span>`;
+                title.textContent = dateLabel;
                 section.appendChild(title);
-        
-                const conversationsDiv = document.createElement('div');
-                conversationsDiv.className = 'conversations-list';
         
                 convs.forEach(conv => {
                     const item = document.createElement('div');
@@ -1506,10 +1487,9 @@
                     };
                     
                     item.appendChild(deleteBtn);
-                    conversationsDiv.appendChild(item);
+                    section.appendChild(item);
                 });
         
-                section.appendChild(conversationsDiv);
                 container.appendChild(section);
             }
         }
