@@ -592,6 +592,7 @@
             margin: 10px auto;
             background-color: rgba(255, 255, 255, 0.3);
             border-radius: 8px;
+            position: relative;
         }
         
         .sidebar.collapsed .new-chat-button:hover {
@@ -651,8 +652,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 30px;
-            height: 30px;
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
         }
         
         .show-conversations-btn:hover {
@@ -869,7 +871,7 @@
             align-items: center;
             gap: 10px;
             padding: 12px;
-            padding-left: 8px;
+            padding-left: 18px;
             margin-bottom: 20px;
             background-color: rgba(255, 255, 255, 0.3);
             border-radius: 10px;
@@ -1393,15 +1395,18 @@
                     
                 section.appendChild(title);
 
-                if (Object.keys(grouped)[0] === dateLabel) {
+                if (Object.keys(grouped)[0] === dateLabel && !document.getElementById('sidebar').classList.contains('collapsed')) {
                     const conversationsBtn = document.createElement('button');
                     conversationsBtn.className = 'show-conversations-btn tooltip';
                     conversationsBtn.setAttribute('data-tooltip', 'Mostrar conversaciones');
                     conversationsBtn.onclick = () => toggleConversations(conversationsBtn);
                     conversationsBtn.innerHTML = '<img src="https://cdn-icons-png.flaticon.com/512/1178/1178067.png" alt="Conversations" style="width: 21.6px; height: 21.6px; filter: opacity(0.7);">';
-                    conversationsBtn.style.marginLeft = '8px';
-                    conversationsBtn.style.marginBottom = '10px';
-                    section.appendChild(conversationsBtn);
+                    
+                    // Posicionar a la izquierda del título
+                    title.style.display = 'flex';
+                    title.style.alignItems = 'center';
+                    title.style.gap = '10px';
+                    title.insertBefore(conversationsBtn, title.firstChild);
                 }
         
                 const conversationsDiv = document.createElement('div');
