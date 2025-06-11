@@ -869,6 +869,7 @@
         .sidebar:not(.collapsed) .new-chat-button {
             display: flex;
             align-items: center;
+            justify-content: flex-start;
             gap: 10px;
             padding: 12px;
             padding-left: 1px;
@@ -946,7 +947,7 @@
         .new-chat-button {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start !important;
         }
         
         /* Asegurar que las imágenes no interfieran con el tooltip */
@@ -975,6 +976,11 @@
         .sidebar.collapsed .new-chat-button:hover::after {
             opacity: 1;
             transition-delay: 0.1s;
+        }
+
+        .conversations-toggle-container .new-chat-button {
+            padding-left: 8px !important;
+            justify-content: flex-start !important;
         }
         
         /* Responsive */
@@ -1382,16 +1388,17 @@
                 return;
             }
         
-            // Añadir botón "Mostrar Conversaciones" solo cuando sidebar está expandido
+            // Añadir botón "Conversaciones" solo cuando sidebar está expandido
             const sidebar = document.getElementById('sidebar');
             if (!sidebar.classList.contains('collapsed')) {
                 const showConversationsContainer = document.createElement('div');
+                showConversationsContainer.className = 'conversations-toggle-container';
                 showConversationsContainer.innerHTML = `
-                    <button class="new-chat-button" onclick="toggleAllConversations(this)">
+                    <button class="new-chat-button tooltip" onclick="toggleAllConversations(this)" data-tooltip="Ocultar conversaciones">
                         <span>
                             <img src="https://cdn-icons-png.flaticon.com/512/1178/1178067.png" alt="Conversations" style="width: 21.6px; height: 21.6px; filter: opacity(0.7);">
                         </span>
-                        <span>Mostrar Conversaciones</span>
+                        <span>Conversaciones</span>
                     </button>
                 `;
                 container.appendChild(showConversationsContainer);
@@ -2186,7 +2193,7 @@
         };
 
 
-        function toggleAllConversations(button) {
+       function toggleAllConversations(button) {
             const allConversationsLists = document.querySelectorAll('.conversations-list');
             const isAnyVisible = Array.from(allConversationsLists).some(list => list.style.display !== 'none');
             
@@ -2198,12 +2205,11 @@
                 }
             });
             
-            // Cambiar el texto del botón
-            const buttonText = button.querySelector('span:last-child');
+            // Cambiar el tooltip
             if (isAnyVisible) {
-                buttonText.textContent = 'Mostrar Conversaciones';
+                button.setAttribute('data-tooltip', 'Mostrar conversaciones');
             } else {
-                buttonText.textContent = 'Ocultar Conversaciones';
+                button.setAttribute('data-tooltip', 'Ocultar conversaciones');
             }
         }
         
@@ -2230,6 +2236,7 @@
             
             sidebar.classList.remove('collapsed');
             toggleBtn.setAttribute('data-tooltip', 'Recoger barra principal');
+            loadPreviousConversations();
         }
         
         // Función para ocultar conversaciones
