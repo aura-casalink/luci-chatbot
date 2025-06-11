@@ -651,6 +651,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            width: 30px;
+            height: 30px;
         }
         
         .show-conversations-btn:hover {
@@ -863,7 +865,21 @@
         }
         
         .sidebar:not(.collapsed) .new-chat-button {
-            padding-left: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            padding-left: 8px;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: black;
+            font-size: 14px;
+            font-family: 'Graphik', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border: none;
+            width: 100%;
         }
         
         /* Hover mejorado para nuevo chat expandido */
@@ -936,10 +952,10 @@
             pointer-events: none;
         }
         
-        .sidebar.collapsed .new-chat-button::after {
+       .sidebar.collapsed .new-chat-button::after {
             content: attr(data-tooltip);
             position: absolute;
-            left: 60px;
+            left: 50px;
             top: 50%;
             transform: translateY(-50%);
             background-color: #333;
@@ -956,6 +972,7 @@
         
         .sidebar.collapsed .new-chat-button:hover::after {
             opacity: 1;
+            transition-delay: 0.1s;
         }
         
         /* Responsive */
@@ -1372,13 +1389,20 @@
                 
                 const title = document.createElement('div');
                 title.className = 'conversation-section-title';
-                title.innerHTML = `
-                    <span>${dateLabel}</span>
-                    <button class="show-conversations-btn tooltip" data-tooltip="Mostrar conversaciones" onclick="toggleConversations(this)">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1178/1178067.png" alt="Conversations" style="width: 21.6px; height: 21.6px; filter: opacity(0.7);">
-                    </button>
-                `;
+                title.innerHTML = `<span>${dateLabel}</span>`;
+                    
                 section.appendChild(title);
+
+                if (Object.keys(grouped)[0] === dateLabel) {
+                    const conversationsBtn = document.createElement('button');
+                    conversationsBtn.className = 'show-conversations-btn tooltip';
+                    conversationsBtn.setAttribute('data-tooltip', 'Mostrar conversaciones');
+                    conversationsBtn.onclick = () => toggleConversations(conversationsBtn);
+                    conversationsBtn.innerHTML = '<img src="https://cdn-icons-png.flaticon.com/512/1178/1178067.png" alt="Conversations" style="width: 21.6px; height: 21.6px; filter: opacity(0.7);">';
+                    conversationsBtn.style.marginLeft = '8px';
+                    conversationsBtn.style.marginBottom = '10px';
+                    section.appendChild(conversationsBtn);
+                }
         
                 const conversationsDiv = document.createElement('div');
                 conversationsDiv.className = 'conversations-list';
