@@ -580,7 +580,6 @@
             display: none;
         }
         
-        
         .sidebar.collapsed .new-chat-button {
             justify-content: center;
             align-items: center;
@@ -592,6 +591,11 @@
             border-radius: 8px;
             position: relative;
             display: flex;
+        }
+
+        .sidebar.collapsed .toggle-sidebar-btn,
+        .sidebar.collapsed .show-chats-btn {
+            margin: 0 auto;
         }
 
         .sidebar.collapsed .new-chat-button span:last-child {
@@ -627,7 +631,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 10px auto;
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
         }
         
         .show-chats-btn:hover {
@@ -683,8 +690,11 @@
                         
         .sidebar:not(.collapsed) .show-chats-btn {
             display: none;
+            position: static;
+            transform: none;
+            margin: 0 auto 10px auto;
         }
-        
+                
         /* Tooltip */
         .tooltip {
             position: relative;
