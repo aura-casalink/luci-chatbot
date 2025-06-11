@@ -1391,8 +1391,8 @@
         
             currentConversation.forEach(msg => {
                 if (msg.properties && Array.isArray(msg.properties)) {
-                    // Si el mensaje tiene propiedades, mostrarlas
-                    addPropertiesMessage(msg.properties);
+                    // Si el mensaje tiene propiedades, mostrarlas SIN GUARDAR (del historial)
+                    addPropertiesMessageFromHistory(msg.properties);
                 } else {
                     addMessage(msg.text, msg.sender, false);
                 }
@@ -1830,7 +1830,46 @@
             saveConversationToSupabase();
         }
         
-       function openPropertyModal(property, index) {
+       // Mostrar propiedades del historial sin duplicar
+        function addPropertiesMessageFromHistory(properties) {
+            const messagesContainer = document.getElementById('chatMessages');
+            
+            // Marcar todos los mensajes existentes como antiguos
+            const existingMessages = messagesContainer.querySelectorAll('.message:not(.loading-message)');
+            existingMessages.forEach(msg => {
+                if (!msg.classList.contains('old')) {
+                    msg.classList.add('old');
+                }
+            });
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message assistant';
+            
+            const propertiesContainer = document.createElement('div');
+            propertiesContainer.className = 'properties-container';
+            
+            properties.forEach((property, index) => {
+                const uniqueIndex = Date.now() + index; // Índice único para evitar conflictos
+                const thumbnail = document.createElement('div');
+                thumbnail.className = 'property-thumbnail';
+                thumbnail.onclick = () => openPropertyModal(property, uniqueIndex);
+                
+                const img = document.createElement('img');
+                img.src = property.thumbnail;
+                img.alt = property.title;
+                
+                thumbnail.appendChild(img);
+                propertiesContainer.appendChild(thumbnail);
+            });
+            
+            messageDiv.appendChild(propertiesContainer);
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // NO guardar en conversación porque ya está guardado
+        }
+        
+        function openPropertyModal(property, index) {
             const modal = document.createElement('div');
             modal.className = 'property-modal';
             modal.id = 'propertyModal';
