@@ -536,6 +536,12 @@
             gap: 10px;
             margin-bottom: 20px;
             padding: 10px 0;
+            justify-content: flex-start;
+        }
+
+        .sidebar.collapsed .sidebar-header {
+            justify-content: center;
+            gap: 0;
         }
         
         .toggle-sidebar-btn {
@@ -547,6 +553,8 @@
             border-radius: 8px;
             transition: background-color 0.2s;
             color: #666;
+            z-index: 10;
+            position: relative;
         }
         
         .toggle-sidebar-btn:hover {
@@ -631,10 +639,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            position: absolute;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
+            margin: 0 auto 10px auto;
+            z-index: 10;
+            position: relative;
         }
         
         .show-chats-btn:hover {
@@ -644,6 +651,7 @@
         .sidebar.collapsed .show-chats-btn {
             background-color: rgba(255, 255, 255, 0.3);
             border-radius: 8px;
+            margin: 0 auto 10px auto;
         }
         
         .sidebar.collapsed .show-chats-btn:hover {
@@ -653,6 +661,7 @@
         .sidebar.collapsed .toggle-sidebar-btn {
             background-color: rgba(255, 255, 255, 0.3);
             border-radius: 8px;
+            margin: 0 auto;
         }
         
         .sidebar.collapsed .toggle-sidebar-btn:hover {
@@ -690,9 +699,6 @@
                         
         .sidebar:not(.collapsed) .show-chats-btn {
             display: none;
-            position: static;
-            transform: none;
-            margin: 0 auto 10px auto;
         }
                 
         /* Tooltip */
