@@ -1362,12 +1362,18 @@
                     addMessage(msg.text, msg.sender, false);
                 }
             });
+            
             // Marcar conversación como activa
-                document.querySelectorAll('.conversation-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-                event.target.classList.add('active');
+            document.querySelectorAll('.conversation-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Encontrar el elemento clickeado y marcarlo como activo
+            const clickedItem = event.target.closest('.conversation-item');
+            if (clickedItem) {
+                clickedItem.classList.add('active');
             }
+        }
 
         // Función para mostrar la pantalla de chat
         function showChatScreen() {
@@ -1768,10 +1774,7 @@
                 const img = document.createElement('img');
                 img.src = property.thumbnail;
                 img.alt = property.title;
-                img.onclick = (e) => {
-                    e.stopPropagation();
-                    openImageZoom(property.thumbnail);
-                };
+                // CORREGIDO: Eliminar el onclick de aquí porque interfiere con el modal
                 
                 thumbnail.appendChild(img);
                 propertiesContainer.appendChild(thumbnail);
@@ -1792,7 +1795,7 @@
             saveConversationToSupabase();
         }
         
-        function openPropertyModal(property, index) {
+       function openPropertyModal(property, index) {
             const modal = document.createElement('div');
             modal.className = 'property-modal';
             modal.id = 'propertyModal';
@@ -1806,7 +1809,7 @@
                     <div class="property-images">
                         <div class="property-carousel" id="carousel-${index}">
                             ${property.images.map((img, imgIndex) => 
-                                `<img src="${img}" alt="${property.title}" ${imgIndex === 0 ? 'class="active"' : ''}>`
+                                `<img src="${img}" alt="${property.title}" ${imgIndex === 0 ? 'class="active"' : ''} onclick="openImageZoom('${img}')" style="cursor: zoom-in;">`
                             ).join('')}
                             ${property.images.length > 1 ? `
                                 <button class="carousel-nav carousel-prev" onclick="changeImage(${index}, -1)">‹</button>
@@ -1836,7 +1839,7 @@
             // Store current image index
             window.currentImageIndex = window.currentImageIndex || {};
             window.currentImageIndex[index] = 0;
-
+        
             modal.addEventListener('click', function(e) {
                 if (e.target === modal) {
                     closePropertyModal();
