@@ -72,6 +72,9 @@
             margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .conversation-item {
@@ -587,10 +590,13 @@
             width: 40px;
             height: 40px;
             margin: 10px auto;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
         }
         
         .sidebar.collapsed .new-chat-button:hover {
             transform: scale(1.1);
+            background-color: rgba(255, 255, 255, 0.4);
         }
         
         /* Botón para mostrar conversaciones */
@@ -615,6 +621,50 @@
             background-color: rgba(255, 255, 255, 0.3);
         }
         
+        .sidebar.collapsed .show-chats-btn {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+        }
+        
+        .sidebar.collapsed .show-chats-btn:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .sidebar.collapsed .toggle-sidebar-btn {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+        }
+        
+        .sidebar.collapsed .toggle-sidebar-btn:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .show-conversations-btn {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .show-conversations-btn:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .conversations-list {
+            transition: all 0.3s ease;
+        }
+        
+        .show-conversations-btn {
+            transition: transform 0.3s ease;
+        }
+                        
         .sidebar:not(.collapsed) .show-chats-btn {
             display: none;
         }
@@ -812,6 +862,10 @@
             justify-content: center;
         }
         
+        .sidebar:not(.collapsed) .new-chat-button {
+            padding-left: 18px;
+        }
+        
         /* Hover mejorado para nuevo chat expandido */
         .sidebar:not(.collapsed) .new-chat-button:hover {
             background-color: rgba(0, 123, 255, 0.1);
@@ -882,6 +936,28 @@
             pointer-events: none;
         }
         
+        .sidebar.collapsed .new-chat-button::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+        
+        .sidebar.collapsed .new-chat-button:hover::after {
+            opacity: 1;
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -914,20 +990,20 @@
         <div class="sidebar collapsed" id="sidebar">
             <div class="sidebar-header">
                 <button class="toggle-sidebar-btn tooltip" id="toggleSidebar" data-tooltip="Expandir barra principal">
-                    <img src="https://cdn-icons-png.flaticon.com/512/10023/10023169.png" alt="Expand" style="width: 18px; height: 18px; filter: opacity(0.7);">
+                    <img src="https://cdn-icons-png.flaticon.com/512/10023/10023169.png" alt="Expand" style="width: 21.6px; height: 21.6px; filter: opacity(0.7);">
                 </button>
                 <span class="brand-name">AURA</span>
             </div>
             
             <button class="new-chat-button tooltip" onclick="newChat()" data-tooltip="Nuevo Chat">
                 <span>
-                    <img src="https://cdn-icons-png.flaticon.com/512/8922/8922789.png" alt="Plus" style="width: 18px; height: 18px; filter: opacity(0.7);">
+                    <img src="https://cdn-icons-png.flaticon.com/512/8922/8922789.png" alt="Plus" style="width: 21.6px; height: 21.6px; filter: opacity(0.7);">
                 </span>
                 <span>Nuevo Chat</span>
             </button>
             
             <button class="show-chats-btn tooltip" id="showChatsBtn" data-tooltip="Mostrar conversaciones">
-                <img src="https://cdn-icons-png.flaticon.com/512/1178/1178067.png" alt="Conversations" style="width: 18px; height: 18px; filter: opacity(0.7);">
+                <img src="https://cdn-icons-png.flaticon.com/512/1178/1178067.png" alt="Conversations" style="width: 21.6px; height: 21.6px; filter: opacity(0.7);">
             </button>
             
             <div id="conversationsContainer">
@@ -1281,41 +1357,51 @@
         function displayConversations(conversations) {
             const container = document.getElementById('conversationsContainer');
             container.innerHTML = '';
-
+        
             if (!conversations || conversations.length === 0) {
                 container.innerHTML = '<div class="no-conversations">No hay conversaciones previas</div>';
                 return;
             }
-
+        
             // Agrupar conversaciones por fecha
             const grouped = groupConversationsByDate(conversations);
-
+        
             for (const [dateLabel, convs] of Object.entries(grouped)) {
                 const section = document.createElement('div');
                 section.className = 'conversation-section';
                 
                 const title = document.createElement('div');
                 title.className = 'conversation-section-title';
-                title.textContent = dateLabel;
+                title.innerHTML = `
+                    <span>${dateLabel}</span>
+                    <button class="show-conversations-btn tooltip" data-tooltip="Mostrar conversaciones" onclick="toggleConversations(this)">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1178/1178067.png" alt="Conversations" style="width: 21.6px; height: 21.6px; filter: opacity(0.7);">
+                    </button>
+                `;
                 section.appendChild(title);
-
+        
+                const conversationsDiv = document.createElement('div');
+                conversationsDiv.className = 'conversations-list';
+        
                 convs.forEach(conv => {
                     const item = document.createElement('div');
                     item.className = 'conversation-item';
                     item.textContent = getConversationTitle(conv);
                     item.onclick = () => loadConversation(conv);
+                    
                     const deleteBtn = document.createElement('button');
                     deleteBtn.className = 'delete-conversation';
                     deleteBtn.innerHTML = '×';
                     deleteBtn.onclick = (e) => {
                         e.stopPropagation();
                         hideConversation(conv.session_id);
-                };
-                
-                item.appendChild(deleteBtn);
-                section.appendChild(item);
-            });
-
+                    };
+                    
+                    item.appendChild(deleteBtn);
+                    conversationsDiv.appendChild(item);
+                });
+        
+                section.appendChild(conversationsDiv);
                 container.appendChild(section);
             }
         }
@@ -2071,6 +2157,19 @@
         };
 
 
+        function toggleConversations(button) {
+            const section = button.closest('.conversation-section');
+            const conversationsList = section.querySelector('.conversations-list');
+            
+            if (conversationsList.style.display === 'none') {
+                conversationsList.style.display = 'block';
+                button.style.transform = 'rotate(0deg)';
+            } else {
+                conversationsList.style.display = 'none';
+                button.style.transform = 'rotate(180deg)';
+            }
+        }
+        
         // Funciones para sidebar
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
