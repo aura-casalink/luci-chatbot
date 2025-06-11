@@ -848,6 +848,39 @@
             cursor: pointer;
             z-index: 2001;
         }
+
+        .toggle-sidebar-btn img,
+        .new-chat-button img,
+        .show-chats-btn img {
+            transition: all 0.3s ease;
+            filter: opacity(0.7);
+        }
+        
+        .toggle-sidebar-btn:hover img,
+        .new-chat-button:hover img,
+        .show-chats-btn:hover img {
+            filter: opacity(1);
+            transform: scale(1.1);
+        }
+        
+        /* Ajuste específico para el botón collapsed */
+        .sidebar.collapsed .new-chat-button img {
+            margin: 0;
+        }
+        
+        /* Mejorar el comportamiento del tooltip cuando hay imágenes */
+        .toggle-sidebar-btn,
+        .show-chats-btn,
+        .new-chat-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Asegurar que las imágenes no interfieran con el tooltip */
+        .tooltip img {
+            pointer-events: none;
+        }
         
         /* Responsive */
         @media (max-width: 768px) {
@@ -881,18 +914,20 @@
         <div class="sidebar collapsed" id="sidebar">
             <div class="sidebar-header">
                 <button class="toggle-sidebar-btn tooltip" id="toggleSidebar" data-tooltip="Expandir barra principal">
-                    ☰
+                    <img src="https://cdn-icons-png.flaticon.com/512/9210/9210387.png" alt="Expand" style="width: 18px; height: 18px; filter: opacity(0.7);">
                 </button>
                 <span class="brand-name">AURA</span>
             </div>
             
             <button class="new-chat-button tooltip" onclick="newChat()" data-tooltip="Nuevo Chat">
-                <span>💬</span>
+                <span>
+                    <img src="https://cdn-icons-png.flaticon.com/512/8922/8922789.png" alt="Plus" style="width: 18px; height: 18px; filter: opacity(0.7);">
+                </span>
                 <span>Nuevo Chat</span>
             </button>
             
             <button class="show-chats-btn tooltip" id="showChatsBtn" data-tooltip="Mostrar conversaciones">
-                📋
+                <img src="https://cdn-icons-png.flaticon.com/128/10302/10302551.png" alt="Conversations" style="width: 18px; height: 18px; filter: opacity(0.7);">
             </button>
             
             <div id="conversationsContainer">
