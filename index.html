@@ -1267,41 +1267,63 @@
         });
 
         function startRealtimeSubscription(sessionId) {
+            // Limpiar suscripción anterior más agresivamente
             if (realtimeChannel) {
-                supabase.removeChannel(realtimeChannel);
+                try {
+                    supabase.removeChannel(realtimeChannel);
+                    realtimeChannel.unsubscribe();
+                } catch (error) {
+                    console.log('Error limpiando canal anterior:', error);
+                }
                 realtimeChannel = null;
             }
+            
             currentSessionId = sessionId;
+            console.log('Iniciando nueva suscripción para session:', sessionId);
+            
             realtimeChannel = supabase
-                .channel('public:callbacks')
+                .channel(`session-${sessionId}`) // Canal único por sesión
                 .on(
                 'postgres_changes',
                 {
                     event: 'INSERT',
                     schema: 'public',
                     table: 'callbacks',
+                    filter: `session_id=eq.${sessionId}` // Filtro a nivel de Supabase
                 },
                 (payload) => {
+                    console.log('Callback recibido:', payload);
                     const row = payload.new;
                     if (row.session_id !== sessionId || !row.pending) {
+                        console.log('Callback ignorado - session_id o pending no coincide');
                         return;
                     }
                     const messageObj = row.payload;
                     const id = row.id;
                     handleCallback({ type: 'callback', ...messageObj });
                     markProcessed(id);
-                    supabase.removeChannel(realtimeChannel);
-                    realtimeChannel = null;
+                    
+                    // Limpiar suscripción después de procesar
+                    if (realtimeChannel) {
+                        supabase.removeChannel(realtimeChannel);
+                        realtimeChannel = null;
+                        console.log('Suscripción cerrada después de procesar callback');
+                    }
                 }
                 )
                 .subscribe((status) => {
-                if (status === 'CHANNEL_ERROR') {
+                console.log('Estado de suscripción:', status);
+                if (status === 'SUBSCRIBED') {
+                    console.log('Suscripción activa para session:', sessionId);
+                } else if (status === 'CHANNEL_ERROR') {
                     console.error('Error en canal Realtime');
+                    realtimeChannel = null;
                 } else if (status === 'TIMED_OUT') {
                     console.error('Timeout en suscripción Realtime');
+                    realtimeChannel = null;
                 }
                 });
-            }
+        }
             
         async function markProcessed(id) {
             try {
@@ -1316,12 +1338,17 @@
             
         // Función para manejar callbacks desde n8n
         function handleCallback(data) {
+            console.log('handleCallback ejecutado con:', data);
+            console.log('currentSessionId:', currentSessionId);
+            console.log('pendingCallback:', pendingCallback);
             // Verificar que el callback es para la sesión actual
             if (!data.session_id || data.session_id !== currentSessionId) {
+                console.log('Session ID mismatch:', data.session_id, 'vs', currentSessionId);
                 return { success: false, message: 'Session ID mismatch or missing' };
             }
             
             if (!currentSessionId || !pendingCallback) {
+                console.log('No active session or callback not expected');
                 return { success: false, message: 'No active session or callback not expected' };
             }
             
@@ -1343,7 +1370,7 @@
             // Resetear estado de callback pendiente
             pendingCallback = false;
             hideSearchLoading(); 
-            
+            console.log('Callback procesado exitosamente');
             return { success: true, message: 'Callback procesado correctamente' };
         }
 
@@ -1643,9 +1670,20 @@
 
         // Función para cargar una conversación específica
         function loadConversation(conversation) {
+            // Limpiar suscripción anterior al cargar conversación histórica
+            if (realtimeChannel) {
+                try {
+                    supabase.removeChannel(realtimeChannel);
+                    realtimeChannel.unsubscribe();
+                } catch (error) {
+                    console.log('Error limpiando canal en loadConversation:', error);
+                }
+                realtimeChannel = null;
+            }
             currentSessionId = conversation.session_id;
             currentConversation = conversation.conversations || [];
             currentTopic = conversation.topic || null;
+            pendingCallback = false;
         
             // Cambiar a vista de chat
             showChatScreen();
@@ -1859,6 +1897,18 @@
                 clearTimeout(callbackTimeout);
                 callbackTimeout = null;
             }
+            
+            // Limpiar suscripción si no hay callback pendiente
+            if (!pendingCallback && realtimeChannel) {
+                try {
+                    supabase.removeChannel(realtimeChannel);
+                    realtimeChannel.unsubscribe();
+                } catch (error) {
+                    console.log('Error limpiando canal en hideSearchLoading:', error);
+                }
+                realtimeChannel = null;
+                console.log('Suscripción limpiada en hideSearchLoading');
+            }
         }
 
         function formatConversationAsText() {
@@ -1989,6 +2039,16 @@
         }
 
         function newChat() {
+             // Limpiar suscripción activa
+            if (realtimeChannel) {
+                try {
+                    supabase.removeChannel(realtimeChannel);
+                    realtimeChannel.unsubscribe();
+                } catch (error) {
+                    console.log('Error limpiando canal en newChat:', error);
+                }
+                realtimeChannel = null;
+            }
             currentSessionId = null;
             currentConversation = [];
             currentTopic = null;
