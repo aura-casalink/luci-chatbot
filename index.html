@@ -411,31 +411,25 @@
         }
 
         /* =================== ANIMACIONES =================== */
-        .sidebar:not(.collapsed) .new-chat-button span:last-child,
-        .sidebar:not(.collapsed) .brand-name,
         .sidebar:not(.collapsed) .conversation-section-title,
         .sidebar:not(.collapsed) .conversation-item {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .sidebar:not(.collapsed) .new-chat-button span:last-child,
+       .sidebar:not(.collapsed) .brand-name {
             animation: fadeInText 0.4s ease-in-out;
             animation-fill-mode: both;
         }
-        
-        .sidebar:not(.collapsed) .conversation-section-title {
-            animation-delay: 0.15s;
-        }
 
-       .sidebar:not(.collapsed) .conversation-item {
-            animation-delay: 0.2s;
-        }
-       
-       .sidebar:not(.collapsed) .new-chat-button span:last-child {
+        .sidebar:not(.collapsed) .new-chat-button span:last-child {
             animation-delay: 0.1s;
-        }
+        }      
 
         .sidebar:not(.collapsed) .brand-name {
             animation-delay: 0.05s;
         }
-
-        
+       
 
         @keyframes fadeInText {
             0% {
@@ -1459,9 +1453,17 @@
             }
         }
 
-        // Función para mostrar conversaciones en el sidebar
+       // Función para mostrar conversaciones en el sidebar
         function displayConversations(conversations, shouldAnimate = false) {
             const container = document.getElementById('conversationsContainer');
+            const sidebar = document.getElementById('sidebar');
+            
+            // Si está colapsado, limpiar y salir
+            if (sidebar.classList.contains('collapsed')) {
+                container.innerHTML = '';
+                return;
+            }
+            
             container.innerHTML = '';
         
             if (!conversations || conversations.length === 0) {
@@ -1485,6 +1487,9 @@
                     const item = document.createElement('div');
                     item.className = 'conversation-item';
                     if (shouldAnimate) {
+                        // Inicialmente oculto para animación
+                        item.style.opacity = '0';
+                        item.style.transform = 'translateX(-10px)';
                         item.style.animationDelay = '0.2s';
                     } else {
                         item.style.animation = 'none';
@@ -1505,6 +1510,19 @@
                 });
         
                 container.appendChild(section);
+            }
+            
+            // Si debe animar, activar animaciones después de que se agreguen al DOM
+            if (shouldAnimate) {
+                setTimeout(() => {
+                    const items = container.querySelectorAll('.conversation-item, .conversation-section-title');
+                    items.forEach((item, index) => {
+                        item.style.transition = 'all 0.4s ease-in-out';
+                        item.style.animationDelay = `${index * 0.05}s`;
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateX(0)';
+                    });
+                }, 50);
             }
         }
 
@@ -2345,20 +2363,15 @@
             
             if (sidebar.classList.contains('collapsed')) {
                 toggleBtn.setAttribute('data-tooltip', 'Expandir barra principal');
+                // Limpiar inmediatamente cuando se colapsa
+                document.getElementById('conversationsContainer').innerHTML = '';
             } else {
                 toggleBtn.setAttribute('data-tooltip', 'Recoger barra principal');
-            }
-            
-            // Recargar conversaciones para mostrar/ocultar el botón correctamente
-            setTimeout(async () => {
-                if (!sidebar.classList.contains('collapsed')) {
-                    // Solo animar cuando se expande
+                // Recargar con animación cuando se expande
+                setTimeout(async () => {
                     await reloadConversationsWithAnimation();
-                } else {
-                    // Sin animación cuando se colapsa
-                    await loadPreviousConversations();
-                }
-            }, 300);
+                }, 350); // Esperar a que termine la transición del sidebar
+            }
         }
         
         function expandSidebar() {
@@ -2369,7 +2382,7 @@
             toggleBtn.setAttribute('data-tooltip', 'Recoger barra principal');
             setTimeout(async () => {
                 await reloadConversationsWithAnimation();
-            }, 100);
+            }, 350); // Esperar a que termine la transición del sidebar
         }
         
         // Función para ocultar conversaciones
