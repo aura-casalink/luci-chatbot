@@ -2359,6 +2359,7 @@
                     await loadPreviousConversations();
                 }
             }, 300);
+        }
         
         function expandSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -2369,6 +2370,7 @@
             setTimeout(async () => {
                 await reloadConversationsWithAnimation();
             }, 100);
+        }
         
         // Función para ocultar conversaciones
         async function hideConversation(sessionId) {
