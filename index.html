@@ -414,11 +414,6 @@
         .sidebar:not(.collapsed) .new-chat-button span:last-child,
         .sidebar:not(.collapsed) .brand-name,
         .sidebar:not(.collapsed) .conversation-section-title,
-        .sidebar:not(.collapsed) .conversation-item {
-            animation: fadeInText 0.4s ease-in-out;
-            animation-fill-mode: both;
-        }
-
         .sidebar:not(.collapsed) .new-chat-button span:last-child {
             animation-delay: 0.1s;
         }
@@ -427,13 +422,7 @@
             animation-delay: 0.05s;
         }
 
-        .sidebar:not(.collapsed) .conversation-section-title {
-            animation-delay: 0.15s;
-        }
-
-        .sidebar:not(.collapsed) .conversation-item {
-            animation-delay: 0.2s;
-        }
+        
 
         @keyframes fadeInText {
             0% {
@@ -1052,6 +1041,15 @@
             justify-content: center;
         }
 
+       /* Transición suave para el texto de búsqueda */
+        #searchMessageText {
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        .fade-out-text {
+            opacity: 0;
+        }
+
         /* =================== RESPONSIVE =================== */
         @media (max-width: 768px) {
             .sidebar {
@@ -1442,14 +1440,14 @@
                     conversationsToShow = await tryRecoverConversationsByIP();
                 }
                 
-                displayConversations(conversationsToShow);
+                displayConversations(conversationsToShow, false);
             } catch (error) {
                 console.error('Error al cargar conversaciones:', error);
             }
         }
 
         // Función para mostrar conversaciones en el sidebar
-        function displayConversations(conversations) {
+        function displayConversations(conversations, shouldAnimate = false) {
             const container = document.getElementById('conversationsContainer');
             container.innerHTML = '';
         
@@ -1473,6 +1471,11 @@
                 convs.forEach(conv => {
                     const item = document.createElement('div');
                     item.className = 'conversation-item';
+                    if (shouldAnimate) {
+                        item.style.animationDelay = '0.2s';
+                    } else {
+                        item.style.animation = 'none';
+                    }
                     item.textContent = getConversationTitle(conv);
                     item.onclick = () => loadConversation(conv);
                     
@@ -1728,10 +1731,17 @@
             // Iniciar rotación de mensajes cada 4 segundos
             currentSearchMessageIndex = 0;
             searchMessageInterval = setInterval(() => {
-                currentSearchMessageIndex = (currentSearchMessageIndex + 1) % searchMessages.length;
                 const messageText = document.getElementById('searchMessageText');
                 if (messageText) {
-                    messageText.textContent = searchMessages[currentSearchMessageIndex];
+                    // Hacer fade out
+                    messageText.classList.add('fade-out-text');
+                    
+                    // Después de 500ms (duración del fade out), cambiar texto y hacer fade in
+                    setTimeout(() => {
+                        currentSearchMessageIndex = (currentSearchMessageIndex + 1) % searchMessages.length;
+                        messageText.textContent = searchMessages[currentSearchMessageIndex];
+                        messageText.classList.remove('fade-out-text');
+                    }, 500);
                 }
             }, 4000);
             
@@ -2297,7 +2307,13 @@
             }
             
             // Recargar conversaciones para mostrar/ocultar el botón correctamente
-            loadPreviousConversations();
+            setTimeout(() => {
+                loadPreviousConversations();
+                // Solo animar si se está expandiendo
+                if (!sidebar.classList.contains('collapsed')) {
+                    displayConversations([], true); // Forzar re-render con animación
+                }
+            }, 300);
         }
         
         function expandSidebar() {
@@ -2306,7 +2322,10 @@
             
             sidebar.classList.remove('collapsed');
             toggleBtn.setAttribute('data-tooltip', 'Recoger barra principal');
-            loadPreviousConversations();
+            setTimeout(() => {
+                loadPreviousConversations();
+                displayConversations([], true); // Forzar animación
+            }, 100);
         }
         
         // Función para ocultar conversaciones
