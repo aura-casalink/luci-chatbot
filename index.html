@@ -1314,8 +1314,37 @@
             }
             }
             
+        // Función para manejar callbacks desde n8n
         function handleCallback(data) {
-            addMessage(data.message || 'Sin mensaje', 'assistant');
+            // Verificar que el callback es para la sesión actual
+            if (!data.session_id || data.session_id !== currentSessionId) {
+                return { success: false, message: 'Session ID mismatch or missing' };
+            }
+            
+            if (!currentSessionId || !pendingCallback) {
+                return { success: false, message: 'No active session or callback not expected' };
+            }
+            
+            // Actualizar topic si viene en la respuesta
+            if (data.topic && data.topic !== currentTopic) {
+                currentTopic = data.topic;
+            }
+            
+            // Si hay propiedades Y no está vacío el array, mostrar las tarjetas
+            if (data.properties && Array.isArray(data.properties) && data.properties.length > 0) {
+                addPropertiesMessage(data.properties);
+            }
+        
+            // Siempre añadir el mensaje si existe
+            if (data.message) {
+                addMessage(data.message, 'assistant');
+            }
+            
+            // Resetear estado de callback pendiente
+            pendingCallback = false;
+            hideSearchLoading(); 
+            
+            return { success: true, message: 'Callback procesado correctamente' };
         }
 
         // Función para generar device_id único
@@ -1925,39 +1954,6 @@
             messageDiv.textContent = text;
             messagesContainer.appendChild(messageDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        // Función para manejar callbacks desde n8n
-        function handleCallback(data) {
-            // Verificar que el callback es para la sesión actual
-            if (!data.session_id || data.session_id !== currentSessionId) {
-                return { success: false, message: 'Session ID mismatch or missing' };
-            }
-            
-            if (!currentSessionId || !pendingCallback) {
-                return { success: false, message: 'No active session or callback not expected' };
-            }
-            
-            // Actualizar topic si viene en la respuesta
-            if (data.topic && data.topic !== currentTopic) {
-                currentTopic = data.topic;
-            }
-            
-            // Si hay propiedades, mostrar las tarjetas
-            if (data.properties && Array.isArray(data.properties) && data.properties.length > 0) {
-                addPropertiesMessage(data.properties);
-            }
-
-            // Siempre añadir el mensaje si existe
-            if (data.message) {
-                addMessage(data.message, 'assistant');
-            }
-            
-            // Resetear estado de callback pendiente
-            pendingCallback = false;
-            hideSearchLoading(); 
-            
-            return { success: true, message: 'Callback procesado correctamente' };
         }
         
         // Exponer función globalmente para el endpoint
