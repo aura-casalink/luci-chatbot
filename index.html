@@ -414,7 +414,20 @@
         .sidebar:not(.collapsed) .new-chat-button span:last-child,
         .sidebar:not(.collapsed) .brand-name,
         .sidebar:not(.collapsed) .conversation-section-title,
-        .sidebar:not(.collapsed) .new-chat-button span:last-child {
+        .sidebar:not(.collapsed) .conversation-item {
+            animation: fadeInText 0.4s ease-in-out;
+            animation-fill-mode: both;
+        }
+        
+        .sidebar:not(.collapsed) .conversation-section-title {
+            animation-delay: 0.15s;
+        }
+
+       .sidebar:not(.collapsed) .conversation-item {
+            animation-delay: 0.2s;
+        }
+       
+       .sidebar:not(.collapsed) .new-chat-button span:last-child {
             animation-delay: 0.1s;
         }
 
@@ -1495,6 +1508,36 @@
             }
         }
 
+        // Función auxiliar para recargar conversaciones con animación
+        async function reloadConversationsWithAnimation() {
+            if (!supabase) return;
+            
+            try {
+                // Obtener conversaciones igual que en loadPreviousConversations
+                const { data, error } = await supabase
+                    .from('chat_sessions')
+                    .select('*')
+                    .eq('device_id', deviceId)
+                    .neq('hide', true)
+                    .order('updated_at', { ascending: false });
+        
+                if (error) {
+                    console.error('Error al cargar conversaciones:', error);
+                    return;
+                }
+                
+                let conversationsToShow = data;
+                if (!data || data.length === 0) {
+                    conversationsToShow = await tryRecoverConversationsByIP();
+                }
+                
+                // Mostrar con animación
+                displayConversations(conversationsToShow, true);
+            } catch (error) {
+                console.error('Error al cargar conversaciones:', error);
+            }
+        }
+        
         // Función para agrupar conversaciones por fecha
         function groupConversationsByDate(conversations) {
             const now = new Date();
@@ -2307,14 +2350,15 @@
             }
             
             // Recargar conversaciones para mostrar/ocultar el botón correctamente
-            setTimeout(() => {
-                loadPreviousConversations();
-                // Solo animar si se está expandiendo
+            setTimeout(async () => {
                 if (!sidebar.classList.contains('collapsed')) {
-                    displayConversations([], true); // Forzar re-render con animación
+                    // Solo animar cuando se expande
+                    await reloadConversationsWithAnimation();
+                } else {
+                    // Sin animación cuando se colapsa
+                    await loadPreviousConversations();
                 }
             }, 300);
-        }
         
         function expandSidebar() {
             const sidebar = document.getElementById('sidebar');
@@ -2322,11 +2366,9 @@
             
             sidebar.classList.remove('collapsed');
             toggleBtn.setAttribute('data-tooltip', 'Recoger barra principal');
-            setTimeout(() => {
-                loadPreviousConversations();
-                displayConversations([], true); // Forzar animación
+            setTimeout(async () => {
+                await reloadConversationsWithAnimation();
             }, 100);
-        }
         
         // Función para ocultar conversaciones
         async function hideConversation(sessionId) {
