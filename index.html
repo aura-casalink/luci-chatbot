@@ -883,9 +883,10 @@
         }
         
         .image-zoom-modal img {
-            max-width: 90%;
-            max-height: 90%;
+            max-width: 95vw;
+            max-height: 95vh;
             object-fit: contain;
+            cursor: zoom-out;
         }
         
         .zoom-close {
@@ -927,10 +928,6 @@
             align-self: flex-start;
             border-bottom-left-radius: 4px;
             font-family: 'Graphik', sans-serif;
-        }
-
-        .search-loading-messages {
-            animation: fadeInOut 4s infinite;
         }
         
         @keyframes fadeInOut {
@@ -1173,6 +1170,7 @@
         let callbackTimeout = null;
         let searchMessageInterval = null;
         let currentSearchMessageIndex = 0;
+        let shownTimeoutPopups = new Set();
         
         const searchMessages = [
             "Buscando Propiedades",
@@ -1652,6 +1650,8 @@
                 // Enviar webhook
                 sendWebhook(optionText);
             }, 300);
+
+            shownTimeoutPopups.clear();
         }
 
         function addMessage(text, sender, save = true) {
@@ -1704,15 +1704,28 @@
         }
 
         function showSearchLoading() {
+            // Limpiar intervalos previos
+            if (searchMessageInterval) {
+                clearInterval(searchMessageInterval);
+                searchMessageInterval = null;
+            }
+            
             const messagesContainer = document.getElementById('chatMessages');
+            
+            // Eliminar mensaje de búsqueda previo si existe
+            const existingSearchMessage = document.getElementById('searchLoadingMessage');
+            if (existingSearchMessage) {
+                existingSearchMessage.remove();
+            }
+            
             const loadingDiv = document.createElement('div');
-            loadingDiv.className = 'loading-message search-loading-messages';
+            loadingDiv.className = 'loading-message'; // QUITAR 'search-loading-messages'
             loadingDiv.id = 'searchLoadingMessage';
             loadingDiv.innerHTML = '<div class="loader"></div><span id="searchMessageText" style="color: #666;">Buscando Propiedades</span>';
             messagesContainer.appendChild(loadingDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
             
-            // Iniciar rotación de mensajes
+            // Iniciar rotación de mensajes cada 4 segundos
             currentSearchMessageIndex = 0;
             searchMessageInterval = setInterval(() => {
                 currentSearchMessageIndex = (currentSearchMessageIndex + 1) % searchMessages.length;
@@ -1723,9 +1736,12 @@
             }, 4000);
             
             // Iniciar timeout de 4 minutos
+            if (callbackTimeout) {
+                clearTimeout(callbackTimeout);
+            }
             callbackTimeout = setTimeout(() => {
                 showTimeoutPopup();
-            }, 240000); // 4 minutos
+            }, 240000);
         }
         
         function hideSearchLoading() {
@@ -1857,11 +1873,11 @@
             }
             
             // Si hay propiedades, mostrar las tarjetas
-            if (data.properties && Array.isArray(data.properties)) {
+            if (data.properties && Array.isArray(data.properties) && data.properties.length > 0) {
                 addPropertiesMessage(data.properties);
             }
-            
-            // Añadir mensaje del asistente después de las propiedades
+
+            // Siempre añadir el mensaje si existe
             if (data.message) {
                 addMessage(data.message, 'assistant');
             }
@@ -1926,6 +1942,8 @@
             // Remover clase activa de conversaciones
             document.querySelectorAll('.conversation-item').forEach(item => {
                 item.classList.remove('active');
+            
+            shownTimeoutPopups.clear();
             });
         }
 
@@ -2315,13 +2333,29 @@
         
         // Función para mostrar popup de timeout
         function showTimeoutPopup() {
+            // Verificar si ya se mostró popup para esta sesión
+            if (shownTimeoutPopups.has(currentSessionId)) {
+                return;
+            }
+            
+            // Verificar si ya existe un popup visible
+            if (document.getElementById('timeoutPopup')) {
+                return;
+            }
+            
+            // Marcar esta sesión como que ya mostró popup
+            shownTimeoutPopups.add(currentSessionId);
+            
+            // Obtener el título de la conversación para personalizar el mensaje
+            const searchContext = currentConversationTitle || currentTopic || 'tu búsqueda';
+            
             const popup = document.createElement('div');
             popup.className = 'popup-overlay';
             popup.id = 'timeoutPopup';
             
             popup.innerHTML = `
                 <div class="popup-content">
-                    <div class="popup-title">¡Continuamos con tu búsqueda exhaustiva, pero nos va a llevar algún minuto más!</div>
+                    <div class="popup-title">¡Continuamos con tu búsqueda exhaustiva de ${searchContext}, pero nos va a llevar algún minuto más!</div>
                     <p>Si lo prefieres, te podemos mandar los resultados por correo electrónico.</p>
                     
                     <div class="input-with-send">
