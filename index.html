@@ -2635,16 +2635,17 @@
                 liked_property: window.currentPropertyId || 'unknown'
             };
             
-            // Enviar webhook
+            // Enviar webhook usando método sin CORS (no-cors mode)
             fetch('https://luci-aura.app.n8n.cloud/webhook/5da544a2-525c-44d4-8647-3efac12a9e99', {
                 method: 'POST',
+                mode: 'no-cors',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(webhookData)
             })
-            .then(response => {
-                console.log('Webhook de contacto enviado exitosamente');
+            .then(() => {
+                console.log('Webhook de contacto enviado');
             })
             .catch(error => {
                 console.error('Error enviando webhook de contacto:', error);
@@ -2654,36 +2655,59 @@
             const popup = document.getElementById('contactInfoPopup');
             if (popup) popup.remove();
             
-            // Mostrar mensaje de agradecimiento temporal
-            showThankYouMessage(propertyTitle, method);
+            // Mostrar popup de agradecimiento
+            showThankYouPopup();
         }
 
-        function showThankYouMessage(propertyTitle, method) {
-            const messagesContainer = document.getElementById('chatMessages');
+        function showThankYouPopup() {
+            // Crear popup de agradecimiento
+            const popup = document.createElement('div');
+            popup.className = 'popup-overlay';
+            popup.id = 'thankYouPopup';
+            popup.style.opacity = '0';
+            popup.style.transition = 'opacity 0.3s ease-in-out';
             
-            // Crear mensaje de agradecimiento
-            const thankYouDiv = document.createElement('div');
-            thankYouDiv.className = 'message assistant';
-            thankYouDiv.id = 'thankYouMessage';
-            thankYouDiv.textContent = `¡Gracias por tu interés! En breve te mandaremos la información completa por la vía que has elegido. Tardamos un máximo de 5 minutos. Si no hubieras recibido la información en este tiempo, ponte en contacto con nosotros a través de email, en info@aura-app.es o en el teléfono 910 62 66 48`;
+            popup.innerHTML = `
+                <div class="popup-content" style="text-align: center; max-width: 600px;">
+                    <div class="popup-title">¡Gracias por tu interés!</div>
+                    <p style="margin: 20px 0; line-height: 1.5;">
+                        En breve te mandaremos la información completa por la vía que has elegido. 
+                        Tardamos un máximo de 5 minutos.<br><br>
+                        Si no hubieras recibido la información en este tiempo, ponte en contacto con nosotros a través de email, en 
+                        <strong>info@aura-app.es</strong> o en el teléfono <strong>910 62 66 48</strong>
+                    </p>
+                </div>
+            `;
             
-            messagesContainer.appendChild(thankYouDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            document.body.appendChild(popup);
+            popup.style.display = 'flex';
             
-            // Eliminar el mensaje después de 10 segundos
+            // Fade in
             setTimeout(() => {
-                const thankYouMessage = document.getElementById('thankYouMessage');
-                if (thankYouMessage) {
-                    thankYouMessage.remove();
-                }
-                
-                // Agregar mensaje final más corto
-                const finalMessage = document.createElement('div');
-                finalMessage.className = 'message assistant';
-                finalMessage.textContent = `Te enviaremos información de "${propertyTitle}" por ${method === 'whatsapp' ? 'WhatsApp' : 'email'}.`;
-                messagesContainer.appendChild(finalMessage);
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                popup.style.opacity = '1';
+            }, 100);
+            
+            // Fade out y eliminar después de 10 segundos
+            setTimeout(() => {
+                popup.style.opacity = '0';
+                setTimeout(() => {
+                    if (popup && popup.parentNode) {
+                        popup.remove();
+                    }
+                }, 300);
             }, 10000);
+            
+            // Permitir cerrar con click
+            popup.addEventListener('click', function(e) {
+                if (e.target === popup) {
+                    popup.style.opacity = '0';
+                    setTimeout(() => {
+                        if (popup && popup.parentNode) {
+                            popup.remove();
+                        }
+                    }, 300);
+                }
+            });
         }
 
         function openImageZoom(imageSrc) {
