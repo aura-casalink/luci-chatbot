@@ -2626,23 +2626,19 @@
                 return;
             }
             
-            // Preparar datos para el webhook
-            const webhookData = {
-                session_id: currentSessionId,
-                nombre: name,
-                contact_method: method,
-                phone_or_email: contactValue,
-                liked_property: window.currentPropertyId || 'unknown'
-            };
+            // Preparar datos para el webhook en formato FormData
+            const formData = new FormData();
+            formData.append('session_id', currentSessionId);
+            formData.append('nombre', name);
+            formData.append('contact_method', method);
+            formData.append('phone_or_email', contactValue);
+            formData.append('liked_property', window.currentPropertyId || 'unknown');
             
-            // Enviar webhook usando método sin CORS (no-cors mode)
+            // Enviar webhook usando FormData
             fetch('https://luci-aura.app.n8n.cloud/webhook/5da544a2-525c-44d4-8647-3efac12a9e99', {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(webhookData)
+                body: formData
             })
             .then(() => {
                 console.log('Webhook de contacto enviado');
