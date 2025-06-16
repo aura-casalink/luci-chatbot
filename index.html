@@ -2207,6 +2207,7 @@
             const modal = document.createElement('div');
             modal.className = 'property-modal';
             modal.id = 'propertyModal';
+            window.currentPropertyId = property.property_id;
             
             modal.innerHTML = `
                 <div class="property-card">
@@ -2618,20 +2619,71 @@
         function sendContactInfo(propertyTitle) {
             const name = document.getElementById('userName').value;
             const contactValue = document.getElementById('contactValue').value;
-            const method = document.getElementById('whatsappBtn').classList.contains('selected') ? 'WhatsApp' : 'Email';
+            const method = document.getElementById('whatsappBtn').classList.contains('selected') ? 'whatsapp' : 'email';
             
             if (!name || !contactValue) {
                 alert('Por favor, completa todos los campos');
                 return;
             }
             
-            // Enviar información al webhook
-            console.log('Enviando info de contacto:', { name, contactValue, method, propertyTitle });
+            // Preparar datos para el webhook
+            const webhookData = {
+                session_id: currentSessionId,
+                nombre: name,
+                contact_method: method,
+                phone_or_email: contactValue,
+                liked_property: window.currentPropertyId || 'unknown'
+            };
             
+            // Enviar webhook
+            fetch('https://luci-aura.app.n8n.cloud/webhook/5da544a2-525c-44d4-8647-3efac12a9e99', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(webhookData)
+            })
+            .then(response => {
+                console.log('Webhook de contacto enviado exitosamente');
+            })
+            .catch(error => {
+                console.error('Error enviando webhook de contacto:', error);
+            });
+            
+            // Cerrar popup
             const popup = document.getElementById('contactInfoPopup');
             if (popup) popup.remove();
             
-            addMessage(`Te enviaremos información de "${propertyTitle}" por ${method}.`, 'assistant');
+            // Mostrar mensaje de agradecimiento temporal
+            showThankYouMessage(propertyTitle, method);
+        }
+
+        function showThankYouMessage(propertyTitle, method) {
+            const messagesContainer = document.getElementById('chatMessages');
+            
+            // Crear mensaje de agradecimiento
+            const thankYouDiv = document.createElement('div');
+            thankYouDiv.className = 'message assistant';
+            thankYouDiv.id = 'thankYouMessage';
+            thankYouDiv.textContent = `¡Gracias por tu interés! En breve te mandaremos la información completa por la vía que has elegido. Tardamos un máximo de 5 minutos. Si no hubieras recibido la información en este tiempo, ponte en contacto con nosotros a través de email, en info@aura-app.es o en el teléfono 910 62 66 48`;
+            
+            messagesContainer.appendChild(thankYouDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Eliminar el mensaje después de 10 segundos
+            setTimeout(() => {
+                const thankYouMessage = document.getElementById('thankYouMessage');
+                if (thankYouMessage) {
+                    thankYouMessage.remove();
+                }
+                
+                // Agregar mensaje final más corto
+                const finalMessage = document.createElement('div');
+                finalMessage.className = 'message assistant';
+                finalMessage.textContent = `Te enviaremos información de "${propertyTitle}" por ${method === 'whatsapp' ? 'WhatsApp' : 'email'}.`;
+                messagesContainer.appendChild(finalMessage);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 10000);
         }
 
         function openImageZoom(imageSrc) {
