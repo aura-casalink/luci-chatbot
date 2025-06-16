@@ -1176,6 +1176,7 @@
         let searchMessageInterval = null;
         let currentSearchMessageIndex = 0;
         let shownTimeoutPopups = new Set();
+        let shownProperties = [];
         
         const searchMessages = [
             "Buscando Propiedades",
@@ -1696,6 +1697,7 @@
             currentConversation = conversation.conversations || [];
             currentTopic = conversation.topic || null;
             pendingCallback = false;
+            shownProperties = [];
         
             // Cambiar a vista de chat
             showChatScreen();
@@ -1776,6 +1778,7 @@
             currentSessionId = generateSessionId();
             currentConversation = [];
             currentTopic = optionText;
+            shownProperties = [];
 
             // Fade out de la pantalla de bienvenida
             const welcomeScreen = document.getElementById('welcomeScreen');
@@ -2065,6 +2068,7 @@
             currentConversation = [];
             currentTopic = null;
             pendingCallback = false;
+            shownProperties = [];
             
             // Mostrar pantalla de bienvenida
             const welcomeScreen = document.getElementById('welcomeScreen');
@@ -2160,8 +2164,16 @@
             
             saveConversationToSupabase();
 
+            // Guardar property_ids de las propiedades mostradas
+            properties.forEach(property => {
+                if (property.property_id && !shownProperties.includes(property.property_id)) {
+                    shownProperties.push(property.property_id);
+                }
+            });
+
             console.log('Properties added to conversation:', properties.length, 'properties');
             console.log('Current conversation length:', currentConversation.length);
+            console.log('All shown properties:', shownProperties);
         }
         
        // Mostrar propiedades del historial sin duplicar
@@ -2633,6 +2645,7 @@
             formData.append('contact_method', method);
             formData.append('phone_or_email', contactValue);
             formData.append('liked_property', window.currentPropertyId || 'unknown');
+            formData.append('all_shown_properties', JSON.stringify(shownProperties));
             
             // Enviar webhook usando FormData
             fetch('https://luci-aura.app.n8n.cloud/webhook/5da544a2-525c-44d4-8647-3efac12a9e99', {
