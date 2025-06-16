@@ -1294,13 +1294,23 @@
                 (payload) => {
                     console.log('Callback recibido:', payload);
                     const row = payload.new;
-                    if (row.session_id !== sessionId || !row.pending) {
-                        console.log('Callback ignorado - session_id o pending no coincide');
+                    console.log('Row data:', row);
+                    console.log('Expected session:', sessionId);
+                    console.log('Row session:', row.session_id);
+                    console.log('Row pending:', row.pending)
+
+                    if (row.session_id !== sessionId) {
+                        console.log('Callback ignorado - session_id no coincide');
                         return;
                     }
+                    
                     const messageObj = row.payload;
                     const id = row.id;
-                    handleCallback({ type: 'callback', ...messageObj });
+                    console.log('Message object:', messageObj);
+
+                    
+                    const result = handleCallback({ type: 'callback', ...messageObj });
+                    console.log('HandleCallback result:', result);
                     markProcessed(id);
                     
                     // Limpiar suscripción después de procesar
@@ -1347,10 +1357,12 @@
                 return { success: false, message: 'Session ID mismatch or missing' };
             }
             
-            if (!currentSessionId || !pendingCallback) {
-                console.log('No active session or callback not expected');
-                return { success: false, message: 'No active session or callback not expected' };
+            if (!currentSessionId) {
+                console.log('No active session');
+                return { success: false, message: 'No active session' };
             }
+
+            console.log('Processing callback - pendingCallback:', pendingCallback);
             
             // Actualizar topic si viene en la respuesta
             if (data.topic && data.topic !== currentTopic) {
@@ -2147,6 +2159,9 @@
             });
             
             saveConversationToSupabase();
+
+            console.log('Properties added to conversation:', properties.length, 'properties');
+            console.log('Current conversation length:', currentConversation.length);
         }
         
        // Mostrar propiedades del historial sin duplicar
