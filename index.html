@@ -657,6 +657,40 @@
 
         .message.old {
             color: #888;
+            filter: grayscale(0.7) opacity(0.8);
+        }
+        
+        .message.old.with-properties {
+            filter: none !important;
+            color: inherit !important;
+        }
+        
+        .message.old.with-properties .properties-container {
+            filter: none !important;
+            opacity: 1 !important;
+        }
+        
+        .message.old.with-properties .property-thumbnail {
+            filter: none !important;
+            opacity: 1 !important;
+        }
+        
+        .message.old.with-properties .property-thumbnail img {
+            filter: none !important;
+            opacity: 1 !important;
+        }
+
+       .message.recent-callback {
+            filter: none !important;
+            opacity: 1 !important;
+            color: inherit !important;
+        }
+        
+        .message.recent-callback .properties-container,
+        .message.recent-callback .property-thumbnail,
+        .message.recent-callback .property-thumbnail img {
+            filter: none !important;
+            opacity: 1 !important;
         }
 
         .chat-input-container {
@@ -2462,6 +2496,7 @@
             const messagesContainer = document.getElementById('chatMessages');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message assistant with-properties';
+            messageDiv.classList.add('recent-callback');
             
             const propertiesContainer = document.createElement('div');
             propertiesContainer.className = 'properties-container';
