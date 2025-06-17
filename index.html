@@ -548,6 +548,35 @@
             margin-bottom: 0;
         }
 
+       /* =================== SELECTOR DE IDIOMA =================== */
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .flag-btn {
+            width: 32px;
+            height: 24px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+            opacity: 0.6;
+            border: 2px solid transparent;
+        }
+        
+        .flag-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        .flag-btn.active {
+            opacity: 1;
+            border: 2px solid #007bff;
+        }
+
         /* =================== PANTALLA DE CHAT =================== */
         .chat-screen {
             display: none;
@@ -672,7 +701,24 @@
             cursor: not-allowed;
         }
 
-        /* =================== PROPIEDADES =================== */
+       /* =================== DISCLAIMER =================== */
+        .disclaimer {
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+            margin-top: 10px;
+            font-family: 'Graphik', sans-serif;
+        }
+        
+        .beta-badge {
+            background-color: rgba(147, 51, 234, 0.1);
+            color: #9333ea;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 500;
+        } 
+               
+       /* =================== PROPIEDADES =================== */
         .properties-container {
             display: flex;
             gap: 15px;
@@ -1114,6 +1160,11 @@
         <div class="main-area">
             <!-- Pantalla de bienvenida -->
             <div class="welcome-screen" id="welcomeScreen">
+                <div class="language-selector">
+                    <img src="https://flagcdn.com/w40/es.png" alt="Español" class="flag-btn active" onclick="changeLanguage('spanish')" data-lang="spanish">
+                    <img src="https://flagcdn.com/w40/gb.png" alt="English" class="flag-btn" onclick="changeLanguage('english')" data-lang="english">
+                    <img src="https://flagcdn.com/w40/fr.png" alt="Français" class="flag-btn" onclick="changeLanguage('french')" data-lang="french">
+                </div>
                 <h1 class="welcome-title">Hola, soy Luci. ¿Con qué te puedo ayudar?</h1>
                 <div class="buttons-container">
                     <button class="option-button" onclick="selectOption('Buscar propiedades para comprar')">
@@ -1153,6 +1204,9 @@
                             ➤
                         </button>
                     </div>
+                    <div class="disclaimer">
+                    Luci se encuentra actualmente en <span class="beta-badge">BETA</span>, por lo que puede cometer errores. Considera verificar la información importante.
+                </div>
                 </div>
             </div>
         </div>
@@ -1177,6 +1231,53 @@
         let currentSearchMessageIndex = 0;
         let shownTimeoutPopups = new Set();
         let shownProperties = [];
+        
+        // Variables para idiomas
+        let currentLanguage = 'spanish';
+        const translations = {
+            spanish: {
+                welcomeTitle: 'Hola, soy Luci. ¿Con qué te puedo ayudar?',
+                buyProperties: 'Buscar propiedades para comprar',
+                rentProperties: 'Buscar propiedades para alquilar',
+                rentalManagement: 'Gestión de alquiler',
+                financingManagement: 'Gestión de financiación',
+                newChat: 'Nuevo Chat',
+                expandSidebar: 'Expandir barra principal',
+                collapseSidebar: 'Recoger barra principal',
+                showConversations: 'Mostrar conversaciones',
+                hideConversations: 'Ocultar conversaciones',
+                inputPlaceholder: 'Escribe tu mensaje...',
+                disclaimer: 'Luci se encuentra actualmente en <span class="beta-badge">BETA</span>, por lo que puede cometer errores. Considera verificar la información importante.'
+            },
+            english: {
+                welcomeTitle: 'Hello, I\'m Luci. How can I help you?',
+                buyProperties: 'Search properties to buy',
+                rentProperties: 'Search properties to rent',
+                rentalManagement: 'Rental management',
+                financingManagement: 'Financing management',
+                newChat: 'New Chat',
+                expandSidebar: 'Expand sidebar',
+                collapseSidebar: 'Collapse sidebar',
+                showConversations: 'Show conversations',
+                hideConversations: 'Hide conversations',
+                inputPlaceholder: 'Type your message...',
+                disclaimer: 'Luci is currently in <span class="beta-badge">BETA</span>, so it may make mistakes. Consider verifying important information.'
+            },
+            french: {
+                welcomeTitle: 'Bonjour, je suis Luci. Comment puis-je vous aider?',
+                buyProperties: 'Rechercher des propriétés à acheter',
+                rentProperties: 'Rechercher des propriétés à louer',
+                rentalManagement: 'Gestion locative',
+                financingManagement: 'Gestion du financement',
+                newChat: 'Nouveau Chat',
+                expandSidebar: 'Développer la barre latérale',
+                collapseSidebar: 'Réduire la barre latérale',
+                showConversations: 'Afficher les conversations',
+                hideConversations: 'Masquer les conversations',
+                inputPlaceholder: 'Tapez votre message...',
+                disclaimer: 'Luci est actuellement en <span class="beta-badge">BETA</span>, elle peut donc faire des erreurs. Considérez vérifier les informations importantes.'
+            }
+        };
         
         const searchMessages = [
             "Buscando Propiedades",
@@ -1215,6 +1316,7 @@
         document.addEventListener('DOMContentLoaded', async function() {
             await initializeSupabase();
             await initializeApp();
+            updateTexts();
             supabaseClient = supabase;
 
             // Event listeners para sidebar
@@ -1486,6 +1588,66 @@
             setTimeout(async () => {
                 await loadPreviousConversations();
             }, 500);
+        }
+
+        // Función para cambiar idioma
+        function changeLanguage(language) {
+            currentLanguage = language;
+            
+            // Actualizar banderas activas
+            document.querySelectorAll('.flag-btn').forEach(flag => {
+                flag.classList.remove('active');
+                if (flag.dataset.lang === language) {
+                    flag.classList.add('active');
+                }
+            });
+            
+            // Actualizar textos
+            updateTexts();
+        }
+        
+        function updateTexts() {
+            const texts = translations[currentLanguage];
+            
+            // Actualizar elementos específicos
+            const welcomeTitle = document.querySelector('.welcome-title');
+            if (welcomeTitle) welcomeTitle.textContent = texts.welcomeTitle;
+            
+            // Actualizar botones de opciones
+            const optionButtons = document.querySelectorAll('.option-button');
+            if (optionButtons.length >= 4) {
+                optionButtons[0].textContent = texts.buyProperties;
+                optionButtons[1].textContent = texts.rentProperties;
+                optionButtons[2].textContent = texts.rentalManagement;
+                optionButtons[3].textContent = texts.financingManagement;
+            }
+            
+            // Actualizar nuevo chat
+            const newChatSpan = document.querySelector('.new-chat-button span:last-child');
+            if (newChatSpan) newChatSpan.textContent = texts.newChat;
+            
+            // Actualizar placeholder del input
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) chatInput.placeholder = texts.inputPlaceholder;
+            
+            // Actualizar disclaimer
+            const disclaimer = document.querySelector('.disclaimer');
+            if (disclaimer) disclaimer.innerHTML = texts.disclaimer;
+            
+            // Actualizar tooltips
+            updateTooltips();
+        }
+        
+        function updateTooltips() {
+            const texts = translations[currentLanguage];
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('toggleSidebar');
+            
+            if (sidebar.classList.contains('collapsed')) {
+                toggleBtn.setAttribute('data-tooltip', texts.expandSidebar);
+            } else {
+                toggleBtn.setAttribute('data-tooltip', texts.collapseSidebar);
+            }
         }
 
         // Función para cargar conversaciones previas
@@ -1952,6 +2114,7 @@
                     session_id: currentSessionId,
                     device_id: deviceId,
                     topic: currentTopic,
+                    language: currentLanguage,
                     timestamp: new Date().toISOString(),
                     user_ip: userIP,
                     conversation_stats: {
