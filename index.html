@@ -1167,16 +1167,16 @@
                 </div>
                 <h1 class="welcome-title">Hola, soy Luci. ¿Con qué te puedo ayudar?</h1>
                 <div class="buttons-container">
-                    <button class="option-button" onclick="selectOption('Buscar propiedades para comprar')">
+                    <button class="option-button" onclick="selectOption('buy_properties')">
                         Buscar propiedades para comprar
                     </button>
-                    <button class="option-button" onclick="selectOption('Buscar propiedades para alquilar')">
+                    <button class="option-button" onclick="selectOption('rent_properties')">
                         Buscar propiedades para alquilar
                     </button>
-                    <button class="option-button" onclick="selectOption('Gestión de alquiler')">
+                    <button class="option-button" onclick="selectOption('rental_management')">
                         Gestión de alquiler
                     </button>
-                    <button class="option-button" onclick="selectOption('Gestión de financiación')">
+                     <button class="option-button" onclick="selectOption('financing_management')">
                         Gestión de financiación
                     </button>
                 </div>
@@ -1237,10 +1237,6 @@
         const translations = {
             spanish: {
                 welcomeTitle: 'Hola, soy Luci. ¿Con qué te puedo ayudar?',
-                buyProperties: 'Buscar propiedades para comprar',
-                rentProperties: 'Buscar propiedades para alquilar',
-                rentalManagement: 'Gestión de alquiler',
-                financingManagement: 'Gestión de financiación',
                 newChat: 'Nuevo Chat',
                 expandSidebar: 'Expandir barra principal',
                 collapseSidebar: 'Recoger barra principal',
@@ -1251,10 +1247,6 @@
             },
             english: {
                 welcomeTitle: 'Hello, I\'m Luci. How can I help you?',
-                buyProperties: 'Search properties to buy',
-                rentProperties: 'Search properties to rent',
-                rentalManagement: 'Rental management',
-                financingManagement: 'Financing management',
                 newChat: 'New Chat',
                 expandSidebar: 'Expand sidebar',
                 collapseSidebar: 'Collapse sidebar',
@@ -1265,10 +1257,6 @@
             },
             french: {
                 welcomeTitle: 'Bonjour, je suis Luci. Comment puis-je vous aider?',
-                buyProperties: 'Rechercher des propriétés à acheter',
-                rentProperties: 'Rechercher des propriétés à louer',
-                rentalManagement: 'Gestion locative',
-                financingManagement: 'Gestion du financement',
                 newChat: 'Nouveau Chat',
                 expandSidebar: 'Développer la barre latérale',
                 collapseSidebar: 'Réduire la barre latérale',
@@ -1615,12 +1603,13 @@
             
             // Actualizar botones de opciones
             const optionButtons = document.querySelectorAll('.option-button');
-            if (optionButtons.length >= 4) {
-                optionButtons[0].textContent = texts.buyProperties;
-                optionButtons[1].textContent = texts.rentProperties;
-                optionButtons[2].textContent = texts.rentalManagement;
-                optionButtons[3].textContent = texts.financingManagement;
-            }
+            const optionKeys = ['buy_properties', 'rent_properties', 'rental_management', 'financing_management'];
+    
+            optionButtons.forEach((button, index) => {
+                if (optionKeys[index]) {
+                    button.textContent = getOptionText(optionKeys[index]);
+                }
+            });
             
             // Actualizar nuevo chat
             const newChatSpan = document.querySelector('.new-chat-button span:last-child');
@@ -1648,6 +1637,33 @@
             } else {
                 toggleBtn.setAttribute('data-tooltip', texts.collapseSidebar);
             }
+        }
+
+        function getOptionText(optionKey) {
+            const optionMap = {
+                'buy_properties': {
+                    spanish: 'Buscar propiedades para comprar',
+                    english: 'Search properties to buy',
+                    french: 'Rechercher des propriétés à acheter'
+                },
+                'rent_properties': {
+                    spanish: 'Buscar propiedades para alquilar',
+                    english: 'Search properties to rent',
+                    french: 'Rechercher des propriétés à louer'
+                },
+                'rental_management': {
+                    spanish: 'Gestión de alquiler',
+                    english: 'Rental management',
+                    french: 'Gestion locative'
+                },
+                'financing_management': {
+                    spanish: 'Gestión de financiación',
+                    english: 'Financing management',
+                    french: 'Gestion du financement'
+                }
+            };
+            
+            return optionMap[optionKey] ? optionMap[optionKey][currentLanguage] : optionKey;
         }
 
         // Función para cargar conversaciones previas
@@ -1950,9 +1966,11 @@
                 showChatScreen();
                 
                 // Añadir mensaje del asistente primero
-                addMessage('Hola, soy Luci. ¿Con qué te puedo ayudar?', 'assistant');
+                const texts = translations[currentLanguage];
+                addMessage(texts.welcomeTitle, 'assistant');
                 
                 // Añadir mensaje del usuario
+                onst optionText = getOptionText(optionKey);
                 addMessage(optionText, 'user');
                 
                 // Enviar webhook
