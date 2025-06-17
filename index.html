@@ -1314,7 +1314,17 @@
                 showConversations: 'Mostrar conversaciones',
                 hideConversations: 'Ocultar conversaciones',
                 inputPlaceholder: 'Escribe tu mensaje...',
-                disclaimer: 'Luci se encuentra actualmente en <span class="beta-badge">BETA</span>, por lo que puede cometer errores. Considera verificar la información importante.'
+                disclaimer: 'Luci se encuentra actualmente en <span class="beta-badge">BETA</span>, por lo que puede cometer errores. Considera verificar la información importante.',
+                searchMessages: [
+                    "Buscando Propiedades",
+                    "Tardamos 2 minutos de media",
+                    "Ajustando búsqueda a tus Criterios"
+                ],
+                timeoutTitle: '¡Continuamos con tu búsqueda exhaustiva de {searchContext}, pero nos va a llevar algún minuto más!',
+                timeoutText: 'Si lo prefieres, te podemos mandar los resultados por correo electrónico.',
+                timeoutEmailPlaceholder: 'tu@email.com',
+                timeoutContinueButton: 'Continuar esperando',
+                timeoutEmailSent: 'Te enviaremos los resultados por email cuando estén listos.'
             },
             english: {
                 welcomeTitle: 'Hello, I\'m Luci. How can I help you?',
@@ -1324,7 +1334,17 @@
                 showConversations: 'Show conversations',
                 hideConversations: 'Hide conversations',
                 inputPlaceholder: 'Type your message...',
-                disclaimer: 'Luci is currently in <span class="beta-badge">BETA</span>, so it may make mistakes. Consider verifying important information.'
+                disclaimer: 'Luci is currently in <span class="beta-badge">BETA</span>, so it may make mistakes. Consider verifying important information.',
+                searchMessages: [
+                    "Searching Properties",
+                    "We take 2 minutes on average",
+                    "Adjusting search to your Criteria"
+                ],
+                timeoutTitle: 'We continue with your exhaustive search for {searchContext}, but it will take a few more minutes!',
+                timeoutText: 'If you prefer, we can send you the results by email.',
+                timeoutEmailPlaceholder: 'your@email.com',
+                timeoutContinueButton: 'Continue waiting',
+                timeoutEmailSent: 'We will send you the results by email when they are ready.'
             },
             french: {
                 welcomeTitle: 'Bonjour, je suis Luci. Comment puis-je vous aider?',
@@ -1334,15 +1354,20 @@
                 showConversations: 'Afficher les conversations',
                 hideConversations: 'Masquer les conversations',
                 inputPlaceholder: 'Tapez votre message...',
-                disclaimer: 'Luci est actuellement en <span class="beta-badge">BETA</span>, elle peut donc faire des erreurs. Considérez vérifier les informations importantes.'
+                disclaimer: 'Luci est actuellement en <span class="beta-badge">BETA</span>, elle peut donc faire des erreurs. Considérez vérifier les informations importantes.',
+                searchMessages: [
+                    "Recherche de Propriétés",
+                    "Nous prenons 2 minutes en moyenne",
+                    "Ajustement de la recherche à vos Critères"
+                ],
+                timeoutTitle: 'Nous continuons votre recherche exhaustive de {searchContext}, mais cela prendra quelques minutes de plus!',
+                timeoutText: 'Si vous préférez, nous pouvons vous envoyer les résultats par email.',
+                timeoutEmailPlaceholder: 'votre@email.com',
+                timeoutContinueButton: 'Continuer à attendre',
+                timeoutEmailSent: 'Nous vous enverrons les résultats par email quand ils seront prêts.'
             }
         };
         
-        const searchMessages = [
-            "Buscando Propiedades",
-            "Tardamos 3 minutos de media",
-            "Ajustando búsqueda a tus Criterios"
-        ];
         
         // Configuración de Supabase
         const SUPABASE_URL = 'https://uxyxxhsgkprnuxohjhbc.supabase.co';
@@ -1444,7 +1469,12 @@
             console.log('Iniciando nueva suscripción para session:', sessionId);
             
             realtimeChannel = supabase
-                .channel(`session-${sessionId}`) // Canal único por sesión
+                .channel(`public:callbacks:session_id=eq.${sessionId}`, {
+                    config: {
+                        broadcast: { self: false },
+                        presence: { key: sessionId }
+                    }
+                })
                 .on(
                 'postgres_changes',
                 {
@@ -1483,17 +1513,34 @@
                     }
                 }
                 )
-                .subscribe((status) => {
-                console.log('Estado de suscripción:', status);
-                if (status === 'SUBSCRIBED') {
-                    console.log('Suscripción activa para session:', sessionId);
-                } else if (status === 'CHANNEL_ERROR') {
-                    console.error('Error en canal Realtime');
-                    realtimeChannel = null;
-                } else if (status === 'TIMED_OUT') {
-                    console.error('Timeout en suscripción Realtime');
-                    realtimeChannel = null;
-                }
+                .subscribe((status, err) => {
+                    console.log('Estado de suscripción:', status);
+                    if (status === 'SUBSCRIBED') {
+                        console.log('Suscripción activa para session:', sessionId);
+                    } else if (status === 'CHANNEL_ERROR') {
+                        console.error('Error en canal Realtime:', err);
+                        realtimeChannel = null;
+                        // Intentar reconectar después de 2 segundos
+                        setTimeout(() => {
+                            if (currentSessionId === sessionId && pendingCallback) {
+                                console.log('Intentando reconectar...');
+                                startRealtimeSubscription(sessionId);
+                            }
+                        }, 2000);
+                    } else if (status === 'TIMED_OUT') {
+                        console.error('Timeout en suscripción Realtime');
+                        realtimeChannel = null;
+                        // Intentar reconectar
+                        setTimeout(() => {
+                            if (currentSessionId === sessionId && pendingCallback) {
+                                console.log('Reconectando después de timeout...');
+                                startRealtimeSubscription(sessionId);
+                            }
+                        }, 1000);
+                    } else if (status === 'CLOSED') {
+                        console.log('Canal cerrado');
+                        realtimeChannel = null;
+                    }
                 });
         }
             
@@ -2134,6 +2181,9 @@
             if (existingSearchMessage) {
                 existingSearchMessage.remove();
             }
+
+            // Obtener mensajes en el idioma actual
+            const searchMessages = translations[currentLanguage].searchMessages;
             
             const loadingDiv = document.createElement('div');
             loadingDiv.className = 'loading-message'; // QUITAR 'search-loading-messages'
@@ -2778,6 +2828,9 @@
             
             // Marcar esta sesión como que ya mostró popup
             shownTimeoutPopups.add(currentSessionId);
+
+            // Obtener textos en el idioma actual
+            const texts = translations[currentLanguage];
             
             // Obtener el título de la conversación para personalizar el mensaje
             const searchContext = currentConversationTitle || currentTopic || 'tu búsqueda';
@@ -2785,23 +2838,25 @@
             const popup = document.createElement('div');
             popup.className = 'popup-overlay';
             popup.id = 'timeoutPopup';
+
+            const timeoutTitle = texts.timeoutTitle.replace('{searchContext}', searchContext);
             
             popup.innerHTML = `
                 <div class="popup-content">
-                    <div class="popup-title">¡Continuamos con tu búsqueda exhaustiva de ${searchContext}, pero nos va a llevar algún minuto más!</div>
-                    <p>Si lo prefieres, te podemos mandar los resultados por correo electrónico.</p>
+                    <div class="popup-title">${timeoutTitle}</div>
+                    <p>${texts.timeoutText}</p>
                     
                     <div class="input-with-send">
-                        <input type="email" class="popup-input" id="timeoutEmail" placeholder="tu@email.com">
+                        <input type="email" class="popup-input" id="timeoutEmail" placeholder="${texts.timeoutEmailPlaceholder}">
                         <button class="send-icon-btn" onclick="sendEmailNotification()">➤</button>
                     </div>
                     
                     <div class="popup-buttons">
-                        <button class="popup-btn secondary" onclick="continueWaiting()">Continuar esperando</button>
+                        <button class="popup-btn secondary" onclick="continueWaiting()">${texts.timeoutContinueButton}</button>
                     </div>
                 </div>
             `;
-            
+                    
             document.body.appendChild(popup);
             popup.style.display = 'flex';
         }
@@ -2823,8 +2878,12 @@
         
         function sendEmailNotification() {
             const email = document.getElementById('timeoutEmail').value;
+            const texts = translations[currentLanguage];
             if (!email) {
-                alert('Por favor, introduce un email válido');
+                const alertText = currentLanguage === 'spanish' ? 'Por favor, introduce un email válido' : 
+                                 currentLanguage === 'english' ? 'Please enter a valid email' : 
+                                 'Veuillez entrer un email valide';
+                alert(alertText);
                 return;
             }
             
@@ -2834,7 +2893,7 @@
             const popup = document.getElementById('timeoutPopup');
             if (popup) popup.remove();
             
-            addMessage('Te enviaremos los resultados por email cuando estén listos.', 'assistant');
+            addMessage(texts.timeoutEmailSent, 'assistant');
         }
         
         // Función para mostrar popup de información de contacto
