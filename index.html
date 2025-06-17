@@ -1951,11 +1951,11 @@
         }
 
         
-        function selectOption(optionText) {
+        function selectOption(optionKey) {
             // Crear nueva sesión
             currentSessionId = generateSessionId();
             currentConversation = [];
-            currentTopic = optionText;
+            currentTopic = optionKey;
             shownProperties = [];
 
             // Fade out de la pantalla de bienvenida
@@ -1974,7 +1974,7 @@
                 addMessage(optionText, 'user');
                 
                 // Enviar webhook
-                sendWebhook(optionText);
+                sendWebhook(optionKey);
             }, 300);
 
             shownTimeoutPopups.clear();
@@ -2218,7 +2218,8 @@
                     // Si estamos en pantalla de bienvenida, cambiar a chat
                     if (document.getElementById('welcomeScreen').style.display !== 'none') {
                         showChatScreen();
-                        addMessage('Hola, soy Luci. ¿Con qué te puedo ayudar?', 'assistant');
+                        const texts = translations[currentLanguage];
+                        addMessage(texts.welcomeTitle, 'assistant');
                     }
                 }
 
