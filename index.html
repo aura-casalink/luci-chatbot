@@ -537,13 +537,28 @@
             transition: all 0.2s;
             text-align: center;
         }
-
-        .option-button:hover {
+        
+        /* Botón principal (comprar propiedades) - siempre destacado */
+        .option-button.primary {
             background-color: #f8f9fa;
             border-color: #007bff;
             color: black;
+            font-weight: normal;
         }
-
+        
+        /* Hover del botón principal */
+        .option-button.primary:hover {
+            transform: scale(1.05);
+            font-weight: bold;
+            border-color: #DAA520; /* Color mostaza */
+            box-shadow: 0 2px 8px rgba(218, 165, 32, 0.3);
+        }
+        
+        /* Botones secundarios - sin hover */
+        .option-button:not(.primary):hover {
+            /* Sin cambios en hover */
+        }
+        
         .option-button:last-child {
             margin-bottom: 0;
         }
@@ -1103,6 +1118,62 @@
             opacity: 0;
         }
 
+        /* Atenuar emojis en mensajes antiguos */
+        .message.old {
+            color: #888;
+            filter: grayscale(0.7) opacity(0.8);
+        }
+        
+        /* Contorno mostaza para propiedades */
+        .message.assistant .properties-container {
+            border: 2px solid #DAA520;
+            border-radius: 12px;
+            padding: 10px;
+            background-color: rgba(218, 165, 32, 0.05);
+        }
+        
+        /* Popup de funcionalidad no disponible */
+        .not-available-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .not-available-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .not-available-title {
+            font-family: 'Graphik', sans-serif;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: black;
+        }
+        
+        .not-available-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Graphik', sans-serif;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            margin-top: 15px;
+        }
+       
         /* =================== RESPONSIVE =================== */
         @media (max-width: 768px) {
             .sidebar {
@@ -1167,16 +1238,16 @@
                 </div>
                 <h1 class="welcome-title">Hola, soy Luci. ¿Con qué te puedo ayudar?</h1>
                 <div class="buttons-container">
-                    <button class="option-button" onclick="selectOption('buy_properties')">
+                    <button class="option-button primary" onclick="selectOption('buy_properties')">
                         Buscar propiedades para comprar
                     </button>
-                    <button class="option-button" onclick="selectOption('rent_properties')">
+                    <button class="option-button" onclick="showNotAvailablePopup()">
                         Buscar propiedades para alquilar
                     </button>
-                    <button class="option-button" onclick="selectOption('rental_management')">
+                    <button class="option-button" onclick="showNotAvailablePopup()">
                         Gestión de alquiler
                     </button>
-                     <button class="option-button" onclick="selectOption('financing_management')">
+                     <button class="option-button" onclick="showNotAvailablePopup()">
                         Gestión de financiación
                     </button>
                 </div>
@@ -1607,7 +1678,16 @@
     
             optionButtons.forEach((button, index) => {
                 if (optionKeys[index]) {
-                    button.textContent = getOptionText(optionKeys[index]);
+                    // Solo actualizar el texto del botón principal
+                    if (button.classList.contains('primary')) {
+                        button.textContent = getOptionText(optionKeys[index]);
+                    } else if (index === 1) {
+                        button.textContent = getOptionText('rent_properties');
+                    } else if (index === 2) {
+                        button.textContent = getOptionText('rental_management');
+                    } else if (index === 3) {
+                        button.textContent = getOptionText('financing_management');
+                    }
                 }
             });
             
@@ -2937,7 +3017,42 @@
             };
             document.addEventListener('keydown', escapeHandler);
         }
+
+        // Función para mostrar popup de funcionalidad no disponible
+        function showNotAvailablePopup() {
+            const popup = document.createElement('div');
+            popup.className = 'not-available-popup';
+            popup.id = 'notAvailablePopup';
             
+            popup.innerHTML = `
+                <div class="not-available-content">
+                    <div class="not-available-title">Funcionalidad no disponible</div>
+                    <p>Esta funcionalidad estará disponible próximamente.</p>
+                    <button class="not-available-btn" onclick="closeNotAvailablePopup()">
+                        Entendido
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(popup);
+            popup.style.display = 'flex';
+            
+            // Cerrar con click fuera
+            popup.addEventListener('click', function(e) {
+                if (e.target === popup) {
+                    closeNotAvailablePopup();
+                }
+            });
+        }
+        
+        function closeNotAvailablePopup() {
+            const popup = document.getElementById('notAvailablePopup');
+            if (popup) {
+                popup.remove();
+            }
+        }
+
+        
     </script>
 </body>
 </html>
