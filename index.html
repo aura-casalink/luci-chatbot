@@ -1666,6 +1666,17 @@
             return optionMap[optionKey] ? optionMap[optionKey][currentLanguage] : optionKey;
         }
 
+        function getTopicInSpanish(optionKey) {
+            const topicMap = {
+                'buy_properties': 'Buscar propiedades para comprar',
+                'rent_properties': 'Buscar propiedades para alquilar', 
+                'rental_management': 'Gestión de alquiler',
+                'financing_management': 'Gestión de financiación'
+            };
+            
+            return topicMap[optionKey] || optionKey;
+        }
+        
         // Función para cargar conversaciones previas
         async function loadPreviousConversations() {
             if (!supabase) {
@@ -1955,7 +1966,7 @@
             // Crear nueva sesión
             currentSessionId = generateSessionId();
             currentConversation = [];
-            currentTopic = optionKey;
+            currentTopic = getTopicInSpanish(optionKey);
             shownProperties = [];
 
             // Fade out de la pantalla de bienvenida
