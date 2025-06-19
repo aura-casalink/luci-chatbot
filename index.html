@@ -1590,7 +1590,7 @@
         });
 
         function startRealtimeSubscription(sessionId) {
-            // Limpiar suscripción anterior más agresivamente
+            // Limpiar suscripción anterior
             if (realtimeChannel) {
                 try {
                     supabase.removeChannel(realtimeChannel);
@@ -1604,80 +1604,242 @@
             currentSessionId = sessionId;
             console.log('Iniciando nueva suscripción para session:', sessionId);
             
+            // Detectar Safari
+            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            if (isSafari && isMobile) {
+                console.log('Safari móvil detectado - usando sistema híbrido');
+                startHybridSubscription(sessionId);
+            } else {
+                startStandardRealtimeSubscription(sessionId);
+            }
+        }
+        
+        function startStandardRealtimeSubscription(sessionId) {
             realtimeChannel = supabase
                 .channel(`public:callbacks:session_id=eq.${sessionId}`, {
                     config: {
                         broadcast: { self: false },
-                        presence: { key: sessionId }
+                        presence: { key: sessionId },
+                        // Configuraciones específicas para mejorar estabilidad
+                        heartbeat_interval_ms: 15000,
+                        timeout_ms: 10000
                     }
                 })
-                .on(
-                'postgres_changes',
-                {
+                .on('postgres_changes', {
                     event: 'INSERT',
                     schema: 'public',
                     table: 'callbacks',
-                    filter: `session_id=eq.${sessionId}` // Filtro a nivel de Supabase
-                },
-                (payload) => {
-                    console.log('Callback recibido:', payload);
-                    const row = payload.new;
-                    console.log('Row data:', row);
-                    console.log('Expected session:', sessionId);
-                    console.log('Row session:', row.session_id);
-                    console.log('Row pending:', row.pending)
-
-                    if (row.session_id !== sessionId) {
-                        console.log('Callback ignorado - session_id no coincide');
+                    filter: `session_id=eq.${sessionId}`
+                }, (payload) => {
+                    console.log('Callback recibido via Realtime:', payload);
+                    handleRealtimeCallback(payload, sessionId);
+                })
+                .subscribe((status, err) => {
+                    console.log('Estado de suscripción Realtime:', status);
+                    handleSubscriptionStatus(status, err, sessionId);
+                });
+        }
+        
+        function startHybridSubscription(sessionId) {
+            // Intentar Realtime primero, pero con polling como respaldo
+            let pollingInterval = null;
+            let realtimeWorking = false;
+            
+            // Iniciar Realtime
+            realtimeChannel = supabase
+                .channel(`public:callbacks:session_id=eq.${sessionId}`, {
+                    config: {
+                        broadcast: { self: false },
+                        presence: { key: sessionId },
+                        heartbeat_interval_ms: 10000, // Más frecuente para Safari
+                        timeout_ms: 8000
+                    }
+                })
+                .on('postgres_changes', {
+                    event: 'INSERT',
+                    schema: 'public',
+                    table: 'callbacks',
+                    filter: `session_id=eq.${sessionId}`
+                }, (payload) => {
+                    console.log('Callback recibido via Realtime (híbrido):', payload);
+                    realtimeWorking = true;
+                    // Detener polling si Realtime funciona
+                    if (pollingInterval) {
+                        clearInterval(pollingInterval);
+                        pollingInterval = null;
+                        console.log('Polling detenido - Realtime funcionando');
+                    }
+                    handleRealtimeCallback(payload, sessionId);
+                })
+                .subscribe((status, err) => {
+                    console.log('Estado suscripción híbrida:', status);
+                    if (status === 'SUBSCRIBED') {
+                        console.log('Realtime conectado - esperando 5s antes de activar polling');
+                        // Dar tiempo a Realtime, luego activar polling como respaldo
+                        setTimeout(() => {
+                            if (!realtimeWorking && currentSessionId === sessionId && pendingCallback) {
+                                console.log('Activando polling como respaldo');
+                                startCallbackPolling(sessionId);
+                            }
+                        }, 5000);
+                    } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+                        console.log('Error en Realtime - activando polling inmediatamente');
+                        if (!pollingInterval) {
+                            startCallbackPolling(sessionId);
+                        }
+                    }
+                });
+        }
+        
+        function startCallbackPolling(sessionId) {
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+            }
+            
+            if (window.pollingTimeout) {
+                clearTimeout(window.pollingTimeout);
+            }
+            
+            console.log('Iniciando polling para session:', sessionId, '- Duración: 3 minutos, Frecuencia: 6 segundos');
+            
+            // Timeout de 3 minutos para el polling
+            window.pollingTimeout = setTimeout(() => {
+                console.log('Timeout de polling alcanzado (3 minutos)');
+                if (pollingInterval) {
+                    clearInterval(pollingInterval);
+                    pollingInterval = null;
+                }
+                window.pollingTimeout = null;
+                
+                // Opcional: Mostrar mensaje de error o timeout al usuario
+                if (currentSessionId === sessionId && pendingCallback) {
+                    console.log('Polling terminado sin recibir callback - mostrando timeout');
+                    // Podrías llamar a showTimeoutPopup() aquí si no tienes otro timeout activo
+                }
+            }, 180000); // 3 minutos = 180,000 ms
+            
+            pollingInterval = setInterval(async () => {
+                if (currentSessionId !== sessionId || !pendingCallback) {
+                    clearInterval(pollingInterval);
+                    pollingInterval = null;
+                    if (window.pollingTimeout) {
+                        clearTimeout(window.pollingTimeout);
+                        window.pollingTimeout = null;
+                    }
+                    console.log('Polling detenido - sesión cambiada o callback completado');
+                    return;
+                }
+                
+                try {
+                    console.log('Haciendo polling para callbacks...');
+                    const { data, error } = await supabase
+                        .from('callbacks')
+                        .select('*')
+                        .eq('session_id', sessionId)
+                        .eq('pending', true)
+                        .order('created_at', { ascending: false })
+                        .limit(1);
+                        
+                    if (error) {
+                        console.error('Error en polling:', error);
                         return;
                     }
                     
-                    const messageObj = row.payload;
-                    const id = row.id;
-                    console.log('Message object:', messageObj);
-
-                    
-                    const result = handleCallback({ type: 'callback', ...messageObj });
-                    console.log('HandleCallback result:', result);
-                    markProcessed(id);
-                    
-                    // Limpiar suscripción después de procesar
-                    if (realtimeChannel) {
-                        supabase.removeChannel(realtimeChannel);
-                        realtimeChannel = null;
-                        console.log('Suscripción cerrada después de procesar callback');
+                    if (data && data.length > 0) {
+                        const callback = data[0];
+                        console.log('Callback encontrado via polling:', callback);
+                        
+                        // Procesar callback
+                        const payload = {
+                            new: callback,
+                            eventType: 'INSERT'
+                        };
+                        handleRealtimeCallback(payload, sessionId);
+                        
+                        // Detener polling y timeout
+                        clearInterval(pollingInterval);
+                        pollingInterval = null;
+                        if (window.pollingTimeout) {
+                            clearTimeout(window.pollingTimeout);
+                            window.pollingTimeout = null;
+                        }
+                        console.log('Polling detenido - callback procesado exitosamente');
                     }
+                } catch (error) {
+                    console.error('Error en polling:', error);
                 }
-                )
-                .subscribe((status, err) => {
-                    console.log('Estado de suscripción:', status);
-                    if (status === 'SUBSCRIBED') {
-                        console.log('Suscripción activa para session:', sessionId);
-                    } else if (status === 'CHANNEL_ERROR') {
-                        console.error('Error en canal Realtime:', err);
-                        realtimeChannel = null;
-                        // Intentar reconectar después de 2 segundos
-                        setTimeout(() => {
-                            if (currentSessionId === sessionId && pendingCallback) {
-                                console.log('Intentando reconectar...');
-                                startRealtimeSubscription(sessionId);
-                            }
-                        }, 2000);
-                    } else if (status === 'TIMED_OUT') {
-                        console.error('Timeout en suscripción Realtime');
-                        realtimeChannel = null;
-                        // Intentar reconectar
-                        setTimeout(() => {
-                            if (currentSessionId === sessionId && pendingCallback) {
-                                console.log('Reconectando después de timeout...');
-                                startRealtimeSubscription(sessionId);
-                            }
-                        }, 1000);
-                    } else if (status === 'CLOSED') {
-                        console.log('Canal cerrado');
-                        realtimeChannel = null;
-                    }
-                });
+            }, 6000); // Cada 6 segundos
+            
+            // Guardar referencia para limpieza
+            window.currentPollingInterval = pollingInterval;
+        }
+        
+        function handleRealtimeCallback(payload, sessionId) {
+            const row = payload.new;
+            console.log('Procesando callback:', row);
+            
+            if (row.session_id !== sessionId) {
+                console.log('Callback ignorado - session_id no coincide');
+                return;
+            }
+            
+            const messageObj = row.payload;
+            const id = row.id;
+            
+            const result = handleCallback({ type: 'callback', ...messageObj });
+            console.log('HandleCallback result:', result);
+            markProcessed(id);
+            
+            // Limpiar suscripción después de procesar
+            if (realtimeChannel) {
+                supabase.removeChannel(realtimeChannel);
+                realtimeChannel = null;
+                console.log('Suscripción cerrada después de procesar callback');
+            }
+            
+            // Limpiar polling Y su timeout si existen
+            if (window.currentPollingInterval) {
+                clearInterval(window.currentPollingInterval);
+                window.currentPollingInterval = null;
+                console.log('Polling interval limpiado después de procesar callback');
+            }
+            
+            if (window.pollingTimeout) {
+                clearTimeout(window.pollingTimeout);
+                window.pollingTimeout = null;
+                console.log('Polling timeout limpiado después de procesar callback');
+            }
+        }
+        
+        function handleSubscriptionStatus(status, err, sessionId) {
+            if (status === 'SUBSCRIBED') {
+                console.log('Suscripción activa para session:', sessionId);
+            } else if (status === 'CHANNEL_ERROR') {
+                console.error('Error en canal Realtime:', err);
+                realtimeChannel = null;
+                // Para Safari, activar polling inmediatamente
+                const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+                if (isSafari) {
+                    console.log('Error en Safari - activando polling');
+                    startCallbackPolling(sessionId);
+                } else {
+                    setTimeout(() => {
+                        if (currentSessionId === sessionId && pendingCallback) {
+                            console.log('Intentando reconectar...');
+                            startRealtimeSubscription(sessionId);
+                        }
+                    }, 2000);
+                }
+            } else if (status === 'TIMED_OUT') {
+                console.error('Timeout en suscripción Realtime');
+                realtimeChannel = null;
+                startCallbackPolling(sessionId); // Activar polling en timeout
+            } else if (status === 'CLOSED') {
+                console.log('Canal cerrado');
+                realtimeChannel = null;
+            }
         }
             
         async function markProcessed(id) {
@@ -2368,6 +2530,19 @@
             if (callbackTimeout) {
                 clearTimeout(callbackTimeout);
                 callbackTimeout = null;
+            }
+            
+            // Limpiar polling Y su timeout
+            if (window.currentPollingInterval) {
+                clearInterval(window.currentPollingInterval);
+                window.currentPollingInterval = null;
+                console.log('Polling interval limpiado en hideSearchLoading');
+            }
+            
+            if (window.pollingTimeout) {
+                clearTimeout(window.pollingTimeout);
+                window.pollingTimeout = null;
+                console.log('Polling timeout limpiado en hideSearchLoading');
             }
             
             // Limpiar suscripción si no hay callback pendiente
