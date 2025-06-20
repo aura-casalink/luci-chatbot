@@ -1604,48 +1604,36 @@
             currentSessionId = sessionId;
             console.log('Iniciando nueva suscripción para session:', sessionId);
             
-            // Detectar Safari
+            // Detectar Safari móvil para configuraciones especiales
             const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
             
             if (isSafari && isMobile) {
-                console.log('Safari móvil detectado - usando sistema híbrido');
-                startHybridSubscription(sessionId);
+                console.log('Safari móvil detectado - usando configuración optimizada');
+                startHybridSubscription(sessionId, true); // true = Safari móvil
             } else {
-                startStandardRealtimeSubscription(sessionId);
+                console.log('Dispositivo estándar - usando sistema híbrido con polling');
+                startHybridSubscription(sessionId, false); // false = otros dispositivos
             }
         }
         
-        function startStandardRealtimeSubscription(sessionId) {
-            realtimeChannel = supabase
-                .channel(`public:callbacks:session_id=eq.${sessionId}`, {
-                    config: {
-                        broadcast: { self: false },
-                        presence: { key: sessionId },
-                        // Configuraciones específicas para mejorar estabilidad
-                        heartbeat_interval_ms: 15000,
-                        timeout_ms: 10000
-                    }
-                })
-                .on('postgres_changes', {
-                    event: 'INSERT',
-                    schema: 'public',
-                    table: 'callbacks',
-                    filter: `session_id=eq.${sessionId}`
-                }, (payload) => {
-                    console.log('Callback recibido via Realtime:', payload);
-                    handleRealtimeCallback(payload, sessionId);
-                })
-                .subscribe((status, err) => {
-                    console.log('Estado de suscripción Realtime:', status);
-                    handleSubscriptionStatus(status, err, sessionId);
-                });
-        }
-        
-        function startHybridSubscription(sessionId) {
-            // Intentar Realtime primero, pero con polling como respaldo
+        function startHybridSubscription(sessionId, isSafariMobile = false) {
+            // Sistema híbrido para TODOS los dispositivos
             let pollingInterval = null;
             let realtimeWorking = false;
+            
+            // Configuraciones específicas según el dispositivo
+            const config = isSafariMobile ? {
+                heartbeat_interval_ms: 10000, // Más frecuente para Safari
+                timeout_ms: 8000,
+                pollingDelay: 5000 // Esperar 5s antes de activar polling
+            } : {
+                heartbeat_interval_ms: 15000, // Configuración estándar
+                timeout_ms: 10000,
+                pollingDelay: 10000 // Esperar 10s antes de activar polling
+            };
+            
+            console.log('Iniciando suscripción híbrida:', isSafariMobile ? 'Safari móvil' : 'Dispositivo estándar');
             
             // Iniciar Realtime
             realtimeChannel = supabase
@@ -1653,8 +1641,8 @@
                     config: {
                         broadcast: { self: false },
                         presence: { key: sessionId },
-                        heartbeat_interval_ms: 10000, // Más frecuente para Safari
-                        timeout_ms: 8000
+                        heartbeat_interval_ms: config.heartbeat_interval_ms,
+                        timeout_ms: config.timeout_ms
                     }
                 })
                 .on('postgres_changes', {
@@ -1676,14 +1664,14 @@
                 .subscribe((status, err) => {
                     console.log('Estado suscripción híbrida:', status);
                     if (status === 'SUBSCRIBED') {
-                        console.log('Realtime conectado - esperando 5s antes de activar polling');
+                        console.log(`Realtime conectado - esperando ${config.pollingDelay/1000}s antes de activar polling de respaldo`);
                         // Dar tiempo a Realtime, luego activar polling como respaldo
                         setTimeout(() => {
                             if (!realtimeWorking && currentSessionId === sessionId && pendingCallback) {
                                 console.log('Activando polling como respaldo');
                                 startCallbackPolling(sessionId);
                             }
-                        }, 5000);
+                        }, config.pollingDelay);
                     } else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
                         console.log('Error en Realtime - activando polling inmediatamente');
                         if (!pollingInterval) {
@@ -3188,6 +3176,7 @@
         function sendEmailNotification() {
             const email = document.getElementById('timeoutEmail').value;
             const texts = translations[currentLanguage];
+            
             if (!email) {
                 const alertText = currentLanguage === 'spanish' ? 'Por favor, introduce un email válido' : 
                                  currentLanguage === 'english' ? 'Please enter a valid email' : 
@@ -3196,12 +3185,71 @@
                 return;
             }
             
-            // Aquí puedes enviar el email al webhook
-            console.log('Enviando notificación a:', email);
+            // Validar formato de email básico
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                const alertText = currentLanguage === 'spanish' ? 'Por favor, introduce un email válido' : 
+                                 currentLanguage === 'english' ? 'Please enter a valid email' : 
+                                 'Veuillez entrer un email valide';
+                alert(alertText);
+                return;
+            }
             
+            console.log('Enviando notificación de timeout a:', email);
+            
+            // Preparar datos para el webhook según el formato especificado
+            const webhookData = {
+                session_id: currentSessionId || 'unknown',
+                nombre: 'Timeout',
+                contact_method: 'email',
+                phone_or_email: email,
+                liked_property: 'no_properties',
+                all_shown_properties: []
+            };
+            
+            // Enviar webhook
+            fetch('https://luci-aura.app.n8n.cloud/webhook/5da544a2-525c-44d4-8647-3efac12a9e99', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(webhookData)
+            })
+            .then(response => {
+                console.log('Webhook de timeout enviado exitosamente');
+                if (!response.ok) {
+                    console.warn('Respuesta del webhook no OK:', response.status);
+                }
+            })
+            .catch(error => {
+                console.error('Error enviando webhook de timeout:', error);
+                // Intentar con FormData como fallback
+                const formData = new FormData();
+                formData.append('session_id', webhookData.session_id);
+                formData.append('nombre', webhookData.nombre);
+                formData.append('contact_method', webhookData.contact_method);
+                formData.append('phone_or_email', webhookData.phone_or_email);
+                formData.append('liked_property', webhookData.liked_property);
+                formData.append('all_shown_properties', JSON.stringify(webhookData.all_shown_properties));
+                
+                fetch('https://luci-aura.app.n8n.cloud/webhook/5da544a2-525c-44d4-8647-3efac12a9e99', {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: formData
+                })
+                .then(() => {
+                    console.log('Webhook de timeout enviado con FormData (fallback)');
+                })
+                .catch(fallbackError => {
+                    console.error('Error en fallback del webhook de timeout:', fallbackError);
+                });
+            });
+            
+            // Cerrar popup
             const popup = document.getElementById('timeoutPopup');
             if (popup) popup.remove();
             
+            // Mostrar mensaje al usuario
             addMessage(texts.timeoutEmailSent, 'assistant');
         }
         
