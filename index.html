@@ -1438,6 +1438,8 @@
         let currentSearchMessageIndex = 0;
         let shownTimeoutPopups = new Set();
         let shownProperties = [];
+        let currentPollingInterval = null;
+        let pollingTimeout = null;
         
         // Variables para idiomas
         let currentLanguage = 'spanish';
@@ -1682,41 +1684,38 @@
         }
         
         function startCallbackPolling(sessionId) {
-            if (pollingInterval) {
-                clearInterval(pollingInterval);
+            // Limpiar polling anterior si existe
+            if (currentPollingInterval) {
+                clearInterval(currentPollingInterval);
+                currentPollingInterval = null;
             }
             
-            if (window.pollingTimeout) {
-                clearTimeout(window.pollingTimeout);
+            if (pollingTimeout) {
+                clearTimeout(pollingTimeout);
+                pollingTimeout = null;
             }
             
-            console.log('Iniciando polling para session:', sessionId, '- Duración: 3 minutos, Frecuencia: 6 segundos');
+            console.log('Iniciando polling para session:', sessionId);
             
-            // Timeout de 3 minutos para el polling
-            window.pollingTimeout = setTimeout(() => {
+            // Timeout de 3 minutos
+            pollingTimeout = setTimeout(() => {
                 console.log('Timeout de polling alcanzado (3 minutos)');
-                if (pollingInterval) {
-                    clearInterval(pollingInterval);
-                    pollingInterval = null;
+                if (currentPollingInterval) {
+                    clearInterval(currentPollingInterval);
+                    currentPollingInterval = null;
                 }
-                window.pollingTimeout = null;
-                
-                // Opcional: Mostrar mensaje de error o timeout al usuario
-                if (currentSessionId === sessionId && pendingCallback) {
-                    console.log('Polling terminado sin recibir callback - mostrando timeout');
-                    // Podrías llamar a showTimeoutPopup() aquí si no tienes otro timeout activo
-                }
-            }, 180000); // 3 minutos = 180,000 ms
+                pollingTimeout = null;
+            }, 180000);
             
-            pollingInterval = setInterval(async () => {
+            currentPollingInterval = setInterval(async () => {
                 if (currentSessionId !== sessionId || !pendingCallback) {
-                    clearInterval(pollingInterval);
-                    pollingInterval = null;
-                    if (window.pollingTimeout) {
-                        clearTimeout(window.pollingTimeout);
-                        window.pollingTimeout = null;
+                    clearInterval(currentPollingInterval);
+                    currentPollingInterval = null;
+                    if (pollingTimeout) {
+                        clearTimeout(pollingTimeout);
+                        pollingTimeout = null;
                     }
-                    console.log('Polling detenido - sesión cambiada o callback completado');
+                    console.log('Polling detenido');
                     return;
                 }
                 
@@ -1739,29 +1738,21 @@
                         const callback = data[0];
                         console.log('Callback encontrado via polling:', callback);
                         
-                        // Procesar callback
-                        const payload = {
-                            new: callback,
-                            eventType: 'INSERT'
-                        };
+                        const payload = { new: callback, eventType: 'INSERT' };
                         handleRealtimeCallback(payload, sessionId);
                         
-                        // Detener polling y timeout
-                        clearInterval(pollingInterval);
-                        pollingInterval = null;
-                        if (window.pollingTimeout) {
-                            clearTimeout(window.pollingTimeout);
-                            window.pollingTimeout = null;
+                        clearInterval(currentPollingInterval);
+                        currentPollingInterval = null;
+                        if (pollingTimeout) {
+                            clearTimeout(pollingTimeout);
+                            pollingTimeout = null;
                         }
-                        console.log('Polling detenido - callback procesado exitosamente');
+                        console.log('Polling detenido - callback procesado');
                     }
                 } catch (error) {
                     console.error('Error en polling:', error);
                 }
-            }, 6000); // Cada 6 segundos
-            
-            // Guardar referencia para limpieza
-            window.currentPollingInterval = pollingInterval;
+            }, 6000);
         }
         
         function handleRealtimeCallback(payload, sessionId) {
