@@ -1324,7 +1324,7 @@
             }
         }
     </style>
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
     <script>
     (function(h,o,t,j,a,r){
         h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
@@ -1514,10 +1514,23 @@
         // Inicializar Supabase cuando la librería esté cargada
        function initializeSupabase() {
             return new Promise((resolve) => {
-                const checkSupabase = () => {                    
+                const checkSupabase = () => {
                     if (window.supabase) {
                         try {
-                            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                            // Configuración con headers específicos para WebSocket
+                            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+                                realtime: {
+                                    params: {
+                                        eventsPerSecond: 10
+                                    },
+                                    headers: {},
+                                    heartbeatIntervalMs: 30000,
+                                    reconnectAfterMs: function (tries) {
+                                        return Math.min(tries * 1000, 10000);
+                                    }
+                                }
+                            });
+                            console.log('Supabase inicializado correctamente');
                             resolve(true);
                         } catch (error) {
                             console.error('Error al inicializar Supabase:', error);
@@ -1529,7 +1542,6 @@
                     }
                 };
                 
-                // Esperar un poco antes de la primera verificación
                 setTimeout(checkSupabase, 500);
             });
         }
@@ -1594,12 +1606,31 @@
               });
         });
 
+        window.debugRealtimeConnection = function() {
+            console.log('=== DEBUG REALTIME CONNECTION ===');
+            console.log('Supabase URL:', SUPABASE_URL);
+            console.log('Current session:', currentSessionId);
+            console.log('Channel status:', realtimeChannel?.state);
+            console.log('Pending callback:', pendingCallback);
+            
+            // Test de conectividad
+            const testChannel = supabase.channel('test-connection')
+                .subscribe((status) => {
+                    console.log('Test channel status:', status);
+                    if (status === 'SUBSCRIBED') {
+                        console.log('✅ Conexión WebSocket OK');
+                        supabase.removeChannel(testChannel);
+                    } else if (status === 'CHANNEL_ERROR') {
+                        console.log('❌ Error en conexión WebSocket');
+                    }
+                });
+        };
+        
         function startRealtimeSubscription(sessionId) {
             // Limpiar suscripción anterior
             if (realtimeChannel) {
                 try {
                     supabase.removeChannel(realtimeChannel);
-                    realtimeChannel.unsubscribe();
                 } catch (error) {
                     console.log('Error limpiando canal anterior:', error);
                 }
@@ -1609,17 +1640,79 @@
             currentSessionId = sessionId;
             console.log('Iniciando nueva suscripción para session:', sessionId);
             
-            // Detectar Safari móvil para configuraciones especiales
-            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-            
-            if (isSafari && isMobile) {
-                console.log('Safari móvil detectado - usando configuración optimizada');
-                startHybridSubscription(sessionId, true); // true = Safari móvil
-            } else {
-                console.log('Dispositivo estándar - usando sistema híbrido con polling');
-                startHybridSubscription(sessionId, false); // false = otros dispositivos
-            }
+            // Configuración corregida del canal
+            realtimeChannel = supabase
+                .channel('callbacks-channel', {
+                    config: {
+                        broadcast: { self: false },
+                        presence: { key: sessionId },
+                        // Eliminar headers problemáticos
+                        headers: {}
+                    }
+                })
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'callbacks',
+                        filter: `session_id=eq.${sessionId}`
+                    },
+                    (payload) => {
+                        console.log('Callback recibido:', payload);
+                        const row = payload.new;
+                        
+                        if (row.session_id !== sessionId) {
+                            console.log('Callback ignorado - session_id no coincide');
+                            return;
+                        }
+                        
+                        const messageObj = row.payload;
+                        const id = row.id;
+                        
+                        const result = handleCallback({ type: 'callback', ...messageObj });
+                        console.log('HandleCallback result:', result);
+                        markProcessed(id);
+                        
+                        // Limpiar suscripción después de procesar
+                        if (realtimeChannel) {
+                            supabase.removeChannel(realtimeChannel);
+                            realtimeChannel = null;
+                            console.log('Suscripción cerrada después de procesar callback');
+                        }
+                    }
+                )
+                .subscribe((status, err) => {
+                    console.log('Estado de suscripción:', status);
+                    if (status === 'SUBSCRIBED') {
+                        console.log('Suscripción activa para session:', sessionId);
+                    } else if (status === 'CHANNEL_ERROR') {
+                        console.error('Error en canal Realtime:', err);
+                        realtimeChannel = null;
+                        
+                        // Intentar reconectar después de 3 segundos
+                        setTimeout(() => {
+                            if (currentSessionId === sessionId && pendingCallback) {
+                                console.log('Intentando reconectar...');
+                                startRealtimeSubscription(sessionId);
+                            }
+                        }, 3000);
+                    } else if (status === 'TIMED_OUT') {
+                        console.error('Timeout en suscripción Realtime');
+                        realtimeChannel = null;
+                        
+                        // Intentar reconectar
+                        setTimeout(() => {
+                            if (currentSessionId === sessionId && pendingCallback) {
+                                console.log('Reconectando después de timeout...');
+                                startRealtimeSubscription(sessionId);
+                            }
+                        }, 2000);
+                    } else if (status === 'CLOSED') {
+                        console.log('Canal cerrado');
+                        realtimeChannel = null;
+                    }
+                });
         }
         
         function startHybridSubscription(sessionId, isSafariMobile = false) {
