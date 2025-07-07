@@ -3536,17 +3536,25 @@
                 }
             };
         
+            // Obtener todas las opciones de la barra lateral
+            const options = document.querySelectorAll('.sidebar-option');
+            
             // Manejar clicks en opciones de la barra lateral
-            document.querySelectorAll('.sidebar-option').forEach(option => {
+            options.forEach(option => {
                 option.addEventListener('click', function() {
                     const optionName = this.dataset.option;
                     
                     if (optionName === 'propiedades') {
-                        // Activar modo propiedades
+                        // Remover clase active de todas las opciones
                         options.forEach(opt => opt.classList.remove('active'));
+                        // Activar modo propiedades
                         this.classList.add('active');
                         togglePropertiesMode();
-                        showChatInterface();
+                        
+                        // Si no hay chat activo, mostrar la interfaz
+                        if (!currentSessionId) {
+                            showChatInterface();
+                        }
                     } else {
                         // Para cualquier otra opción, mostrar popup y salir del modo propiedades
                         if (isPropertiesMode) {
@@ -3555,43 +3563,32 @@
                         showLoginPopup();
                     }
                 });
+            });
+        
+            // Manejar clicks en opciones del submenu
+            const submenuOptions = document.querySelectorAll('.submenu-option');
+            submenuOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const submenuType = this.dataset.submenu;
                     
-                    // Añadir clase active a la opción seleccionada
+                    // Actualizar estado activo
+                    submenuOptions.forEach(opt => opt.classList.remove('active'));
                     this.classList.add('active');
-                    const activeIcon = this.querySelector('.sidebar-icon');
-                    if (iconStates[optionType]) {
-                        activeIcon.src = iconStates[optionType].active;
+                    
+                    // Actualizar iconos
+                    updateSubmenuIcons(submenuType);
+                    
+                    // Mostrar/ocultar barra superior
+                    const topBar = document.getElementById('topBar');
+                    if (submenuType === 'buscar') {
+                        topBar.style.display = 'flex';
+                        document.querySelector('.main-area').style.paddingTop = '60px';
+                    } else {
+                        topBar.style.display = 'none';
+                        document.querySelector('.main-area').style.paddingTop = '0';
                     }
                     
-                    // Aquí puedes añadir lógica específica para cada opción
-                    handleSidebarOptionClick(optionType);
-                });
-
-                // Manejar clicks en opciones del submenu
-                const submenuOptions = document.querySelectorAll('.submenu-option');
-                submenuOptions.forEach(option => {
-                    option.addEventListener('click', function() {
-                        const submenuType = this.dataset.submenu;
-                        
-                        // Actualizar estado activo
-                        submenuOptions.forEach(opt => opt.classList.remove('active'));
-                        this.classList.add('active');
-                        
-                        // Actualizar iconos
-                        updateSubmenuIcons(submenuType);
-                        
-                        // Mostrar/ocultar barra superior
-                        const topBar = document.getElementById('topBar');
-                        if (submenuType === 'buscar') {
-                            topBar.style.display = 'flex';
-                            document.querySelector('.main-area').style.paddingTop = '60px';
-                        } else {
-                            topBar.style.display = 'none';
-                            document.querySelector('.main-area').style.paddingTop = '0';
-                        }
-                        
-                        currentSubmenuOption = submenuType;
-                    });
+                    currentSubmenuOption = submenuType;
                 });
             });
         }
@@ -3622,21 +3619,65 @@
         }
         
         function startNewChat() {
-            // Limpiar conversación actual
-            clearChat();
+            // Limpiar suscripción activa
+            if (realtimeChannel) {
+                try {
+                    supabase.removeChannel(realtimeChannel);
+                    realtimeChannel.unsubscribe();
+                } catch (error) {
+                    console.log('Error limpiando canal en newChat:', error);
+                }
+                realtimeChannel = null;
+            }
             
-            // Volver a pantalla de bienvenida
-            showWelcomeScreen();
+            // Resetear variables de sesión
+            currentSessionId = null;
+            currentConversation = [];
+            currentTopic = null;
+            pendingCallback = false;
+            shownProperties = [];
             
-            // Resetear barra lateral a "Propiedades"
-            document.querySelectorAll('.sidebar-option').forEach(opt => {
-                opt.classList.remove('active');
-            });
-            document.querySelector('[data-option="propiedades"]').classList.add('active');
+            // Resetear título de conversación
+            document.getElementById('conversationTitle').textContent = 'Nuevo chat';
+            
+            // Mostrar pantalla de bienvenida
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            const chatScreen = document.getElementById('chatScreen');
+            
+            chatScreen.style.display = 'none';
+            chatScreen.classList.remove('fade-in');
+            welcomeScreen.style.display = 'flex';
+            welcomeScreen.classList.remove('fade-out');
+        
+            // Limpiar mensajes
+            document.getElementById('chatMessages').innerHTML = '';
+        
+            shownTimeoutPopups.clear();
             
             console.log('Nuevo chat iniciado');
         }
         
+        function showChatInterface() {
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            const chatScreen = document.getElementById('chatScreen');
+            
+            // Si ya estamos en chat, no hacer nada
+            if (chatScreen.style.display === 'flex') {
+                return;
+            }
+            
+            // Si no hay conversación activa, mostrar la pantalla de bienvenida
+            if (!currentConversation || currentConversation.length === 0) {
+                welcomeScreen.style.display = 'flex';
+                chatScreen.style.display = 'none';
+            } else {
+                // Si hay conversación, mostrar el chat
+                welcomeScreen.style.display = 'none';
+                chatScreen.style.display = 'flex';
+                chatScreen.classList.add('fade-in');
+            }
+        }
+       
         // Función para limpiar el chat
         function clearChat() {
             const messagesContainer = document.querySelector('.chat-messages');
@@ -3782,13 +3823,6 @@
             });
         }
         
-        function startNewChat() {
-            // Resetear chat
-            document.getElementById('conversationTitle').textContent = 'Nuevo chat';
-            
-            // Aquí puedes agregar lógica para limpiar el chat actual
-            console.log('Iniciando nuevo chat...');
-        }
     </script>
 </body>
 </html>
