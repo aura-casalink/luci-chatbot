@@ -917,24 +917,25 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 30px;
-            padding-top: 0px;
-            margin-top: 20px;
+            padding: 20px 20px 0 20px;
+            margin-top: 0px;
         }
         
         .submenu-title {
             font-family: 'Graphik', sans-serif;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 24px;
             color: #333;
-            margin-top: 2px;
+            margin-top: 0px;
+            line-height: 1.2;
         }
         
         .new-chat-circular {
             background: #333;
             color: white;
             border: none;
-            border-radius: 15px;
-            padding: 6px 12px;
+            border-radius: 8px;
+            padding: 8px 16px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -942,12 +943,38 @@
             font-family: 'Graphik', sans-serif;
             font-size: 12px;
             font-weight: 500;
-            gap: 4px;
+            gap: 6px;
             white-space: nowrap;
+            min-width: auto;
+            width: auto;
+            height: auto;
+            transition: all 0.2s ease;
         }
-                
+        
         .new-chat-circular:hover {
-            transform: scale(1.1);
+            background: #555;
+            transform: scale(1.05);
+        }
+
+       /* Forzar estilo rectangular para nuevo chat */
+        .submenu-header .new-chat-circular {
+            background: #333 !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 8px !important;
+            padding: 8px 16px !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            font-family: 'Graphik', sans-serif !important;
+            font-size: 12px !important;
+            font-weight: 500 !important;
+            gap: 6px !important;
+            white-space: nowrap !important;
+            width: auto !important;
+            height: auto !important;
+            min-width: auto !important;
         }
         
         .submenu-options {
