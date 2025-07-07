@@ -789,14 +789,14 @@
         
         /* Logo AURA */
         .sidebar-logo {
-            padding: 0 20px 30px 20px;
+            padding: 0 0 30px 35px;
             text-align: left;
         }
         
         .sidebar.collapsed .sidebar-logo {
-            padding: 0 10px 30px 10px;
+            padding: 0 0 30px 28px;
         }
-        
+                
         .aura-logo {
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
@@ -917,7 +917,8 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 30px;
-            padding-top: 20px;
+            padding-top: 0px;
+            margin-top: 20px;
         }
         
         .submenu-title {
@@ -932,18 +933,19 @@
             background: #333;
             color: white;
             border: none;
-            border-radius: 20px;
-            padding: 8px 16px;
+            border-radius: 15px;
+            padding: 6px 12px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Graphik', sans-serif;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 500;
-            gap: 8px;
+            gap: 4px;
+            white-space: nowrap;
         }
-        
+                
         .new-chat-circular:hover {
             transform: scale(1.1);
         }
@@ -1110,6 +1112,7 @@
             width: 90%;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
         }
         
         .popup-title {
@@ -1182,12 +1185,24 @@
         .popup-close {
             position: absolute;
             top: 15px;
-            left: 20px;
+            left: 15px;
             background: none;
             border: none;
-            font-size: 24px;
+            font-size: 20px;
             cursor: pointer;
-            color: #999;
+            color: #666;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        
+        .popup-close:hover {
+            background: #f0f0f0;
+            color: #333;
         }
         
         /* =================== LOGO AURA MÁS GRANDE =================== */
@@ -1283,9 +1298,11 @@
         
         .submenu-title {
             font-family: 'Graphik', sans-serif;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 18px;
             color: #333;
+            margin-top: 0px;
+            line-height: 1.2;
         }
         
         .new-chat-circular {
