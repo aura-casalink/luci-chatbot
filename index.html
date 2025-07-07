@@ -1071,6 +1071,251 @@
             margin-left: 330px;
             width: calc(100% - 330px);
         } 
+
+       /* =================== POPUP CREAR CUENTA =================== */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+        
+        .popup-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .popup-title {
+            font-family: 'Graphik', sans-serif;
+            font-weight: 600;
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .popup-subtitle {
+            font-family: 'Graphik', sans-serif;
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .login-method {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .login-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Graphik', sans-serif;
+            font-size: 14px;
+        }
+        
+        .login-btn:hover {
+            border-color: #007bff;
+            background: #f8f9ff;
+        }
+        
+        .login-btn.active {
+            border-color: #007bff;
+            background: #007bff;
+            color: white;
+        }
+        
+        .phone-input, .email-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-family: 'Graphik', sans-serif;
+        }
+        
+        .send-code-btn {
+            width: 100%;
+            padding: 15px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            cursor: pointer;
+            font-family: 'Graphik', sans-serif;
+            font-weight: 500;
+        }
+        
+        .popup-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        /* =================== LOGO AURA MÁS GRANDE =================== */
+        .sidebar-logo {
+            font-size: 28px !important;
+            font-weight: 700 !important;
+            margin-left: 5px;
+        }
+        
+        /* =================== BARRA SUPERIOR PROPIEDADES =================== */
+        .top-bar {
+            display: none;
+            height: 60px;
+            background: white;
+            border-bottom: 1px solid #e0e6ed;
+            padding: 0 30px;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 330px;
+            right: 0;
+            z-index: 100;
+            transition: left 0.3s ease;
+        }
+        
+        .container.sidebar-collapsed .top-bar {
+            left: 80px;
+        }
+        
+        .conversation-title {
+            font-family: 'Graphik', sans-serif;
+            font-weight: 500;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .search-filters {
+            display: flex;
+            gap: 0;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            overflow: hidden;
+        }
+        
+        .filter-btn {
+            padding: 10px 20px;
+            background: white;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-family: 'Graphik', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn:hover {
+            background: #333;
+            color: white;
+        }
+        
+        .filter-btn:not(:last-child) {
+            border-right: 1px solid #ccc;
+        }
+        
+        /* =================== SUBMENU MEJORADO =================== */
+        .sidebar-submenu {
+            position: fixed;
+            left: 80px;
+            top: 0;
+            width: 250px;
+            height: 100%;
+            background: white;
+            border-right: 1px solid #e0e6ed;
+            padding: 20px;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 200;
+        }
+        
+        .sidebar-submenu.visible {
+            transform: translateX(0);
+        }
+        
+        .submenu-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-top: 10px;
+        }
+        
+        .submenu-title {
+            font-family: 'Graphik', sans-serif;
+            font-weight: 600;
+            font-size: 18px;
+            color: #333;
+        }
+        
+        .new-chat-circular {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #333;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 300;
+        }
+        
+        .submenu-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 0;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .submenu-option:hover {
+            background: #f8f9fa;
+        }
+        
+        .submenu-option.active {
+            background: #f0f7ff;
+            color: #007bff;
+        }
+        
+        .submenu-icon {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .submenu-option span {
+            font-family: 'Graphik', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+        }
        
        @media (max-width: 768px) {
             /* =================== BIENVENIDA MÓVIL =================== */
@@ -1267,6 +1512,14 @@
     
     <!-- Submenu deslizable para propiedades -->
     <div class="sidebar-submenu" id="submenu">
+        <!-- Barra Superior Propiedades -->
+        <div class="top-bar" id="topBar">
+            <div class="conversation-title" id="conversationTitle">Nuevo chat</div>
+            <div class="search-filters">
+                <button class="filter-btn">¿Dónde?</button>
+                <button class="filter-btn">Presupuesto</button>
+            </div>
+        </div>
         <div class="submenu-header">
             <div class="submenu-title">Propiedades</div>
             <button class="new-chat-circular" onclick="startNewChat()" title="Nuevo Chat">+</button>
@@ -1340,6 +1593,30 @@
                 </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Popup Crear Cuenta -->
+    <div class="popup-overlay" id="loginPopup">
+        <div class="popup-content">
+            <button class="popup-close" onclick="closeLoginPopup()">&times;</button>
+            <h2 class="popup-title">Crea tu cuenta</h2>
+            <p class="popup-subtitle">Crear tu cuenta es gratis y muy sencillo</p>
+            
+            <div class="login-method">
+                <button class="login-btn active" onclick="selectLoginMethod('whatsapp')">WhatsApp</button>
+                <button class="login-btn" onclick="selectLoginMethod('email')">Email</button>
+            </div>
+            
+            <div id="whatsappLogin">
+                <input type="tel" class="phone-input" placeholder="+34 123 456 789" id="phoneInput">
+            </div>
+            
+            <div id="emailLogin" style="display: none;">
+                <input type="email" class="email-input" placeholder="tu@email.com" id="emailInput">
+            </div>
+            
+            <button class="send-code-btn" onclick="sendLoginCode()">Enviar código</button>
         </div>
     </div>
 
@@ -3262,17 +3539,22 @@
             // Manejar clicks en opciones de la barra lateral
             document.querySelectorAll('.sidebar-option').forEach(option => {
                 option.addEventListener('click', function() {
-                    const optionType = this.dataset.option;
+                    const optionName = this.dataset.option;
                     
-                    // Remover clase active de todas las opciones
-                    document.querySelectorAll('.sidebar-option').forEach(opt => {
-                        opt.classList.remove('active');
-                        const icon = opt.querySelector('.sidebar-icon');
-                        const dataOption = opt.dataset.option;
-                        if (iconStates[dataOption]) {
-                            icon.src = iconStates[dataOption].inactive;
+                    if (optionName === 'propiedades') {
+                        // Activar modo propiedades
+                        options.forEach(opt => opt.classList.remove('active'));
+                        this.classList.add('active');
+                        togglePropertiesMode();
+                        showChatInterface();
+                    } else {
+                        // Para cualquier otra opción, mostrar popup y salir del modo propiedades
+                        if (isPropertiesMode) {
+                            exitPropertiesMode();
                         }
-                    });
+                        showLoginPopup();
+                    }
+                });
                     
                     // Añadir clase active a la opción seleccionada
                     this.classList.add('active');
@@ -3283,6 +3565,33 @@
                     
                     // Aquí puedes añadir lógica específica para cada opción
                     handleSidebarOptionClick(optionType);
+                });
+
+                // Manejar clicks en opciones del submenu
+                const submenuOptions = document.querySelectorAll('.submenu-option');
+                submenuOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        const submenuType = this.dataset.submenu;
+                        
+                        // Actualizar estado activo
+                        submenuOptions.forEach(opt => opt.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Actualizar iconos
+                        updateSubmenuIcons(submenuType);
+                        
+                        // Mostrar/ocultar barra superior
+                        const topBar = document.getElementById('topBar');
+                        if (submenuType === 'buscar') {
+                            topBar.style.display = 'flex';
+                            document.querySelector('.main-area').style.paddingTop = '60px';
+                        } else {
+                            topBar.style.display = 'none';
+                            document.querySelector('.main-area').style.paddingTop = '0';
+                        }
+                        
+                        currentSubmenuOption = submenuType;
+                    });
                 });
             });
         }
@@ -3342,7 +3651,144 @@
         // Inicializar cuando cargue la página
         document.addEventListener('DOMContentLoaded', function() {
             initSidebar();
-        });   
+        });  
+        // =================== POPUP CREAR CUENTA ===================
+        function showLoginPopup() {
+            document.getElementById('loginPopup').style.display = 'flex';
+        }
+        
+        function closeLoginPopup() {
+            document.getElementById('loginPopup').style.display = 'none';
+        }
+        
+        function selectLoginMethod(method) {
+            const buttons = document.querySelectorAll('.login-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (method === 'whatsapp') {
+                buttons[0].classList.add('active');
+                document.getElementById('whatsappLogin').style.display = 'block';
+                document.getElementById('emailLogin').style.display = 'none';
+            } else {
+                buttons[1].classList.add('active');
+                document.getElementById('whatsappLogin').style.display = 'none';
+                document.getElementById('emailLogin').style.display = 'block';
+            }
+        }
+        
+        function sendLoginCode() {
+            const isWhatsApp = document.querySelector('.login-btn.active').textContent === 'WhatsApp';
+            
+            if (isWhatsApp) {
+                const phone = document.getElementById('phoneInput').value;
+                if (!phone) {
+                    alert('Por favor, introduce tu número de teléfono');
+                    return;
+                }
+                // Aquí integrarías con tu servicio de WhatsApp
+                console.log('Enviando código SMS a:', phone);
+            } else {
+                const email = document.getElementById('emailInput').value;
+                if (!email) {
+                    alert('Por favor, introduce tu email');
+                    return;
+                }
+                // Aquí integrarías con tu servicio de email
+                console.log('Enviando código email a:', email);
+            }
+            
+            alert('Código enviado! (En desarrollo)');
+            closeLoginPopup();
+        }
+        
+        // =================== GESTIÓN BARRA LATERAL ===================
+        let isPropertiesMode = false;
+        let currentSubmenuOption = 'buscar';
+        
+        function togglePropertiesMode() {
+            const sidebar = document.querySelector('.sidebar');
+            const container = document.querySelector('.container');
+            const submenu = document.getElementById('submenu');
+            const topBar = document.getElementById('topBar');
+            
+            isPropertiesMode = true;
+            
+            // Contraer sidebar
+            sidebar.classList.add('collapsed');
+            container.classList.add('sidebar-collapsed');
+            
+            // Mostrar submenu
+            setTimeout(() => {
+                submenu.classList.add('visible');
+                container.classList.add('submenu-open');
+                container.classList.remove('sidebar-collapsed');
+                
+                // Mostrar barra superior solo si estamos en "buscar"
+                if (currentSubmenuOption === 'buscar') {
+                    topBar.style.display = 'flex';
+                    document.querySelector('.main-area').style.paddingTop = '60px';
+                }
+            }, 300);
+        }
+        
+        function exitPropertiesMode() {
+            const sidebar = document.querySelector('.sidebar');
+            const container = document.querySelector('.container');
+            const submenu = document.getElementById('submenu');
+            const topBar = document.getElementById('topBar');
+            
+            isPropertiesMode = false;
+            
+            // Ocultar barra superior
+            topBar.style.display = 'none';
+            document.querySelector('.main-area').style.paddingTop = '0';
+            
+            // Ocultar submenu
+            submenu.classList.remove('visible');
+            container.classList.remove('submenu-open');
+            
+            // Expandir sidebar
+            setTimeout(() => {
+                sidebar.classList.remove('collapsed');
+                container.classList.add('sidebar-collapsed');
+                
+                setTimeout(() => {
+                    container.classList.remove('sidebar-collapsed');
+                }, 300);
+            }, 300);
+        }
+
+        function updateSubmenuIcons(activeOption) {
+            const icons = {
+                buscar: {
+                    active: 'https://cdn-icons-png.flaticon.com/512/9479/9479330.png',
+                    inactive: 'https://cdn-icons-png.flaticon.com/512/9479/9479251.png'
+                },
+                favoritos: {
+                    active: 'https://cdn-icons-png.flaticon.com/512/9131/9131566.png',
+                    inactive: 'https://cdn-icons-png.flaticon.com/512/9187/9187491.png'
+                },
+                ofertas: {
+                    active: 'https://cdn-icons-png.flaticon.com/512/879/879859.png',
+                    inactive: 'https://cdn-icons-png.flaticon.com/512/879/879757.png'
+                }
+            };
+            
+            Object.keys(icons).forEach(option => {
+                const element = document.querySelector(`[data-submenu="${option}"] .submenu-icon`);
+                if (element) {
+                    element.src = option === activeOption ? icons[option].active : icons[option].inactive;
+                }
+            });
+        }
+        
+        function startNewChat() {
+            // Resetear chat
+            document.getElementById('conversationTitle').textContent = 'Nuevo chat';
+            
+            // Aquí puedes agregar lógica para limpiar el chat actual
+            console.log('Iniciando nuevo chat...');
+        }
     </script>
 </body>
 </html>
