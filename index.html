@@ -790,7 +790,7 @@
         /* Logo AURA */
         .sidebar-logo {
             padding: 0 20px 30px 20px;
-            text-align: center;
+            text-align: left;
         }
         
         .sidebar.collapsed .sidebar-logo {
@@ -807,6 +807,19 @@
         
         .sidebar.collapsed .aura-logo {
             font-size: 20px;
+        }
+        
+        .sidebar.collapsed .aura-logo::before {
+            content: 'A';
+        }
+        
+        .sidebar.collapsed .aura-logo {
+            font-size: 0;
+        }
+        
+        .sidebar.collapsed .aura-logo::before {
+            font-size: 28px;
+            font-weight: 700;
         }
         
         .sidebar-options {
@@ -870,13 +883,14 @@
             content: '';
             position: absolute;
             right: 0;
-            top: 0;
-            height: 100%;
-            width: 4px;
-            background-color: #007bff;
-            border-radius: 2px 0 0 2px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 24px;
+            width: 3px;
+            background-color: #000;
+            border-radius: 0;
         }
-        
+                
         /* Submenu deslizable */
         .sidebar-submenu {
             position: fixed;
@@ -899,33 +913,35 @@
         }
         
         .submenu-header {
-            padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 30px;
+            padding-top: 20px;
         }
         
         .submenu-title {
             font-family: 'Graphik', sans-serif;
             font-weight: 700;
-            font-size: 18px;
-            color: #000;
+            font-size: 16px;
+            color: #333;
+            margin-top: 2px;
         }
         
         .new-chat-circular {
-            background-color: #000;
+            background: #333;
             color: white;
             border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            border-radius: 20px;
+            padding: 8px 16px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            transition: all 0.2s ease;
+            font-family: 'Graphik', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            gap: 8px;
         }
         
         .new-chat-circular:hover {
@@ -1135,8 +1151,8 @@
         }
         
         .login-btn.active {
-            border-color: #007bff;
-            background: #007bff;
+            border-color: #000;
+            background: #000;
             color: white;
         }
         
@@ -1150,10 +1166,10 @@
             font-family: 'Graphik', sans-serif;
         }
         
-        .send-code-btn {
+       .send-code-btn {
             width: 100%;
             padding: 15px;
-            background: #007bff;
+            background: #000;
             color: white;
             border: none;
             border-radius: 12px;
@@ -1166,7 +1182,7 @@
         .popup-close {
             position: absolute;
             top: 15px;
-            right: 20px;
+            left: 20px;
             background: none;
             border: none;
             font-size: 24px;
@@ -1302,8 +1318,9 @@
         }
         
         .submenu-option.active {
-            background: #f0f7ff;
-            color: #007bff;
+            background: transparent;
+            color: #000;
+            font-weight: 700;
         }
         
         .submenu-icon {
@@ -1522,7 +1539,7 @@
         </div>
         <div class="submenu-header">
             <div class="submenu-title">Propiedades</div>
-            <button class="new-chat-circular" onclick="startNewChat()" title="Nuevo Chat">+</button>
+            <button class="new-chat-circular" onclick="startNewChat()">+ Nuevo chat</button>
         </div>
         <div class="submenu-options">
             <div class="submenu-option active" data-submenu="buscar">
@@ -2319,6 +2336,45 @@
             // Actualizar disclaimer
             const disclaimer = document.querySelector('.disclaimer');
             if (disclaimer) disclaimer.innerHTML = texts.disclaimer;
+
+            // Actualizar textos de la sidebar
+            const sidebarTexts = {
+                spanish: {
+                    propiedades: 'Propiedades',
+                    financiacion: 'Financiación', 
+                    tasaciones: 'Tasaciones',
+                    auditorias: 'Auditorías',
+                    mudanzas: 'Mudanzas',
+                    reformas: 'Reformas',
+                    suministros: 'Gestión Suministros'
+                },
+                english: {
+                    propiedades: 'Properties',
+                    financiacion: 'Financing',
+                    tasaciones: 'Valuations', 
+                    auditorias: 'Audits',
+                    mudanzas: 'Moving',
+                    reformas: 'Renovations',
+                    suministros: 'Utilities Management'
+                },
+                french: {
+                    propiedades: 'Propriétés',
+                    financiacion: 'Financement',
+                    tasaciones: 'Évaluations',
+                    auditorias: 'Audits', 
+                    mudanzas: 'Déménagement',
+                    reformas: 'Rénovations',
+                    suministros: 'Gestion Services'
+                }
+            };
+            
+            // Actualizar textos de sidebar
+            Object.keys(sidebarTexts[currentLanguage]).forEach(key => {
+                const element = document.querySelector(`[data-option="${key}"] .sidebar-text`);
+                if (element) {
+                    element.textContent = sidebarTexts[currentLanguage][key];
+                }
+            });        
         }
         
 
@@ -3754,22 +3810,16 @@
             
             isPropertiesMode = true;
             
-            // Contraer sidebar
+            // Contraer sidebar y mostrar submenu al mismo tiempo
             sidebar.classList.add('collapsed');
-            container.classList.add('sidebar-collapsed');
+            submenu.classList.add('visible');
+            container.classList.add('submenu-open');
             
-            // Mostrar submenu
-            setTimeout(() => {
-                submenu.classList.add('visible');
-                container.classList.add('submenu-open');
-                container.classList.remove('sidebar-collapsed');
-                
-                // Mostrar barra superior solo si estamos en "buscar"
-                if (currentSubmenuOption === 'buscar') {
-                    topBar.style.display = 'flex';
-                    document.querySelector('.main-area').style.paddingTop = '60px';
-                }
-            }, 300);
+            // Mostrar barra superior solo si estamos en "buscar"
+            if (currentSubmenuOption === 'buscar') {
+                topBar.style.display = 'flex';
+                document.querySelector('.main-area').style.paddingTop = '60px';
+            }
         }
         
         function exitPropertiesMode() {
