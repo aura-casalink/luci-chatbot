@@ -963,7 +963,8 @@
         
         .sidebar.expanded .sidebar-option {
             padding: 15px 20px;
-            justify-content: flex-start; 
+            justify-content: flex-start !important;
+            transition: background-color 0.2s ease !important;
         }
         
         .sidebar-option:hover {
@@ -985,13 +986,22 @@
             opacity: 1 !important;
             z-index: 999 !important;
         }
-        
+
+        .sidebar-icon,
+        .sidebar-option .sidebar-icon {
+            transition: none !important;
+            -webkit-transition: none !important;
+            -moz-transition: none !important;
+            -o-transition: none !important;
+        }
+                
         /* Estado expandido */
         .sidebar.expanded .sidebar-icon {
             margin-left: 0 !important;
-            margin-right: 15px !important;
+            margin-right: 12px !important;
             margin-top: 0 !important;
             margin-bottom: 0 !important;
+            transition: none !important;
         }
         
        .sidebar:not(.expanded) .sidebar-icon {
