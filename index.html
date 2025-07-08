@@ -1655,6 +1655,9 @@
             updateTexts();
             supabaseClient = supabase;
             initSidebar();
+            setTimeout(() => {
+                initSidebarExtras();
+            }, 100);
              if (supabase) {
                 await checkExistingSession();
             }
@@ -3597,7 +3600,6 @@
             
             // Inicializar iconos correctos
             updateSidebarIcons();
-            initSidebarExtras()
         }
         
         function setActiveSidebarOption(optionName) {
