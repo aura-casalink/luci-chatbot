@@ -794,7 +794,7 @@
             position: relative;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             height: 80px;
             width: 100%;
         }
@@ -981,12 +981,15 @@
         
         .sidebar-text {
             font-weight: 500;
-            transition: all 0.3s ease;
-            display: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            display: block;
         }
         
-      .sidebar.expanded .sidebar-text {
-            display: block; /* Visible en estado expandido */
+        .sidebar.expanded .sidebar-text {
+            opacity: 1;
+            visibility: visible;
         }
         
         /* Indicador visual para sidebar contraído */
@@ -1440,12 +1443,7 @@
             color: #333;
         }
         
-        /* =================== LOGO AURA MÁS GRANDE =================== */
-        .sidebar-logo {
-            font-size: 28px !important;
-            font-weight: 700 !important;
-            margin-left: 5px;
-        }
+    
         
         /* =================== BARRA SUPERIOR PROPIEDADES =================== */
         .top-bar {
@@ -2220,8 +2218,12 @@
                 const checkSupabase = () => {
                     if (window.supabase) {
                         try {
-                            // Configuración con headers específicos para WebSocket
                             supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+                                auth: {
+                                    autoRefreshToken: true,
+                                    persistSession: true,
+                                    detectSessionInUrl: true
+                                },
                                 realtime: {
                                     params: {
                                         eventsPerSecond: 10
@@ -2233,7 +2235,7 @@
                                     }
                                 }
                             });
-                            console.log('Supabase inicializado correctamente');
+                            console.log('Supabase inicializado correctamente con Auth');
                             resolve(true);
                         } catch (error) {
                             console.error('Error al inicializar Supabase:', error);
@@ -2258,6 +2260,7 @@
             await initializeApp();
             updateTexts();
             supabaseClient = supabase;
+            await checkExistingSession();
             
             // Exponemos estas dos funciones para poder invocarlas desde consola o botones
             window.activateTestMode = function(sessionId) {
@@ -4312,8 +4315,11 @@
         function closeLoginPopup() {
             document.getElementById('loginPopup').style.display = 'none';
         }
-        
+
+        let currentLoginMethod = 'whatsapp';
+
         function selectLoginMethod(method) {
+            currentLoginMethod = method;
             const buttons = document.querySelectorAll('.login-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
             
@@ -4328,30 +4334,200 @@
             }
         }
         
-        function sendLoginCode() {
-            const isWhatsApp = document.querySelector('.login-btn.active').textContent === 'WhatsApp';
+        async function sendLoginCode() {
+            const isWhatsApp = currentLoginMethod === 'whatsapp';
             
-            if (isWhatsApp) {
-                const phone = document.getElementById('phoneInput').value;
-                if (!phone) {
-                    alert('Por favor, introduce tu número de teléfono');
-                    return;
+            try {
+                if (isWhatsApp) {
+                    const phone = document.getElementById('phoneInput').value;
+                    if (!phone) {
+                        alert('Por favor, introduce tu número de teléfono');
+                        return;
+                    }
+                    
+                    // Enviar OTP por SMS usando Supabase Auth
+                    const { data, error } = await supabase.auth.signInWithOtp({
+                        phone: phone,
+                        options: {
+                            channel: 'sms'
+                        }
+                    });
+                    
+                    if (error) {
+                        console.error('Error enviando SMS:', error);
+                        alert('Error enviando código SMS: ' + error.message);
+                        return;
+                    }
+                    
+                    console.log('SMS enviado exitosamente:', data);
+                    showOTPVerification(phone, 'phone');
+                    
+                } else {
+                    const email = document.getElementById('emailInput').value;
+                    if (!email) {
+                        alert('Por favor, introduce tu email');
+                        return;
+                    }
+                    
+                    // Enviar Magic Link usando Supabase Auth
+                    const { data, error } = await supabase.auth.signInWithOtp({
+                        email: email,
+                        options: {
+                            emailRedirectTo: window.location.origin
+                        }
+                    });
+                    
+                    if (error) {
+                        console.error('Error enviando email:', error);
+                        alert('Error enviando magic link: ' + error.message);
+                        return;
+                    }
+                    
+                    console.log('Magic link enviado exitosamente:', data);
+                    showOTPVerification(email, 'email');
                 }
-                // Aquí integrarías con tu servicio de WhatsApp
-                console.log('Enviando código SMS a:', phone);
-            } else {
-                const email = document.getElementById('emailInput').value;
-                if (!email) {
-                    alert('Por favor, introduce tu email');
-                    return;
-                }
-                // Aquí integrarías con tu servicio de email
-                console.log('Enviando código email a:', email);
+            } catch (error) {
+                console.error('Error en autenticación:', error);
+                alert('Error en autenticación: ' + error.message);
+            }
+        }
+        
+        function showOTPVerification(contact, type) {
+            const popup = document.getElementById('loginPopup');
+            const isPhone = type === 'phone';
+            
+            popup.innerHTML = `
+                <div class="popup-content">
+                    <button class="popup-close" onclick="closeLoginPopup()">&times;</button>
+                    <h2 class="popup-title">Verificar código</h2>
+                    <p class="popup-subtitle">
+                        ${isPhone ? 
+                            `Hemos enviado un código SMS a ${contact}` : 
+                            `Hemos enviado un enlace a ${contact}. También puedes introducir el código aquí:`
+                        }
+                    </p>
+                    
+                    ${isPhone ? `
+                        <input type="text" class="popup-input" id="otpInput" placeholder="Código de 6 dígitos" maxlength="6">
+                        <button class="send-code-btn" onclick="verifyOTP('${contact}', '${type}')">Verificar</button>
+                    ` : `
+                        <input type="text" class="popup-input" id="otpInput" placeholder="Código de verificación (opcional)" maxlength="6">
+                        <button class="send-code-btn" onclick="verifyOTP('${contact}', '${type}')">Verificar código</button>
+                        <p style="margin-top: 15px; color: #666; font-size: 14px;">
+                            O simplemente haz click en el enlace que te hemos enviado por email
+                        </p>
+                    `}
+                </div>
+            `;
+        }
+        
+        async function verifyOTP(contact, type) {
+            const otpCode = document.getElementById('otpInput').value;
+            
+            if (!otpCode) {
+                alert('Por favor, introduce el código de verificación');
+                return;
             }
             
-            alert('Código enviado! (En desarrollo)');
-            closeLoginPopup();
+            try {
+                const { data, error } = await supabase.auth.verifyOtp({
+                    [type]: contact,
+                    token: otpCode,
+                    type: type === 'phone' ? 'sms' : 'email'
+                });
+                
+                if (error) {
+                    console.error('Error verificando OTP:', error);
+                    alert('Código incorrecto o expirado: ' + error.message);
+                    return;
+                }
+                
+                console.log('Usuario autenticado exitosamente:', data);
+                handleSuccessfulLogin(data.user);
+                
+            } catch (error) {
+                console.error('Error en verificación:', error);
+                alert('Error en verificación: ' + error.message);
+            }
         }
+        
+        function handleSuccessfulLogin(user) {
+            console.log('Login exitoso:', user);
+            
+            // Actualizar UI de usuario
+            updateUserProfile(user);
+            
+            // Cerrar popup
+            closeLoginPopup();
+            
+            // Mostrar mensaje de bienvenida
+            alert(`¡Bienvenido ${user.email || user.phone}!`);
+        }
+        
+        function updateUserProfile(user) {
+            const profileName = document.querySelector('.profile-name');
+            const avatarCircle = document.querySelector('.avatar-circle');
+            
+            if (profileName) {
+                profileName.textContent = user.email || user.phone || 'Usuario';
+            }
+            
+            if (avatarCircle) {
+                // Cambiar color del avatar para indicar que está logueado
+                avatarCircle.style.backgroundColor = '#4ade80';
+            }
+        }
+
+        async function logout() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) {
+                    console.error('Error al hacer logout:', error);
+                    return;
+                }
+                
+                console.log('Logout exitoso');
+                alert('Has cerrado sesión correctamente');
+                
+            } catch (error) {
+                console.error('Error en logout:', error);
+            }
+        }
+        
+        // Exponer función de logout globalmente
+        window.logout = logout;
+        
+        // Verificar sesión existente al cargar la página
+        async function checkExistingSession() {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                
+                if (session && session.user) {
+                    console.log('Sesión existente encontrada:', session.user);
+                    updateUserProfile(session.user);
+                }
+            } catch (error) {
+                console.error('Error verificando sesión:', error);
+            }
+        }
+        
+        // Escuchar cambios de autenticación
+        supabase.auth.onAuthStateChange((event, session) => {
+            console.log('Auth state changed:', event, session);
+            
+            if (event === 'SIGNED_IN' && session) {
+                handleSuccessfulLogin(session.user);
+            } else if (event === 'SIGNED_OUT') {
+                // Resetear UI de usuario
+                const profileName = document.querySelector('.profile-name');
+                const avatarCircle = document.querySelector('.avatar-circle');
+                
+                if (profileName) profileName.textContent = 'Comprador';
+                if (avatarCircle) avatarCircle.style.backgroundColor = '#cce7ff';
+            }
+        });
+        
+      
         
         // =================== GESTIÓN BARRA LATERAL ===================
         let isPropertiesMode = false;
