@@ -975,20 +975,22 @@
         }
         
         
-       /* AÑADIR: Indicador visual para opción activa en sidebar contraído */
-        .sidebar:not(.expanded) .sidebar-option.active::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 24px;
-            width: 3px;
-            background-color: #000;
-            border-radius: 0;
-            z-index: 1000;
+       .sidebar:not(.expanded) .sidebar-option.active::after {
+            content: '' !important;
+            position: absolute !important;
+            left: 0 !important; /* CAMBIO: del borde derecho al borde izquierdo del sidebar */
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            height: 24px !important;
+            width: 3px !important;
+            background-color: #000 !important;
+            border-radius: 0 !important;
+            z-index: 1001 !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transition: none !important;
         }
-        
+                
        
        .sidebar-icon {
             width: 24px;
@@ -1052,6 +1054,10 @@
         .sidebar.expanded .sidebar-text {
             opacity: 1;
             visibility: visible;
+        }
+
+       .sidebar.expanded .sidebar-option.active .sidebar-text {
+            font-weight: 700 !important;
         }
         
         /* Indicador visual para sidebar contraído */
@@ -1755,7 +1761,7 @@
         .sidebar:not(.expanded).submenu-open .sidebar-option.active::after {
             content: '' !important;
             position: absolute !important;
-            right: 0 !important;
+            left: 0 !important; /* CAMBIO: también aquí */
             top: 50% !important;
             transform: translateY(-50%) !important;
             height: 24px !important;
@@ -1767,7 +1773,7 @@
             visibility: visible !important;
             transition: none !important;
         }
-        
+
         /* Eliminar flecha del tooltip cuando está activo */
         .sidebar:not(.expanded) .sidebar-option.active::before {
             display: none !important;
