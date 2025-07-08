@@ -843,11 +843,13 @@
             font-size: 16px;
             color: #000;
             position: relative;
+            min-height: 54px;
         }
         
         .sidebar.collapsed .sidebar-option {
             padding: 15px;
             justify-content: center;
+            min-height: 54px;
         }
         
         .sidebar-option:hover {
@@ -863,10 +865,12 @@
             height: 24px;
             margin-right: 15px;
             transition: all 0.2s ease;
+            flex-shrink: 0;
         }
         
         .sidebar.collapsed .sidebar-icon {
             margin-right: 0;
+            margin-left: 0;
         }
         
         .sidebar-text {
@@ -896,7 +900,7 @@
             position: fixed;
             top: 0;
             left: 80px;
-            width: 250px;
+            width: 200px;
             height: 100vh;
             background-color: white;
             border-right: 1px solid #e9ecef;
@@ -961,7 +965,7 @@
         }
         
         .submenu-options {
-            padding: 85px 20px 20px 20px;
+            padding: 85px 15px 20px 15px;
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -1144,8 +1148,8 @@
         }
         
         .container.submenu-open {
-            margin-left: 330px;
-            width: calc(100% - 330px);
+            margin-left: 280px;
+            width: calc(100% - 280px);
         } 
 
        /* =================== POPUP CREAR CUENTA =================== */
@@ -1281,10 +1285,10 @@
             justify-content: space-between;
             position: fixed;
             top: 0;
-            left: 330px;
+            left: 280px;
             right: 0;
             z-index: 100;
-            transition: left 0.3s ease;
+            transition: left 0.2s ease;
         }
         
         .container.sidebar-collapsed .top-bar {
@@ -1332,7 +1336,7 @@
             position: fixed;
             left: 80px;
             top: 0;
-            width: 250px;
+            width: 200px;
             height: 100%;
             background: white;
             border-right: 1px solid #e0e6ed;
