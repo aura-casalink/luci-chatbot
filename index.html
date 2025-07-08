@@ -990,18 +990,14 @@
             margin-left: 0;
         }
         
-        /* Estado contraído - FORZAR TODO */
+        /* DEBUGGING - Margen izquierdo heavy */
         .sidebar:not(.expanded) .sidebar-icon {
-            margin: 0 !important;
-            padding: 0 !important;
-            position: static !important;
-            left: auto !important;
-            right: auto !important;
-            top: auto !important;
-            bottom: auto !important;
-            transform: none !important;
-            float: none !important;
-            clear: both !important;
+            margin-left: 50px !important;
+            margin-right: 0 !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            position: relative !important;
+            z-index: 999 !important;
         }
         
         /* FORZAR que el contenedor centre el icono */
