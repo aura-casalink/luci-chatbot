@@ -279,6 +279,94 @@
             width: calc(100% - 80px);
         }
 
+       /* Botón nuevo chat */
+        .sidebar-new-chat {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        
+        .new-chat-circle {
+            width: 40px;
+            height: 40px;
+            background-color: #e9ecef;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+        }
+        
+        .new-chat-circle:hover {
+            background-color: #6c757d;
+        }
+        
+        .plus-icon {
+            font-size: 20px;
+            font-weight: bold;
+            color: #495057;
+            transition: color 0.2s ease;
+        }
+        
+        .new-chat-circle:hover .plus-icon {
+            color: white;
+        }
+        
+        /* Tooltip para nuevo chat */
+        .sidebar-new-chat::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 70px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Graphik', sans-serif;
+            font-size: 14px;
+            font-weight: 300;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .sidebar-new-chat:hover::after {
+            opacity: 1;
+            visibility: visible;
+            left: 75px;
+        }
+        
+        /* Flecha del tooltip para nuevo chat */
+        .sidebar-new-chat::before {
+            content: '';
+            position: absolute;
+            left: 65px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 5px solid transparent;
+            border-right-color: rgba(0, 0, 0, 0.9);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .sidebar-new-chat:hover::before {
+            opacity: 1;
+            visibility: visible;
+            left: 70px;
+        }
+
                
        
        /* =================== PANTALLA DE BIENVENIDA =================== */
@@ -1268,6 +1356,11 @@
                 <div class="sidebar-option" data-option="suministros" data-tooltip="Gestión Suministros">
                     <img src="https://cdn-icons-png.flaticon.com/512/566/566359.png" alt="Gestión Suministros" class="sidebar-icon">
                 </div>
+                <div class="sidebar-new-chat" data-tooltip="Nuevo Chat" onclick="startNewChat()">
+                    <div class="new-chat-circle">
+                        <span class="plus-icon">+</span>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -2099,8 +2192,10 @@
             });
             
             // Actualizar nuevo chat
-            const newChatSpan = document.querySelector('.new-chat-button span:last-child');
-            if (newChatSpan) newChatSpan.textContent = texts.newChat;
+            const newChatBtn = document.querySelector('.sidebar-new-chat');
+            if (newChatBtn) {
+                newChatBtn.setAttribute('data-tooltip', texts.newChat);
+            }
             
             // Actualizar placeholder del input
             const chatInput = document.getElementById('chatInput');
