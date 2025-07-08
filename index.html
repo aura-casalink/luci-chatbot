@@ -922,7 +922,7 @@
         
         .sidebar-options {
             flex: 1;
-            padding: 0 10px;
+            padding: 0;
         }
         
         .sidebar.collapsed .sidebar-options {
@@ -2141,6 +2141,9 @@
         let currentPollingInterval = null;
         let pollingTimeout = null;
         let currentConversationTitle = null;
+        let isPropertiesMode = false;
+        let currentSubmenuOption = 'buscar';
+        let currentLoginMethod = 'whatsapp';
         
         // Variables para idiomas
         let currentLanguage = 'spanish';
@@ -2260,7 +2263,9 @@
             await initializeApp();
             updateTexts();
             supabaseClient = supabase;
-            await checkExistingSession();
+             if (supabase) {
+                await checkExistingSession();
+            }
             
             // Exponemos estas dos funciones para poder invocarlas desde consola o botones
             window.activateTestMode = function(sessionId) {
@@ -4316,8 +4321,6 @@
             document.getElementById('loginPopup').style.display = 'none';
         }
 
-        let currentLoginMethod = 'whatsapp';
-
         function selectLoginMethod(method) {
             currentLoginMethod = method;
             const buttons = document.querySelectorAll('.login-btn');
@@ -4499,6 +4502,11 @@
         
         // Verificar sesión existente al cargar la página
         async function checkExistingSession() {
+            if (!supabase) {
+                console.log('Supabase no inicializado, saltando verificación de sesión');
+                return;
+            }
+            
             try {
                 const { data: { session } } = await supabase.auth.getSession();
                 
@@ -4510,28 +4518,24 @@
                 console.error('Error verificando sesión:', error);
             }
         }
-        
-        // Escuchar cambios de autenticación
-        supabase.auth.onAuthStateChange((event, session) => {
-            console.log('Auth state changed:', event, session);
-            
-            if (event === 'SIGNED_IN' && session) {
-                handleSuccessfulLogin(session.user);
-            } else if (event === 'SIGNED_OUT') {
-                // Resetear UI de usuario
-                const profileName = document.querySelector('.profile-name');
-                const avatarCircle = document.querySelector('.avatar-circle');
                 
-                if (profileName) profileName.textContent = 'Comprador';
-                if (avatarCircle) avatarCircle.style.backgroundColor = '#cce7ff';
-            }
-        });
-        
-      
-        
-        // =================== GESTIÓN BARRA LATERAL ===================
-        let isPropertiesMode = false;
-        let currentSubmenuOption = 'buscar';
+        // Escuchar cambios de autenticación - solo si supabase está listo
+        if (supabase && supabase.auth) {
+            supabase.auth.onAuthStateChange((event, session) => {
+                console.log('Auth state changed:', event, session);
+                
+                if (event === 'SIGNED_IN' && session) {
+                    handleSuccessfulLogin(session.user);
+                } else if (event === 'SIGNED_OUT') {
+                    // Resetear UI de usuario
+                    const profileName = document.querySelector('.profile-name');
+                    const avatarCircle = document.querySelector('.avatar-circle');
+                    
+                    if (profileName) profileName.textContent = 'Comprador';
+                    if (avatarCircle) avatarCircle.style.backgroundColor = '#cce7ff';
+                }
+            });
+        }
         
         function togglePropertiesMode() {
             const sidebar = document.querySelector('.sidebar');
