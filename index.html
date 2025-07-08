@@ -789,17 +789,17 @@
         
        /* Logo AURA */
         .sidebar-logo {
-            padding: 0 0 30px 28px; /* CAMBIO: Padding para estado colapsado */
+            padding: 20px 0 30px 28px; /* CAMBIO: Añadir padding-top */
             text-align: left;
-            position: relative; /* AÑADIR: Para posicionar las flechas */
+            position: relative;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 60px;
+            height: 80px; /* CAMBIO: Aumentar altura */
         }
         
         .sidebar.expanded .sidebar-logo {
-            padding: 0 0 30px 35px; /* Padding para estado expandido */
+            padding: 20px 0 30px 35px; /* CAMBIO: Añadir padding-top */
         }
         
         .aura-logo {
@@ -808,17 +808,60 @@
             font-size: 28px;
             color: #000;
             transition: all 0.3s ease;
-            cursor: pointer; /* AÑADIR: Cursor pointer */
+            cursor: pointer;
+            position: relative; /* AÑADIR */
+            display: flex;
+            align-items: center;
         }
-
-       .sidebar:not(.expanded) .aura-logo::before {
+        
+        /* MODIFICAR: Estilos para estado colapsado */
+        .sidebar:not(.expanded) .aura-logo::before {
             content: 'A';
             font-size: 28px;
             font-weight: 700;
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: 1; /* AÑADIR: Poner A detrás de la flecha */
         }
         
         .sidebar:not(.expanded) .aura-logo {
             font-size: 0;
+            width: 32px; /* AÑADIR: Dar ancho específico */
+            height: 32px; /* AÑADIR: Dar altura específica */
+            justify-content: center;
+        }
+        
+        /* MODIFICAR: Flecha de expandir */
+        .expand-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            visibility: hidden;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #495057;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 10; /* AUMENTAR: Poner flecha delante */
+        }
+        
+        .sidebar:not(.expanded) .aura-logo:hover .expand-indicator {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .sidebar:not(.expanded) .aura-logo:hover::before {
+            opacity: 0.3; /* CAMBIO: Semi-transparente en lugar de oculta */
         }
 
        .collapse-arrow {
@@ -969,11 +1012,11 @@
             border-radius: 0;
         }
                 
-        /* Submenu deslizable */
+        /* Submenu deslizable para propiedades */
         .sidebar-submenu {
             position: fixed;
+            left: 280px; /* CAMBIO: Posición relativa a sidebar expandida */
             top: 0;
-            left: 80px;
             width: 180px;
             height: 100vh;
             background-color: white;
@@ -986,7 +1029,7 @@
             box-shadow: 2px 0 10px rgba(0,0,0,0.1);
         }
         
-        .sidebar-submenu.show {
+        .sidebar-submenu.visible {
             transform: translateX(0);
         }
         
@@ -1147,75 +1190,69 @@
             width: calc(100% - 260px);
         }
        
-        /* =================== BOTÓN NUEVO CHAT CIRCULAR =================== */
+        /* =================== BOTÓN NUEVO CHAT =================== */
         .new-chat-container {
-            padding: 0 20px;
+            padding: 0 10px; /* CAMBIO: Siempre padding colapsado */
             margin-bottom: 20px;
             display: flex;
             justify-content: center;
             transition: all 0.3s ease;
         }
         
-        .sidebar.collapsed .new-chat-container {
-            padding: 0 10px;
+        .sidebar.expanded .new-chat-container {
+            padding: 0 20px; /* Padding para expandido */
         }
         
         .new-chat-btn {
-            width: 100%;
-            padding: 12px;
+            width: 40px; /* CAMBIO: Estado base circular */
+            height: 40px;
             background-color: #e9ecef;
             border: none;
-            border-radius: 25px;
+            border-radius: 50%;
             font-family: 'Graphik', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
+            font-size: 18px;
+            font-weight: 300;
             color: #495057;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 0;
+        }
+        
+        .new-chat-btn::before {
+            content: '+';
+            font-size: 20px;
+            font-weight: 300;
+            line-height: 1;
+        }
+        
+        /* AÑADIR: Estado expandido */
+        .sidebar.expanded .new-chat-btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 500;
             gap: 8px;
+            justify-content: center;
+        }
+        
+        .sidebar.expanded .new-chat-btn::before {
+            content: '';
+        }
+        
+        .sidebar.expanded .new-chat-btn::after {
+            content: '+ Nuevo Chat';
+            font-size: 14px;
+            font-weight: 500;
         }
         
         .new-chat-btn:hover {
             background-color: #6c757d;
             color: white;
-        }
-        
-        /* Estilo circular cuando la sidebar está contraída */
-        .sidebar.collapsed .new-chat-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            padding: 0;
-            background-color: #e9ecef;
-            color: #495057;
-            font-size: 18px;
-            font-weight: 300;
-            display: flex !important; /* Forzar flexbox */
-            align-items: center !important; /* Centrar verticalmente */
-            justify-content: center !important; /* Centrar horizontalmente */
-        }
-        
-        .sidebar.collapsed .new-chat-btn:hover {
-            background-color: #6c757d;
-            color: white;
             transform: scale(1.05);
-        }
-        
-        .sidebar.collapsed .new-chat-btn span {
-            display: none;
-        }
-        
-        .sidebar.collapsed .new-chat-btn::before {
-            content: '+';
-            font-size: 20px; /* Aumentar ligeramente el tamaño */
-            font-weight: 300;
-            line-height: 1; /* Asegurar que no haya espaciado extra */
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         
         .user-profile {
@@ -1549,17 +1586,18 @@
             overflow: hidden;
         }
        
-       /* =================== TOOLTIPS PARA SIDEBAR CONTRAÍDA =================== */
-        .sidebar-option {
+       /* =================== TOOLTIPS PARA ICONOS SIDEBAR =================== */
+        .sidebar:not(.expanded) .sidebar-option {
             position: relative;
         }
         
-        .sidebar.collapsed .sidebar-option[data-option="financiacion"]::after,
-        .sidebar.collapsed .sidebar-option[data-option="tasaciones"]::after,
-        .sidebar.collapsed .sidebar-option[data-option="auditorias"]::after,
-        .sidebar.collapsed .sidebar-option[data-option="mudanzas"]::after,
-        .sidebar.collapsed .sidebar-option[data-option="reformas"]::after,
-        .sidebar.collapsed .sidebar-option[data-option="suministros"]::after {
+        .sidebar:not(.expanded) .sidebar-option[data-option="propiedades"]::after,
+        .sidebar:not(.expanded) .sidebar-option[data-option="financiacion"]::after,
+        .sidebar:not(.expanded) .sidebar-option[data-option="tasaciones"]::after,
+        .sidebar:not(.expanded) .sidebar-option[data-option="auditorias"]::after,
+        .sidebar:not(.expanded) .sidebar-option[data-option="mudanzas"]::after,
+        .sidebar:not(.expanded) .sidebar-option[data-option="reformas"]::after,
+        .sidebar:not(.expanded) .sidebar-option[data-option="suministros"]::after {
             content: attr(data-tooltip);
             position: absolute;
             left: 70px;
@@ -1580,24 +1618,26 @@
             pointer-events: none;
         }
         
-        .sidebar.collapsed .sidebar-option[data-option="financiacion"]:hover::after,
-        .sidebar.collapsed .sidebar-option[data-option="tasaciones"]:hover::after,
-        .sidebar.collapsed .sidebar-option[data-option="auditorias"]:hover::after,
-        .sidebar.collapsed .sidebar-option[data-option="mudanzas"]:hover::after,
-        .sidebar.collapsed .sidebar-option[data-option="reformas"]:hover::after,
-        .sidebar.collapsed .sidebar-option[data-option="suministros"]:hover::after {
+        .sidebar:not(.expanded) .sidebar-option[data-option="propiedades"]:hover::after,
+        .sidebar:not(.expanded) .sidebar-option[data-option="financiacion"]:hover::after,
+        .sidebar:not(.expanded) .sidebar-option[data-option="tasaciones"]:hover::after,
+        .sidebar:not(.expanded) .sidebar-option[data-option="auditorias"]:hover::after,
+        .sidebar:not(.expanded) .sidebar-option[data-option="mudanzas"]:hover::after,
+        .sidebar:not(.expanded) .sidebar-option[data-option="reformas"]:hover::after,
+        .sidebar:not(.expanded) .sidebar-option[data-option="suministros"]:hover::after {
             opacity: 1;
             visibility: visible;
             left: 75px;
         }
         
-        /* Flecha del tooltip */
-        .sidebar.collapsed .sidebar-option[data-option="financiacion"]::before,
-        .sidebar.collapsed .sidebar-option[data-option="tasaciones"]::before,
-        .sidebar.collapsed .sidebar-option[data-option="auditorias"]::before,
-        .sidebar.collapsed .sidebar-option[data-option="mudanzas"]::before,
-        .sidebar.collapsed .sidebar-option[data-option="reformas"]::before,
-        .sidebar.collapsed .sidebar-option[data-option="suministros"]::before {
+        /* Flecha del tooltip iconos */
+        .sidebar:not(.expanded) .sidebar-option[data-option="propiedades"]::before,
+        .sidebar:not(.expanded) .sidebar-option[data-option="financiacion"]::before,
+        .sidebar:not(.expanded) .sidebar-option[data-option="tasaciones"]::before,
+        .sidebar:not(.expanded) .sidebar-option[data-option="auditorias"]::before,
+        .sidebar:not(.expanded) .sidebar-option[data-option="mudanzas"]::before,
+        .sidebar:not(.expanded) .sidebar-option[data-option="reformas"]::before,
+        .sidebar:not(.expanded) .sidebar-option[data-option="suministros"]::before {
             content: '';
             position: absolute;
             left: 65px;
@@ -1612,23 +1652,24 @@
             pointer-events: none;
         }
         
-        .sidebar.collapsed .sidebar-option[data-option="financiacion"]:hover::before,
-        .sidebar.collapsed .sidebar-option[data-option="tasaciones"]:hover::before,
-        .sidebar.collapsed .sidebar-option[data-option="auditorias"]:hover::before,
-        .sidebar.collapsed .sidebar-option[data-option="mudanzas"]:hover::before,
-        .sidebar.collapsed .sidebar-option[data-option="reformas"]:hover::before,
-        .sidebar.collapsed .sidebar-option[data-option="suministros"]:hover::before {
+        .sidebar:not(.expanded) .sidebar-option[data-option="propiedades"]:hover::before,
+        .sidebar:not(.expanded) .sidebar-option[data-option="financiacion"]:hover::before,
+        .sidebar:not(.expanded) .sidebar-option[data-option="tasaciones"]:hover::before,
+        .sidebar:not(.expanded) .sidebar-option[data-option="auditorias"]:hover::before,
+        .sidebar:not(.expanded) .sidebar-option[data-option="mudanzas"]:hover::before,
+        .sidebar:not(.expanded) .sidebar-option[data-option="reformas"]:hover::before,
+        .sidebar:not(.expanded) .sidebar-option[data-option="suministros"]:hover::before {
             opacity: 1;
             visibility: visible;
             left: 70px;
-        } 
-       
-       /* Tooltip para el botón de nuevo chat circular */
-        .sidebar.collapsed .new-chat-container {
+        }
+        
+        /* AÑADIR: Tooltip para nuevo chat */
+        .sidebar:not(.expanded) .new-chat-container {
             position: relative;
         }
         
-        .sidebar.collapsed .new-chat-container::after {
+        .sidebar:not(.expanded) .new-chat-container::after {
             content: 'Nuevo Chat';
             position: absolute;
             left: 65px;
@@ -1649,14 +1690,13 @@
             pointer-events: none;
         }
         
-        .sidebar.collapsed .new-chat-container:hover::after {
+        .sidebar:not(.expanded) .new-chat-container:hover::after {
             opacity: 1;
             visibility: visible;
             left: 70px;
         }
         
-        /* Flecha del tooltip para nuevo chat */
-        .sidebar.collapsed .new-chat-container::before {
+        .sidebar:not(.expanded) .new-chat-container::before {
             content: '';
             position: absolute;
             left: 60px;
@@ -1671,7 +1711,7 @@
             pointer-events: none;
         }
         
-        .sidebar.collapsed .new-chat-container:hover::before {
+        .sidebar:not(.expanded) .new-chat-container:hover::before {
             opacity: 1;
             visibility: visible;
             left: 65px;
@@ -4033,7 +4073,18 @@
                         options.forEach(opt => opt.classList.remove('active'));
                         // Activar modo propiedades
                         this.classList.add('active');
-                        togglePropertiesMode();
+                        
+                        // CAMBIO: Asegurar que la sidebar esté expandida antes de mostrar submenu
+                        const sidebar = document.getElementById('sidebar');
+                        if (!sidebar.classList.contains('expanded')) {
+                            expandSidebar();
+                            // Esperar a que termine la expansión antes de activar modo propiedades
+                            setTimeout(() => {
+                                togglePropertiesMode();
+                            }, 250);
+                        } else {
+                            togglePropertiesMode();
+                        }
                         
                         // Si no hay chat activo, mostrar la interfaz
                         if (!currentSessionId) {
@@ -4241,23 +4292,20 @@
             
             isPropertiesMode = true;
             
-            // Asegurar que la sidebar esté expandida primero
-            if (!sidebar.classList.contains('expanded')) {
-                expandSidebar();
+            // La sidebar ya debe estar expandida cuando llegamos aquí
+            console.log('Activando modo propiedades - sidebar expandida:', sidebar.classList.contains('expanded'));
+            
+            // Mostrar submenu
+            submenu.classList.add('visible');
+            container.classList.add('submenu-open');
+            
+            // Mostrar barra superior solo si estamos en "buscar"
+            if (currentSubmenuOption === 'buscar') {
+                topBar.style.display = 'flex';
+                document.querySelector('.main-area').style.paddingTop = '60px';
             }
             
-            // Esperar a que termine la animación de expansión antes de mostrar submenu
-            setTimeout(() => {
-                submenu.classList.add('visible');
-                container.classList.add('submenu-open');
-                container.classList.remove('sidebar-expanded'); // Remover clase de expansión simple
-                
-                // Mostrar barra superior solo si estamos en "buscar"
-                if (currentSubmenuOption === 'buscar') {
-                    topBar.style.display = 'flex';
-                    document.querySelector('.main-area').style.paddingTop = '60px';
-                }
-            }, 200);
+            console.log('Modo propiedades activado');
         }
         
         function exitPropertiesMode() {
