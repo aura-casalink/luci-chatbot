@@ -926,7 +926,7 @@
             font-weight: 700;
             font-size: 18px;
             color: #333;
-            margin-top: 4px;
+            margin-top: 4px; /* Cambiar de 0px a 4px */
             line-height: 1.2;
         }
         
@@ -1009,14 +1009,17 @@
             height: 20px;
         }
         
-        /* Resto del CSS sin cambios... */
+        /* =================== BOTÓN NUEVO CHAT CIRCULAR =================== */
         .new-chat-container {
             padding: 0 20px;
             margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            transition: all 0.3s ease;
         }
         
         .sidebar.collapsed .new-chat-container {
-            display: none;
+            padding: 0 10px;
         }
         
         .new-chat-btn {
@@ -1031,11 +1034,42 @@
             color: #495057;
             cursor: pointer;
             transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
         .new-chat-btn:hover {
             background-color: #6c757d;
             color: white;
+        }
+        
+        /* Estilo circular cuando la sidebar está contraída */
+        .sidebar.collapsed .new-chat-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            padding: 0;
+            background-color: #333;
+            color: white;
+            font-size: 20px;
+            font-weight: 300;
+        }
+        
+        .sidebar.collapsed .new-chat-btn:hover {
+            background-color: #555;
+            transform: scale(1.1);
+        }
+        
+        .sidebar.collapsed .new-chat-btn span {
+            display: none;
+        }
+        
+        .sidebar.collapsed .new-chat-btn::before {
+            content: '+';
+            font-size: 20px;
+            font-weight: 300;
         }
         
         .user-profile {
@@ -1402,6 +1436,60 @@
             overflow: hidden;
         }
        
+       /* =================== TOOLTIPS PARA SIDEBAR CONTRAÍDA =================== */
+        .sidebar-option {
+            position: relative;
+        }
+        
+        .sidebar.collapsed .sidebar-option::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 70px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Graphik', sans-serif;
+            font-size: 14px;
+            font-weight: 300;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .sidebar.collapsed .sidebar-option:hover::after {
+            opacity: 1;
+            visibility: visible;
+            left: 75px;
+        }
+        
+        /* Flecha del tooltip */
+        .sidebar.collapsed .sidebar-option::before {
+            content: '';
+            position: absolute;
+            left: 65px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 5px solid transparent;
+            border-right-color: rgba(0, 0, 0, 0.9);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .sidebar.collapsed .sidebar-option:hover::before {
+            opacity: 1;
+            visibility: visible;
+            left: 70px;
+        }   
+       
        @media (max-width: 768px) {
             /* =================== BIENVENIDA MÓVIL =================== */
             .welcome-screen {
@@ -1535,31 +1623,31 @@
             
             <!-- Lista de opciones principales -->
             <div class="sidebar-options">
-                <div class="sidebar-option active" data-option="propiedades">
+                <div class="sidebar-option active" data-option="propiedades" data-tooltip="Propiedades">
                     <img src="https://cdn-icons-png.flaticon.com/512/9664/9664027.png" alt="Propiedades" class="sidebar-icon">
                     <span class="sidebar-text">Propiedades</span>
                 </div>
-                <div class="sidebar-option" data-option="financiacion">
+                <div class="sidebar-option" data-option="financiacion" data-tooltip="Financiación">
                     <img src="https://cdn-icons-png.flaticon.com/512/2769/2769362.png" alt="Financiación" class="sidebar-icon">
                     <span class="sidebar-text">Financiación</span>
                 </div>
-                <div class="sidebar-option" data-option="tasaciones">
+                <div class="sidebar-option" data-option="tasaciones" data-tooltip="Tasaciones">
                     <img src="https://cdn-icons-png.flaticon.com/512/2169/2169846.png" alt="Tasaciones" class="sidebar-icon">
                     <span class="sidebar-text">Tasaciones</span>
                 </div>
-                <div class="sidebar-option" data-option="auditorias">
+                <div class="sidebar-option" data-option="auditorias" data-tooltip="Auditorías">
                     <img src="https://cdn-icons-png.flaticon.com/512/4561/4561511.png" alt="Auditorías" class="sidebar-icon">
                     <span class="sidebar-text">Auditorías</span>
                 </div>
-                <div class="sidebar-option" data-option="mudanzas">
+                <div class="sidebar-option" data-option="mudanzas" data-tooltip="Mudanzas">
                     <img src="https://cdn-icons-png.flaticon.com/512/2787/2787413.png" alt="Mudanzas" class="sidebar-icon">
                     <span class="sidebar-text">Mudanzas</span>
                 </div>
-                <div class="sidebar-option" data-option="reformas">
+                <div class="sidebar-option" data-option="reformas" data-tooltip="Reformas">
                     <img src="https://cdn-icons-png.flaticon.com/512/2963/2963833.png" alt="Reformas" class="sidebar-icon">
                     <span class="sidebar-text">Reformas</span>
                 </div>
-                <div class="sidebar-option" data-option="suministros">
+                <div class="sidebar-option" data-option="suministros" data-tooltip="Gestión Suministros">
                     <img src="https://cdn-icons-png.flaticon.com/512/566/566359.png" alt="Gestión Suministros" class="sidebar-icon">
                     <span class="sidebar-text">Gestión Suministros</span>
                 </div>
@@ -1607,7 +1695,6 @@
         </div>
         <div class="submenu-header">
             <div class="submenu-title">Propiedades</div>
-            <button class="new-chat-circular" onclick="startNewChat()">+ Nuevo chat</button>
         </div>
         <div class="submenu-options">
             <div class="submenu-option active" data-submenu="buscar">
