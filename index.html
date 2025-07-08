@@ -931,6 +931,13 @@
             flex: 1;
             padding: 0 10px;
         }
+
+       .sidebar:not(.expanded) .sidebar-options {
+            padding: 0 5px !important; /* CAMBIO: Menos padding lateral */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* AÑADIR: Centrar elementos */
+        }
         
         .sidebar.collapsed .sidebar-options {
             padding: 0 20px;
@@ -976,8 +983,9 @@
             display: block;
         }
         
-        .sidebar.expanded .sidebar-icon {
-            margin-right: 15px; 
+        .sidebar:not(.expanded) .sidebar-icon {
+            margin-right: 0 !important;
+            margin-left: 0 !important; /* AÑADIR: Sin margen izquierdo */
         }
         
         .sidebar-text {
