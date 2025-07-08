@@ -3470,22 +3470,15 @@
                     if (optionName === 'propiedades') {
                         // Activar opción propiedades
                         setActiveSidebarOption('propiedades');
-                    } else if (optionName === 'nuevo-chat') {
-                        // Nuevo chat
-                        newChat();
-                    } else if (optionName === 'login') {
-                        // Mostrar popup de login
-                        showLoginPopup();
+                        
+                        // Si no hay chat activo, no hacer nada especial
+                        // La funcionalidad de propiedades ya funciona con selectOption
                     } else {
                         // Para cualquier otra opción, mostrar popup de login
                         showLoginPopup();
                     }
                 });
             });
-            
-            // Inicializar iconos correctos
-            updateSidebarIcons();
-        }
             
             // Inicializar iconos correctos
             updateSidebarIcons();
