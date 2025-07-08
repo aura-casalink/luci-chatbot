@@ -119,6 +119,7 @@
             flex-direction: column;
             align-items: center;
             padding: 20px 0;
+            min-height: 0; 
         }
         
         .sidebar-option {
@@ -132,6 +133,7 @@
             cursor: pointer;
             border-radius: 12px;
             transition: background-color 0.2s ease;
+            flex-shrink: 0;
         }
         
         .sidebar-option:hover {
@@ -155,6 +157,102 @@
             width: 3px;
             background-color: #000;
             border-radius: 0;
+        }
+
+       /* Botón nuevo chat */
+        .sidebar-new-chat {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            margin: 8px auto; /* CAMBIADO: espaciado más compacto */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0; /* AÑADIDO */
+        }
+        
+        /* Botón de login */
+        .sidebar-login {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            margin: 8px auto 15px auto; /* CAMBIADO: espaciado más compacto */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0; /* AÑADIDO */
+        }
+        
+        .login-circle {
+            width: 40px;
+            height: 40px;
+            background-color: #FFC900;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s ease;
+        }
+        
+        .login-circle:hover {
+            background-color: #e6b400;
+        }
+        
+        .login-icon {
+            font-size: 18px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        /* Tooltip para login - usando la misma estructura que los otros */
+        .sidebar-login::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 70px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Graphik', sans-serif;
+            font-size: 14px;
+            font-weight: 300;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .sidebar-login:hover::after {
+            opacity: 1;
+            visibility: visible;
+            left: 75px;
+        }
+        
+        .sidebar-login::before {
+            content: '';
+            position: absolute;
+            left: 65px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 5px solid transparent;
+            border-right-color: rgba(0, 0, 0, 0.9);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .sidebar-login:hover::before {
+            opacity: 1;
+            visibility: visible;
+            left: 70px;
         }
         
         /* Tooltips */
