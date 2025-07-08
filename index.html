@@ -800,7 +800,10 @@
         }
         
         .sidebar.expanded .sidebar-logo {
-            padding: 20px 0 30px 35px; /* Solo padding izquierdo en expandido */
+            justify-content: flex-start;
+            align-items: center; 
+            padding: 20px 0 30px 35px;
+            position: relative;
         }
         
         .aura-logo {
@@ -819,8 +822,9 @@
         }
         
         .sidebar.expanded .aura-logo {
-            justify-content: flex-start; /* CAMBIO: Alinear a la izquierda en expandido */
-            width: auto;
+            justify-content: flex-start; 
+            width: calc(100% - 50px);
+            margin-right: 10px;
         }
         
         /* MODIFICAR: Estilos para estado colapsado */
@@ -890,8 +894,11 @@
             color: #495057;
             font-size: 24px;
             font-weight: bold;
-            position: relative;
-            margin-right: 20px;
+            position: absolute; /* CAMBIO: Posición absoluta */
+            right: 15px; /* CAMBIO: Pegado al borde derecho */
+            top: 50%;
+            transform: translateY(-50%);
+            margin: 0; /* CAMBIO: Sin margin */
             line-height: 1;
         }
                 
@@ -1588,6 +1595,8 @@
        /* =================== TOOLTIPS PARA ICONOS SIDEBAR =================== */
         .sidebar:not(.expanded) .sidebar-option {
             position: relative;
+            justify-content: center !important; 
+            padding: 15px 0 !important;
         }
         
         .sidebar:not(.expanded) .sidebar-option[data-option="propiedades"]::after,
