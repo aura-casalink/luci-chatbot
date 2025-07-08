@@ -979,7 +979,9 @@
             height: 24px;
             transition: all 0.2s ease;
             flex-shrink: 0;
-            display: block;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
         
         /* Estado expandido */
@@ -988,12 +990,28 @@
             margin-left: 0;
         }
         
-        /* Estado contraído - forzar centrado */
+        /* Estado contraído - FORZAR TODO */
         .sidebar:not(.expanded) .sidebar-icon {
             margin: 0 !important;
-            position: relative !important;
-            left: 0 !important;
-            right: 0 !important;
+            padding: 0 !important;
+            position: static !important;
+            left: auto !important;
+            right: auto !important;
+            top: auto !important;
+            bottom: auto !important;
+            transform: none !important;
+            float: none !important;
+            clear: both !important;
+        }
+        
+        /* FORZAR que el contenedor centre el icono */
+        .sidebar:not(.expanded) .sidebar-option {
+            position: relative;
+            justify-content: center !important; 
+            align-items: center !important;
+            padding: 15px 0 !important;
+            display: flex !important;
+            text-align: center !important;
         }
         
         .sidebar-text {
