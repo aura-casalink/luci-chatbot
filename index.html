@@ -32,7 +32,255 @@
             position: relative;
         }
 
-        /* =================== PANTALLA DE BIENVENIDA =================== */
+       /* =================== SIDEBAR =================== */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 80px;
+            height: 100vh;
+            background-color: white;
+            border-right: 1px solid #e9ecef;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* Logo AURA */
+        .sidebar-logo {
+            padding: 20px 0;
+            text-align: center;
+            position: relative;
+            width: 100%;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .aura-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 28px;
+            color: #000;
+            cursor: pointer;
+            position: relative;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Flecha de expandir - solo visible en hover */
+        .expand-arrow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            visibility: hidden;
+            background-color: #6c757d;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 10;
+        }
+        
+        .sidebar-logo:hover .aura-logo {
+            opacity: 0.3;
+        }
+        
+        .sidebar-logo:hover .expand-arrow {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .expand-arrow:hover {
+            background-color: #495057;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        
+        /* Opciones de la sidebar */
+        .sidebar-options {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+        }
+        
+        .sidebar-option {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: background-color 0.2s ease;
+        }
+        
+        .sidebar-option:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .sidebar-icon {
+            width: 24px;
+            height: 24px;
+            transition: none;
+        }
+        
+        /* Indicador de opción activa - raya negra */
+        .sidebar-option.active::before {
+            content: '';
+            position: absolute;
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 24px;
+            width: 3px;
+            background-color: #000;
+            border-radius: 0;
+        }
+        
+        /* Tooltips */
+        .sidebar-option::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 70px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Graphik', sans-serif;
+            font-size: 14px;
+            font-weight: 300;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .sidebar-option:hover::after {
+            opacity: 1;
+            visibility: visible;
+            left: 75px;
+        }
+        
+        /* Flecha del tooltip */
+        .sidebar-option::before {
+            content: '';
+            position: absolute;
+            left: 65px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 5px solid transparent;
+            border-right-color: rgba(0, 0, 0, 0.9);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .sidebar-option:hover::before {
+            opacity: 1;
+            visibility: visible;
+            left: 70px;
+        }
+        
+        /* Sobrescribir el ::before para opción activa */
+        .sidebar-option.active::before {
+            content: '';
+            position: absolute;
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 24px;
+            width: 3px;
+            background-color: #000;
+            border-radius: 0;
+            opacity: 1;
+            visibility: visible;
+            border: none;
+            z-index: 1001;
+        }
+        
+        /* Tooltip para expand arrow */
+        .expand-arrow::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 45px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Graphik', sans-serif;
+            font-size: 14px;
+            font-weight: 300;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .expand-arrow:hover::after {
+            opacity: 1;
+            visibility: visible;
+            left: 50px;
+        }
+        
+        .expand-arrow::before {
+            content: '';
+            position: absolute;
+            left: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 5px solid transparent;
+            border-right-color: rgba(0, 0, 0, 0.9);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .expand-arrow:hover::before {
+            opacity: 1;
+            visibility: visible;
+            left: 45px;
+        }
+        
+        /* Ajustar container para la sidebar */
+        .container.sidebar-active {
+            margin-left: 80px;
+            width: calc(100% - 80px);
+        } 
+       
+       
+       /* =================== PANTALLA DE BIENVENIDA =================== */
         .welcome-screen {
             display: flex;
             flex-direction: column;
@@ -1124,7 +1372,41 @@
         let pollingTimeout = null;
         let currentConversationTitle = null;
         let currentLoginMethod = 'whatsapp';
+        // Variables para sidebar
+        let activeSidebarOption = 'propiedades';
         
+        // URLs de iconos activos e inactivos
+        const iconStates = {
+            'propiedades': {
+                active: 'https://cdn-icons-png.flaticon.com/512/9664/9664027.png',
+                inactive: 'https://cdn-icons-png.flaticon.com/512/9643/9643115.png'
+            },
+            'financiacion': {
+                active: 'https://cdn-icons-png.flaticon.com/512/2769/2769402.png',
+                inactive: 'https://cdn-icons-png.flaticon.com/512/2769/2769362.png'
+            },
+            'tasaciones': {
+                active: 'https://cdn-icons-png.flaticon.com/512/2169/2169830.png',
+                inactive: 'https://cdn-icons-png.flaticon.com/512/2169/2169846.png'
+            },
+            'auditorias': {
+                active: 'https://cdn-icons-png.flaticon.com/512/4561/4561848.png',
+                inactive: 'https://cdn-icons-png.flaticon.com/512/4561/4561511.png'
+            },
+            'mudanzas': {
+                active: 'https://cdn-icons-png.flaticon.com/512/2787/2787368.png',
+                inactive: 'https://cdn-icons-png.flaticon.com/512/2787/2787413.png'
+            },
+            'reformas': {
+                active: 'https://cdn-icons-png.flaticon.com/512/2963/2963823.png',
+                inactive: 'https://cdn-icons-png.flaticon.com/512/2963/2963833.png'
+            },
+            'suministros': {
+                active: 'https://cdn-icons-png.flaticon.com/512/566/566410.png',
+                inactive: 'https://cdn-icons-png.flaticon.com/512/566/566359.png'
+            }
+        };
+                
         // Variables para idiomas
         let currentLanguage = 'spanish';
         const translations = {
@@ -1240,6 +1522,7 @@
             await initializeApp();
             updateTexts();
             supabaseClient = supabase;
+            initSidebar();
              if (supabase) {
                 await checkExistingSession();
             }
@@ -3157,7 +3440,69 @@
             }
         }
                 
+        // =================== FUNCIONES SIDEBAR ===================
+        function initSidebar() {
+            // Obtener todas las opciones de la sidebar
+            const options = document.querySelectorAll('.sidebar-option');
+            
+            // Manejar clicks en opciones de la sidebar
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const optionName = this.dataset.option;
+                    
+                    if (optionName === 'propiedades') {
+                        // Activar opción propiedades
+                        setActiveSidebarOption('propiedades');
+                        
+                        // Si no hay chat activo, no hacer nada especial
+                        // La funcionalidad de propiedades ya funciona con selectOption
+                    } else {
+                        // Para cualquier otra opción, mostrar popup de login
+                        showLoginPopup();
+                    }
+                });
+            });
+            
+            // Inicializar iconos correctos
+            updateSidebarIcons();
+        }
         
+        function setActiveSidebarOption(optionName) {
+            // Actualizar variable global
+            activeSidebarOption = optionName;
+            
+            // Remover clase active de todas las opciones
+            document.querySelectorAll('.sidebar-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            
+            // Añadir clase active a la opción seleccionada
+            const selectedOption = document.querySelector(`[data-option="${optionName}"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('active');
+            }
+            
+            // Actualizar iconos
+            updateSidebarIcons();
+        }
+        
+        function updateSidebarIcons() {
+            // Actualizar iconos según el estado activo/inactivo
+            Object.keys(iconStates).forEach(optionName => {
+                const option = document.querySelector(`[data-option="${optionName}"]`);
+                const icon = option?.querySelector('.sidebar-icon');
+                
+                if (icon) {
+                    if (optionName === activeSidebarOption) {
+                        // Usar icono activo
+                        icon.src = iconStates[optionName].active;
+                    } else {
+                        // Usar icono inactivo
+                        icon.src = iconStates[optionName].inactive;
+                    }
+                }
+            });
+        }  
        
         
     </script>
