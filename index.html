@@ -1045,6 +1045,8 @@
         } 
        
        .sidebar.expanded .sidebar-text {
+            opacity: 1 !important;
+            visibility: visible !important;
             font-weight: 500;
         }
 
@@ -1052,6 +1054,8 @@
         .sidebar.expanded .sidebar-option.active .sidebar-text {
             font-weight: 700 !important;
             color: #000 !important;
+            opacity: 1 !important;
+            visibility: visible !important;
         }
         
         /* TAMBIÉN asegurar que la regla general funcione */
@@ -1742,10 +1746,9 @@
         /* MARCADOR NEGRO para opción activa - EN EL BORDE DERECHO DEL SIDEBAR */
         .sidebar:not(.expanded) .sidebar-option.active::after {
             content: '' !important;
-            position: fixed !important; /* CAMBIO: usar fixed para posicionar relativo a la ventana */
-            left: 77px !important; /* CAMBIO: posición absoluta desde el borde izquierdo */
-            top: 50% !important;
-            transform: translateY(-50%) !important;
+            position: fixed !important;
+            left: 77px !important; /* Borde derecho del sidebar de 80px */
+            top: calc(var(--active-button-top, 200px) + 27px) !important; /* Centrado vertical del botón */
             height: 24px !important;
             width: 3px !important;
             background-color: #000 !important;
@@ -1754,8 +1757,48 @@
             opacity: 1 !important;
             visibility: visible !important;
             transition: none !important;
+            transform: none !important;
         }
-       
+        
+        /* Posición específica para cada botón usando nth-child */
+        .sidebar:not(.expanded) .sidebar-option:nth-child(1).active::after {
+            top: 150px !important; /* Ajusta según la posición real del primer botón */
+        }
+        
+        .sidebar:not(.expanded) .sidebar-option:nth-child(2).active::after {
+            top: 212px !important; /* Ajusta según la posición real del segundo botón */
+        }
+        
+        .sidebar:not(.expanded) .sidebar-option:nth-child(3).active::after {
+            top: 274px !important; /* Ajusta según la posición real del tercer botón */
+        }
+        
+        .sidebar:not(.expanded) .sidebar-option:nth-child(4).active::after {
+            top: 336px !important; /* Ajusta según la posición real del cuarto botón */
+        }
+        
+        .sidebar:not(.expanded) .sidebar-option:nth-child(5).active::after {
+            top: 398px !important; /* Ajusta según la posición real del quinto botón */
+        }
+        
+        .sidebar:not(.expanded) .sidebar-option:nth-child(6).active::after {
+            top: 460px !important; /* Ajusta según la posición real del sexto botón */
+        }
+        
+        .sidebar:not(.expanded) .sidebar-option:nth-child(7).active::after {
+            top: 522px !important; /* Ajusta según la posición real del séptimo botón */
+        }
+        
+        /* Para submenu activo (propiedades es el primer botón) */
+        .sidebar:not(.expanded).submenu-open .sidebar-option:nth-child(1).active::after {
+            top: 150px !important;
+        }
+        
+        /* Eliminar flecha del tooltip cuando está activo */
+        .sidebar:not(.expanded) .sidebar-option.active::before {
+            display: none !important;
+        }
+               
         /* Variante cuando hay submenu activo - TAMBIÉN EN EL BORDE DERECHO */
         .sidebar:not(.expanded).submenu-open .sidebar-option.active::after {
             content: '' !important;
