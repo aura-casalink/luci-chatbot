@@ -185,57 +185,8 @@
             left: 75px;
         }
         
-        /* Indicador de opción activa - raya negra */
-        .sidebar-option.active::after {
-            content: '';
-            position: absolute;
-            right: -40px;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 24px;
-            width: 3px;
-            background-color: #000;
-            border-radius: 0;
-            opacity: 1 !important;
-            visibility: visible !important;
-            z-index: 1001;
-            padding: 0;
-            font-size: 0;
-            color: transparent;
-            background-image: none;
-            border: none;
-        }
-        
-        /* Tooltips - solo para opciones NO activas */
-        .sidebar-option:not(.active)::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            left: 70px;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-family: 'Graphik', sans-serif;
-            font-size: 14px;
-            font-weight: 300;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 1000;
-            pointer-events: none;
-        }
-        
-        .sidebar-option:not(.active):hover::after {
-            opacity: 1;
-            visibility: visible;
-            left: 75px;
-        }
-        
-        /* Flecha del tooltip - solo para opciones NO activas */
-        .sidebar-option:not(.active)::before {
+        /* Flecha del tooltip */
+        .sidebar-option::before {
             content: '';
             position: absolute;
             left: 65px;
@@ -250,10 +201,27 @@
             pointer-events: none;
         }
         
-        .sidebar-option:not(.active):hover::before {
+        .sidebar-option:hover::before {
             opacity: 1;
             visibility: visible;
             left: 70px;
+        }
+        
+        /* Sobrescribir el ::before para opción activa */
+        .sidebar-option.active::before {
+            content: '';
+            position: absolute;
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 24px;
+            width: 3px;
+            background-color: #000;
+            border-radius: 0;
+            opacity: 1;
+            visibility: visible;
+            border: none;
+            z-index: 1001;
         }
         
         /* Tooltip para expand arrow */
