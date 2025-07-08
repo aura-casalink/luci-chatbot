@@ -896,7 +896,7 @@
             font-weight: bold;
             position: absolute; 
             right: 50px;
-            top: calc(50% - 8px);
+            top: calc(50% - 9px);
             transform: translateY(-50%);
             margin: 0;
             line-height: 1;
@@ -989,19 +989,6 @@
             z-index: 1000;
         }
         
-        /* Variante cuando hay submenu activo */
-        .sidebar:not(.expanded).submenu-open .sidebar-option.active::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 24px;
-            width: 3px;
-            background-color: #000;
-            border-radius: 0;
-            z-index: 1000;
-        }
        
        .sidebar-icon {
             width: 24px;
@@ -1673,13 +1660,14 @@
             padding: 15px 0 !important;
         }
         
-        .sidebar:not(.expanded) .sidebar-option[data-option="propiedades"]::after,
-        .sidebar:not(.expanded) .sidebar-option[data-option="financiacion"]::after,
-        .sidebar:not(.expanded) .sidebar-option[data-option="tasaciones"]::after,
-        .sidebar:not(.expanded) .sidebar-option[data-option="auditorias"]::after,
-        .sidebar:not(.expanded) .sidebar-option[data-option="mudanzas"]::after,
-        .sidebar:not(.expanded) .sidebar-option[data-option="reformas"]::after,
-        .sidebar:not(.expanded) .sidebar-option[data-option="suministros"]::after {
+        /* TOOLTIPS - Solo mostrar cuando NO está activo y en hover */
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="propiedades"]::after,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="financiacion"]::after,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="tasaciones"]::after,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="auditorias"]::after,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="mudanzas"]::after,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="reformas"]::after,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="suministros"]::after {
             content: attr(data-tooltip);
             position: absolute;
             left: 70px;
@@ -1700,26 +1688,26 @@
             pointer-events: none;
         }
         
-        .sidebar:not(.expanded) .sidebar-option[data-option="propiedades"]:hover::after,
-        .sidebar:not(.expanded) .sidebar-option[data-option="financiacion"]:hover::after,
-        .sidebar:not(.expanded) .sidebar-option[data-option="tasaciones"]:hover::after,
-        .sidebar:not(.expanded) .sidebar-option[data-option="auditorias"]:hover::after,
-        .sidebar:not(.expanded) .sidebar-option[data-option="mudanzas"]:hover::after,
-        .sidebar:not(.expanded) .sidebar-option[data-option="reformas"]:hover::after,
-        .sidebar:not(.expanded) .sidebar-option[data-option="suministros"]:hover::after {
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="propiedades"]:hover::after,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="financiacion"]:hover::after,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="tasaciones"]:hover::after,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="auditorias"]:hover::after,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="mudanzas"]:hover::after,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="reformas"]:hover::after,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="suministros"]:hover::after {
             opacity: 1;
             visibility: visible;
             left: 75px;
         }
         
-        /* Flecha del tooltip iconos */
-        .sidebar:not(.expanded) .sidebar-option[data-option="propiedades"]::before,
-        .sidebar:not(.expanded) .sidebar-option[data-option="financiacion"]::before,
-        .sidebar:not(.expanded) .sidebar-option[data-option="tasaciones"]::before,
-        .sidebar:not(.expanded) .sidebar-option[data-option="auditorias"]::before,
-        .sidebar:not(.expanded) .sidebar-option[data-option="mudanzas"]::before,
-        .sidebar:not(.expanded) .sidebar-option[data-option="reformas"]::before,
-        .sidebar:not(.expanded) .sidebar-option[data-option="suministros"]::before {
+        /* Flecha del tooltip - Solo cuando NO está activo */
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="propiedades"]::before,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="financiacion"]::before,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="tasaciones"]::before,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="auditorias"]::before,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="mudanzas"]::before,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="reformas"]::before,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="suministros"]::before {
             content: '';
             position: absolute;
             left: 65px;
@@ -1734,16 +1722,55 @@
             pointer-events: none;
         }
         
-        .sidebar:not(.expanded) .sidebar-option[data-option="propiedades"]:hover::before,
-        .sidebar:not(.expanded) .sidebar-option[data-option="financiacion"]:hover::before,
-        .sidebar:not(.expanded) .sidebar-option[data-option="tasaciones"]:hover::before,
-        .sidebar:not(.expanded) .sidebar-option[data-option="auditorias"]:hover::before,
-        .sidebar:not(.expanded) .sidebar-option[data-option="mudanzas"]:hover::before,
-        .sidebar:not(.expanded) .sidebar-option[data-option="reformas"]:hover::before,
-        .sidebar:not(.expanded) .sidebar-option[data-option="suministros"]:hover::before {
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="propiedades"]:hover::before,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="financiacion"]:hover::before,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="tasaciones"]:hover::before,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="auditorias"]:hover::before,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="mudanzas"]:hover::before,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="reformas"]:hover::before,
+        .sidebar:not(.expanded) .sidebar-option:not(.active)[data-option="suministros"]:hover::before {
             opacity: 1;
             visibility: visible;
             left: 70px;
+        }
+        
+        /* MARCADOR NEGRO para opción activa - MÁS ESPECÍFICO */
+        .sidebar:not(.expanded) .sidebar-option.active::after {
+            content: '' !important;
+            position: absolute !important;
+            right: 0 !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            height: 24px !important;
+            width: 3px !important;
+            background-color: #000 !important;
+            border-radius: 0 !important;
+            z-index: 1001 !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transition: none !important;
+        }
+        
+        /* Variante cuando hay submenu activo */
+        .sidebar:not(.expanded).submenu-open .sidebar-option.active::after {
+            content: '' !important;
+            position: absolute !important;
+            right: 0 !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            height: 24px !important;
+            width: 3px !important;
+            background-color: #000 !important;
+            border-radius: 0 !important;
+            z-index: 1001 !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transition: none !important;
+        }
+        
+        /* Eliminar flecha del tooltip cuando está activo */
+        .sidebar:not(.expanded) .sidebar-option.active::before {
+            display: none !important;
         }
         
         /* AÑADIR: Tooltip para nuevo chat */
