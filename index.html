@@ -277,7 +277,7 @@
         .container.sidebar-active {
             margin-left: 80px;
             width: calc(100% - 80px);
-        } 
+        }
 
                
        
@@ -1269,9 +1269,9 @@
                 <img src="https://cdn-icons-png.flaticon.com/512/566/566359.png" alt="Gestión Suministros" class="sidebar-icon">
             </div>
         </div>
+    </div>
         
-    
-   <div class="container">
+   <div class="container sidebar-active">
         <!-- Área principal -->
         <div class="main-area">
             <!-- Pantalla de bienvenida -->
@@ -1524,9 +1524,6 @@
             updateTexts();
             supabaseClient = supabase;
             initSidebar();
-            setTimeout(() => {
-                initSidebarExtras();
-            }, 100);
              if (supabase) {
                 await checkExistingSession();
             }
