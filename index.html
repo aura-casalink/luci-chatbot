@@ -917,8 +917,9 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 30px;
-            padding: 20px 20px 0 20px;
+            padding: 25px 15px 20px 20px;
             margin-top: 0px;
+            border-bottom: 1px solid #e0e6ed;
         }
         
         .submenu-title {
@@ -926,7 +927,7 @@
             font-weight: 700;
             font-size: 18px;
             color: #333;
-            margin-top: 4px; /* Cambiar de 0px a 4px */
+            margin-top: 9px; 
             line-height: 1.2;
         }
         
@@ -1490,7 +1491,110 @@
             left: 70px;
         }   
        
+       /* Tooltip para el botón de nuevo chat circular */
+        .sidebar.collapsed .new-chat-btn {
+            position: relative;
+        }
+        
+        .sidebar.collapsed .new-chat-btn::after {
+            content: 'Nuevo Chat';
+            position: absolute;
+            left: 70px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Graphik', sans-serif;
+            font-size: 14px;
+            font-weight: 300;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .sidebar.collapsed .new-chat-btn:hover::after {
+            opacity: 1;
+            visibility: visible;
+            left: 75px;
+        }
+        
+        /* Flecha del tooltip para nuevo chat */
+        .sidebar.collapsed .new-chat-container::before {
+            content: '';
+            position: absolute;
+            left: 65px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 5px solid transparent;
+            border-right-color: rgba(0, 0, 0, 0.9);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .sidebar.collapsed .new-chat-btn:hover + .new-chat-container::before,
+        .sidebar.collapsed .new-chat-container:hover::before {
+            opacity: 1;
+            visibility: visible;
+            left: 70px;
+        }
+       
        @media (max-width: 768px) {
+           .sidebar.collapsed .sidebar-option[data-option="propiedades"]::after {
+                content: attr(data-tooltip);
+                position: absolute;
+                left: 70px;
+                top: 50%;
+                transform: translateY(-50%);
+                background-color: rgba(0, 0, 0, 0.9);
+                color: white;
+                padding: 8px 12px;
+                border-radius: 6px;
+                font-family: 'Graphik', sans-serif;
+                font-size: 14px;
+                font-weight: 300;
+                white-space: nowrap;
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+                z-index: 1000;
+                pointer-events: none;
+            }
+        
+            .sidebar.collapsed .sidebar-option[data-option="propiedades"]:hover::after {
+                opacity: 1;
+                visibility: visible;
+                left: 75px;
+            }
+        
+            .sidebar.collapsed .sidebar-option[data-option="propiedades"]::before {
+                content: '';
+                position: absolute;
+                left: 65px;
+                top: 50%;
+                transform: translateY(-50%);
+                border: 5px solid transparent;
+                border-right-color: rgba(0, 0, 0, 0.9);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+                z-index: 1000;
+                pointer-events: none;
+            }
+        
+            .sidebar.collapsed .sidebar-option[data-option="propiedades"]:hover::before {
+                opacity: 1;
+                visibility: visible;
+                left: 70px;
+            }
+        }
             /* =================== BIENVENIDA MÓVIL =================== */
             .welcome-screen {
                 padding: 20px;
