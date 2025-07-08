@@ -932,7 +932,7 @@
         .sidebar-option {
             display: flex;
             align-items: center;
-            padding: 15px 10px;
+            padding: 15px 20px; /* CAMBIO: Aumentar padding horizontal */
             justify-content: center;
             margin-bottom: 8px;
             border-radius: 12px;
@@ -944,13 +944,13 @@
             position: relative;
             min-height: 54px;
             box-sizing: border-box;
+            width: 100%; /* CAMBIO: Asegurar ancho completo */
         }
-
-       .sidebar.expanded .sidebar-option {
+        
+        .sidebar.expanded .sidebar-option {
             padding: 15px 20px;
             justify-content: flex-start; 
         }
-        
         
         .sidebar-option:hover {
             background-color: #f8f9fa;
