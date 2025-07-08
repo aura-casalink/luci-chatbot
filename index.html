@@ -789,7 +789,7 @@
         
        /* Logo AURA */
         .sidebar-logo {
-            padding: 20px 0 30px 0; /* CAMBIO: Remover padding lateral */
+            padding: 20px 10px 30px 10px;
             text-align: left;
             position: relative;
             display: flex;
@@ -814,7 +814,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 80px;
+            width: 60px;
             height: 32px;
         }
         
@@ -4050,6 +4050,17 @@
         function expandSidebar() {
             const sidebar = document.getElementById('sidebar');
             const container = document.querySelector('.container');
+            
+            // Si estamos en modo propiedades, salir primero
+            if (isPropertiesMode) {
+                exitPropertiesMode();
+                
+                // Remover clase active de la opción propiedades
+                const propiedadesOption = document.querySelector('[data-option="propiedades"]');
+                if (propiedadesOption) {
+                    propiedadesOption.classList.remove('active');
+                }
+            }
             
             sidebar.classList.add('expanded');
             container.classList.add('sidebar-expanded');
