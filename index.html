@@ -1192,7 +1192,7 @@
        
         /* =================== BOTÓN NUEVO CHAT =================== */
         .new-chat-container {
-            padding: 0 10px; /* CAMBIO: Siempre padding colapsado */
+            padding: 0 10px; 
             margin-bottom: 20px;
             display: flex;
             justify-content: center;
@@ -1200,18 +1200,16 @@
         }
         
         .sidebar.expanded .new-chat-container {
-            padding: 0 20px; /* Padding para expandido */
+            padding: 0 20px; 
         }
         
         .new-chat-btn {
-            width: 40px; /* CAMBIO: Estado base circular */
+            width: 40px; 
             height: 40px;
             background-color: #e9ecef;
             border: none;
             border-radius: 50%;
             font-family: 'Graphik', sans-serif;
-            font-size: 18px;
-            font-weight: 300;
             color: #495057;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -1219,16 +1217,15 @@
             align-items: center;
             justify-content: center;
             padding: 0;
-        }
-        
-        .new-chat-btn::before {
-            content: '+';
             font-size: 20px;
             font-weight: 300;
             line-height: 1;
         }
+
+       .sidebar:not(.expanded) .new-chat-btn::before {
+            content: '+';
+        }
         
-        /* AÑADIR: Estado expandido */
         .sidebar.expanded .new-chat-btn {
             width: 100%;
             padding: 12px;
@@ -1238,9 +1235,9 @@
             gap: 8px;
             justify-content: center;
         }
-        
+                
         .sidebar.expanded .new-chat-btn::before {
-            content: '';
+            content: ''; 
         }
         
         .sidebar.expanded .new-chat-btn::after {
