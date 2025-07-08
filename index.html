@@ -773,7 +773,7 @@
             z-index: 1000;
             display: flex;
             flex-direction: column;
-            transition: width 0.3s ease;
+            transition: width 0.2s ease;
         }
         
         .sidebar.collapsed {
@@ -844,12 +844,14 @@
             color: #000;
             position: relative;
             min-height: 54px;
+            box-sizing: border-box;
         }
         
         .sidebar.collapsed .sidebar-option {
             padding: 15px;
             justify-content: center;
             min-height: 54px;
+            box-sizing: border-box;
         }
         
         .sidebar-option:hover {
@@ -866,6 +868,7 @@
             margin-right: 15px;
             transition: all 0.2s ease;
             flex-shrink: 0;
+            display: block;
         }
         
         .sidebar.collapsed .sidebar-icon {
@@ -900,7 +903,7 @@
             position: fixed;
             top: 0;
             left: 80px;
-            width: 200px;
+            width: 180px;
             height: 100vh;
             background-color: white;
             border-right: 1px solid #e9ecef;
@@ -965,7 +968,7 @@
         }
         
         .submenu-options {
-            padding: 85px 15px 20px 15px;
+            padding: 85px 12px 20px 12px;
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -1148,8 +1151,8 @@
         }
         
         .container.submenu-open {
-            margin-left: 280px;
-            width: calc(100% - 280px);
+            margin-left: 260px;
+            width: calc(100% - 260px);
         } 
 
        /* =================== POPUP CREAR CUENTA =================== */
@@ -1285,7 +1288,7 @@
             justify-content: space-between;
             position: fixed;
             top: 0;
-            left: 280px;
+            left: 260px;
             right: 0;
             z-index: 100;
             transition: left 0.2s ease;
@@ -1336,7 +1339,7 @@
             position: fixed;
             left: 80px;
             top: 0;
-            width: 200px;
+            width: 180px; !important
             height: 100%;
             background: white;
             border-right: 1px solid #e0e6ed;
