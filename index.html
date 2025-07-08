@@ -973,22 +973,7 @@
                 margin-bottom: 100px; /* Espacio para el input fijo */
             }
             
-            /* Responsive */
-            @media (max-width: 768px) {
-                .sidebar {
-                    transform: translateX(-100%);
-                    transition: transform 0.2s ease;
-                }
-                
-                .sidebar.show {
-                    transform: translateX(0);
-                }
-                
-                .container {
-                    margin-left: 0;
-                    width: 100%;
-                }
-        }
+      
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
     <script>
@@ -1831,7 +1816,6 @@
             });        
         }
         
-
 
         function getOptionText(optionKey) {
             const optionMap = {
@@ -3093,11 +3077,7 @@
             // Limpiar historial de la sesión
             window.conversationHistory = [];
         }
-        
-        // Inicializar cuando cargue la página
-        document.addEventListener('DOMContentLoaded', function() {
-            initSidebar();
-        });  
+     
         
         // =================== POPUP CREAR CUENTA ===================
         function showLoginPopup() {
@@ -3143,23 +3123,6 @@
             }
         }
                 
-        // Escuchar cambios de autenticación - solo si supabase está listo
-        if (supabase && supabase.auth) {
-            supabase.auth.onAuthStateChange((event, session) => {
-                console.log('Auth state changed:', event, session);
-                
-                if (event === 'SIGNED_IN' && session) {
-                    handleSuccessfulLogin(session.user);
-                } else if (event === 'SIGNED_OUT') {
-                    // Resetear UI de usuario
-                    const profileName = document.querySelector('.profile-name');
-                    const avatarCircle = document.querySelector('.avatar-circle');
-                    
-                    if (profileName) profileName.textContent = 'Comprador';
-                    if (avatarCircle) avatarCircle.style.backgroundColor = '#cce7ff';
-                }
-            });
-        }
         
        
         
