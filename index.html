@@ -789,17 +789,18 @@
         
        /* Logo AURA */
         .sidebar-logo {
-            padding: 20px 0 30px 28px; /* CAMBIO: Añadir padding-top */
+            padding: 20px 0 30px 0; /* CAMBIO: Remover padding lateral */
             text-align: left;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            height: 80px; /* CAMBIO: Aumentar altura */
+            height: 80px;
+            width: 100%;
         }
         
         .sidebar.expanded .sidebar-logo {
-            padding: 20px 0 30px 35px; /* CAMBIO: Añadir padding-top */
+            padding: 20px 0 30px 35px; /* Solo padding izquierdo en expandido */
         }
         
         .aura-logo {
@@ -809,9 +810,16 @@
             color: #000;
             transition: all 0.3s ease;
             cursor: pointer;
-            position: relative; /* AÑADIR */
+            position: relative;
             display: flex;
             align-items: center;
+            justify-content: center; /* CAMBIO: Centrar en ambos estados */
+            width: 80px; /* CAMBIO: Ancho completo del sidebar colapsado */
+        }
+        
+        .sidebar.expanded .aura-logo {
+            justify-content: flex-start; /* CAMBIO: Alinear a la izquierda en expandido */
+            width: auto;
         }
         
         /* MODIFICAR: Estilos para estado colapsado */
@@ -820,23 +828,24 @@
             font-size: 28px;
             font-weight: 700;
             position: absolute;
-            left: 0;
-            top: 0;
-            z-index: 1; /* AÑADIR: Poner A detrás de la flecha */
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%); /* CAMBIO: Centrar perfectamente */
+            z-index: 1;
         }
         
         .sidebar:not(.expanded) .aura-logo {
             font-size: 0;
-            width: 32px; /* AÑADIR: Dar ancho específico */
-            height: 32px; /* AÑADIR: Dar altura específica */
-            justify-content: center;
+            width: 80px;
+            height: 32px;
         }
         
         /* MODIFICAR: Flecha de expandir */
         .expand-indicator {
             position: absolute;
-            top: 0;
-            left: 0;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* CAMBIO: Centrar perfectamente */
             opacity: 0;
             visibility: hidden;
             background-color: #e9ecef;
@@ -850,9 +859,9 @@
             cursor: pointer;
             transition: all 0.2s ease;
             color: #495057;
-            font-size: 14px;
+            font-size: 36px; /* CAMBIO: Doble de tamaño */
             font-weight: bold;
-            z-index: 10; /* AUMENTAR: Poner flecha delante */
+            z-index: 10;
         }
         
         .sidebar:not(.expanded) .aura-logo:hover .expand-indicator {
@@ -878,12 +887,12 @@
             cursor: pointer;
             transition: all 0.2s ease;
             color: #495057;
-            font-size: 18px; 
+            font-size: 36px; /* CAMBIO: Doble de tamaño */
             font-weight: bold;
             position: relative;
-            margin-right: 15px; 
+            margin-right: 20px; /* CAMBIO: Más separación del borde */
         }
-        
+                
         .sidebar.expanded .sidebar-logo:hover .collapse-arrow {
             opacity: 1;
             visibility: visible;
@@ -1203,7 +1212,7 @@
         }
         
         .new-chat-btn {
-            width: 40px; 
+            width: 40px;
             height: 40px;
             background-color: #e9ecef;
             border: none;
@@ -1220,27 +1229,39 @@
             font-weight: 300;
             line-height: 1;
         }
-
-       .sidebar:not(.expanded) .new-chat-btn::before {
-            content: '+';
+        
+        /* ESTADO COLAPSADO: Solo mostrar + */
+        .sidebar:not(.expanded) .new-chat-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
         }
         
+        .sidebar:not(.expanded) .new-chat-btn::before {
+            content: '+';
+            font-size: 20px;
+            font-weight: 300;
+        }
+        
+        .sidebar:not(.expanded) .new-chat-btn::after {
+            content: ''; /* LIMPIAR */
+        }
+        
+        /* ESTADO EXPANDIDO: Mostrar texto completo */
         .sidebar.expanded .new-chat-btn {
             width: 100%;
             padding: 12px;
             border-radius: 25px;
             font-size: 14px;
             font-weight: 500;
-            gap: 8px;
-            justify-content: center;
         }
-                
+        
         .sidebar.expanded .new-chat-btn::before {
-            content: ''; 
+            content: ''; /* LIMPIAR el + */
         }
         
         .sidebar.expanded .new-chat-btn::after {
-            content: '+ Nuevo Chat';
+            content: 'Nuevo Chat'; /* CAMBIO: Sin + al inicio */
             font-size: 14px;
             font-weight: 500;
         }
@@ -1254,17 +1275,18 @@
         .user-profile {
             display: flex;
             align-items: center;
-            padding: 15px 20px;
-            margin: 0 20px;
+            padding: 15px; /* CAMBIO: Padding uniforme para estado colapsado */
+            margin: 0 10px;
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
+            justify-content: center; /* CAMBIO: Centrar en estado colapsado */
         }
         
-        .sidebar.collapsed .user-profile {
-            margin: 0 10px;
-            padding: 15px;
-            justify-content: center;
+        .sidebar.expanded .user-profile {
+            margin: 0 20px;
+            padding: 15px 20px;
+            justify-content: flex-start; /* Alineación normal en expandido */
         }
         
         .user-profile:hover {
@@ -1272,11 +1294,11 @@
         }
         
         .profile-avatar {
-            margin-right: 12px;
+            margin-right: 0; /* CAMBIO: Sin margen en estado colapsado */
         }
         
-        .sidebar.collapsed .profile-avatar {
-            margin-right: 0;
+        .sidebar.expanded .profile-avatar {
+            margin-right: 12px; /* Margen solo en expandido */
         }
         
         .avatar-circle {
@@ -1292,10 +1314,11 @@
         
         .profile-info {
             flex: 1;
+            display: none; /* CAMBIO: Oculto por defecto */
         }
         
-        .sidebar.collapsed .profile-info {
-            display: none;
+        .sidebar.expanded .profile-info {
+            display: block; /* CAMBIO: Visible solo en expandido */
         }
         
         .profile-name {
@@ -1307,10 +1330,11 @@
         
         .profile-menu {
             color: #6c757d;
+            display: none; /* CAMBIO: Oculto por defecto */
         }
         
-        .sidebar.collapsed .profile-menu {
-            display: none;
+        .sidebar.expanded .profile-menu {
+            display: block; /* CAMBIO: Visible solo en expandido */
         }
         
 
@@ -1708,6 +1732,59 @@
         }
         
         .sidebar:not(.expanded) .new-chat-container:hover::before {
+            opacity: 1;
+            visibility: visible;
+            left: 65px;
+        }
+
+       /* AÑADIR: Tooltip para perfil de usuario */
+        .sidebar:not(.expanded) .user-profile {
+            position: relative;
+        }
+        
+        .sidebar:not(.expanded) .user-profile::after {
+            content: 'Iniciar sesión';
+            position: absolute;
+            left: 65px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Graphik', sans-serif;
+            font-size: 14px;
+            font-weight: 300;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .sidebar:not(.expanded) .user-profile:hover::after {
+            opacity: 1;
+            visibility: visible;
+            left: 70px;
+        }
+        
+        .sidebar:not(.expanded) .user-profile::before {
+            content: '';
+            position: absolute;
+            left: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 5px solid transparent;
+            border-right-color: rgba(0, 0, 0, 0.9);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .sidebar:not(.expanded) .user-profile:hover::before {
             opacity: 1;
             visibility: visible;
             left: 65px;
