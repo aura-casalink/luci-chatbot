@@ -282,117 +282,6 @@
             height: 100vh; 
         } 
 
-       /* Botón nuevo chat */
-        .sidebar-new-chat {
-            position: relative;
-            margin: 20px 0 15px 0;
-            cursor: pointer;
-        }
-        
-        .new-chat-circle {
-            width: 40px;
-            height: 40px;
-            background-color: #e9ecef;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-        
-        .new-chat-circle:hover {
-            background-color: #6c757d;
-            transform: scale(1.05);
-        }
-        
-        .plus-icon {
-            font-size: 20px;
-            font-weight: 300;
-            color: #495057;
-            line-height: 1;
-        }
-        
-        .new-chat-circle:hover .plus-icon {
-            color: white;
-        }
-        
-        /* Avatar de usuario */
-        .sidebar-user {
-            position: relative;
-            margin-bottom: 20px;
-            cursor: pointer;
-        }
-        
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            background-color: #FFC900;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            color: #000;
-        }
-        
-        .user-avatar:hover {
-            transform: scale(1.05);
-            box-shadow: 0 2px 8px rgba(255, 201, 0, 0.3);
-        }
-        
-        /* Tooltips para nuevos elementos */
-        .sidebar-new-chat::after,
-        .sidebar-user::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            left: 70px;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-family: 'Graphik', sans-serif;
-            font-size: 14px;
-            font-weight: 300;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 1000;
-            pointer-events: none;
-        }
-        
-        .sidebar-new-chat:hover::after,
-        .sidebar-user:hover::after {
-            opacity: 1;
-            visibility: visible;
-            left: 75px;
-        }
-        
-        /* Flecha del tooltip para nuevos elementos */
-        .sidebar-new-chat::before,
-        .sidebar-user::before {
-            content: '';
-            position: absolute;
-            left: 65px;
-            top: 50%;
-            transform: translateY(-50%);
-            border: 5px solid transparent;
-            border-right-color: rgba(0, 0, 0, 0.9);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 1000;
-            pointer-events: none;
-        }
-        
-        .sidebar-new-chat:hover::before,
-        .sidebar-user:hover::before {
-            opacity: 1;
-            visibility: visible;
-            left: 70px;
-        }
                
        
        /* =================== PANTALLA DE BIENVENIDA =================== */
@@ -1386,21 +1275,6 @@
             </div>
         </div>
         
-        <!-- Botón nuevo chat -->
-        <div class="sidebar-new-chat" data-tooltip="Nuevo Chat">
-            <div class="new-chat-circle">
-                <span class="plus-icon">+</span>
-            </div>
-        </div>
-        
-        <!-- Avatar de usuario -->
-        <div class="sidebar-user" data-tooltip="Inicia Sesión">
-            <div class="user-avatar">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
-                </svg>
-            </div>
-        </div>
     
     <div class="container sidebar-active">
         <!-- Área principal -->
@@ -3637,24 +3511,6 @@
                     }
                 }
             });
-        }
-
-        function initSidebarExtras() {
-            // Funcionalidad para nuevo chat
-            const newChatBtn = document.querySelector('.sidebar-new-chat');
-            if (newChatBtn) {
-                newChatBtn.addEventListener('click', function() {
-                    newChat(); // Usar la función existente
-                });
-            }
-            
-            // Funcionalidad para avatar de usuario
-            const userAvatar = document.querySelector('.sidebar-user');
-            if (userAvatar) {
-                userAvatar.addEventListener('click', function() {
-                    showLoginPopup(); // Usar la función existente
-                });
-            }
         }
        
         
