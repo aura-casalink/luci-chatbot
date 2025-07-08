@@ -917,7 +917,7 @@
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 30px;
-            padding: 25px 15px 20px 20px;
+            padding: 30px 15px 25px 20px;
             margin-top: 0px;
             border-bottom: 1px solid #e0e6ed;
         }
@@ -927,7 +927,7 @@
             font-weight: 700;
             font-size: 18px;
             color: #333;
-            margin-top: 9px; 
+            margin-top: 14px; 
             line-height: 1.2;
         }
         
@@ -1002,7 +1002,13 @@
         }
         
         .submenu-option.active {
-            font-weight: 700;
+            background: transparent;
+            color: #000;
+            font-weight: 700; /* Agregar negrita explícitamente */
+        }
+
+       .submenu-option.active span {
+            font-weight: 700; /* Asegurar que el span también tenga negrita */
         }
         
         .submenu-icon {
@@ -1048,19 +1054,20 @@
         
         /* Estilo circular cuando la sidebar está contraída */
         .sidebar.collapsed .new-chat-btn {
-            width: 45px;
-            height: 45px;
+            width: 40px;  /* Reducir de 45px a 40px */
+            height: 40px; /* Reducir de 45px a 40px */
             border-radius: 50%;
             padding: 0;
-            background-color: #333;
-            color: white;
-            font-size: 20px;
+            background-color: #e9ecef; /* Mismo color que expandido */
+            color: #495057; /* Mismo color de texto que expandido */
+            font-size: 18px; /* Reducir tamaño del + */
             font-weight: 300;
         }
         
         .sidebar.collapsed .new-chat-btn:hover {
-            background-color: #555;
-            transform: scale(1.1);
+            background-color: #6c757d; /* Mismo hover que expandido */
+            color: white;
+            transform: scale(1.05); /* Reducir el scale del hover */
         }
         
         .sidebar.collapsed .new-chat-btn span {
@@ -1069,8 +1076,8 @@
         
         .sidebar.collapsed .new-chat-btn::before {
             content: '+';
-            font-size: 20px;
-            font-weight: 300;
+            font-size: 15px;
+            font-weight: 270;
         }
         
         .user-profile {
@@ -1442,7 +1449,12 @@
             position: relative;
         }
         
-        .sidebar.collapsed .sidebar-option::after {
+        .sidebar.collapsed .sidebar-option[data-option="financiacion"]::after,
+        .sidebar.collapsed .sidebar-option[data-option="tasaciones"]::after,
+        .sidebar.collapsed .sidebar-option[data-option="auditorias"]::after,
+        .sidebar.collapsed .sidebar-option[data-option="mudanzas"]::after,
+        .sidebar.collapsed .sidebar-option[data-option="reformas"]::after,
+        .sidebar.collapsed .sidebar-option[data-option="suministros"]::after {
             content: attr(data-tooltip);
             position: absolute;
             left: 70px;
@@ -1463,14 +1475,24 @@
             pointer-events: none;
         }
         
-        .sidebar.collapsed .sidebar-option:hover::after {
+        .sidebar.collapsed .sidebar-option[data-option="financiacion"]:hover::after,
+        .sidebar.collapsed .sidebar-option[data-option="tasaciones"]:hover::after,
+        .sidebar.collapsed .sidebar-option[data-option="auditorias"]:hover::after,
+        .sidebar.collapsed .sidebar-option[data-option="mudanzas"]:hover::after,
+        .sidebar.collapsed .sidebar-option[data-option="reformas"]:hover::after,
+        .sidebar.collapsed .sidebar-option[data-option="suministros"]:hover::after {
             opacity: 1;
             visibility: visible;
             left: 75px;
         }
         
         /* Flecha del tooltip */
-        .sidebar.collapsed .sidebar-option::before {
+        .sidebar.collapsed .sidebar-option[data-option="financiacion"]::before,
+        .sidebar.collapsed .sidebar-option[data-option="tasaciones"]::before,
+        .sidebar.collapsed .sidebar-option[data-option="auditorias"]::before,
+        .sidebar.collapsed .sidebar-option[data-option="mudanzas"]::before,
+        .sidebar.collapsed .sidebar-option[data-option="reformas"]::before,
+        .sidebar.collapsed .sidebar-option[data-option="suministros"]::before {
             content: '';
             position: absolute;
             left: 65px;
@@ -1485,21 +1507,26 @@
             pointer-events: none;
         }
         
-        .sidebar.collapsed .sidebar-option:hover::before {
+        .sidebar.collapsed .sidebar-option[data-option="financiacion"]:hover::before,
+        .sidebar.collapsed .sidebar-option[data-option="tasaciones"]:hover::before,
+        .sidebar.collapsed .sidebar-option[data-option="auditorias"]:hover::before,
+        .sidebar.collapsed .sidebar-option[data-option="mudanzas"]:hover::before,
+        .sidebar.collapsed .sidebar-option[data-option="reformas"]:hover::before,
+        .sidebar.collapsed .sidebar-option[data-option="suministros"]:hover::before {
             opacity: 1;
             visibility: visible;
             left: 70px;
-        }   
+        } 
        
        /* Tooltip para el botón de nuevo chat circular */
-        .sidebar.collapsed .new-chat-btn {
+        .sidebar.collapsed .new-chat-container {
             position: relative;
         }
         
-        .sidebar.collapsed .new-chat-btn::after {
+        .sidebar.collapsed .new-chat-container::after {
             content: 'Nuevo Chat';
             position: absolute;
-            left: 70px;
+            left: 65px;
             top: 50%;
             transform: translateY(-50%);
             background-color: rgba(0, 0, 0, 0.9);
@@ -1517,17 +1544,17 @@
             pointer-events: none;
         }
         
-        .sidebar.collapsed .new-chat-btn:hover::after {
+        .sidebar.collapsed .new-chat-container:hover::after {
             opacity: 1;
             visibility: visible;
-            left: 75px;
+            left: 70px;
         }
         
         /* Flecha del tooltip para nuevo chat */
         .sidebar.collapsed .new-chat-container::before {
             content: '';
             position: absolute;
-            left: 65px;
+            left: 60px;
             top: 50%;
             transform: translateY(-50%);
             border: 5px solid transparent;
@@ -1539,13 +1566,12 @@
             pointer-events: none;
         }
         
-        .sidebar.collapsed .new-chat-btn:hover + .new-chat-container::before,
         .sidebar.collapsed .new-chat-container:hover::before {
             opacity: 1;
             visibility: visible;
-            left: 70px;
+            left: 65px;
         }
-       
+               
        @media (max-width: 768px) {
            .sidebar.collapsed .sidebar-option[data-option="propiedades"]::after {
                 content: attr(data-tooltip);
