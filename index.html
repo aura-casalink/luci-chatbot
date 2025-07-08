@@ -861,10 +861,10 @@
         }
         
         .sidebar:not(.expanded) .aura-logo:hover::before {
-            opacity: 0.3; /* CAMBIO: Semi-transparente en lugar de oculta */
+            opacity: 0.3; 
         }
 
-       .collapse-arrow {
+        .collapse-arrow {
             opacity: 0;
             visibility: hidden;
             background-color: #e9ecef;
@@ -878,12 +878,13 @@
             cursor: pointer;
             transition: all 0.2s ease;
             color: #495057;
-            font-size: 14px;
+            font-size: 18px; 
             font-weight: bold;
             position: relative;
+            margin-right: 15px; 
         }
-
-       .sidebar.expanded .sidebar-logo:hover .collapse-arrow {
+        
+        .sidebar.expanded .sidebar-logo:hover .collapse-arrow {
             opacity: 1;
             visibility: visible;
         }
@@ -892,12 +893,11 @@
             background-color: #6c757d;
             color: white;
         }
-
-       .expand-indicator {
+        
+        .expand-indicator {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            top: 0;
+            left: 0;
             opacity: 0;
             visibility: hidden;
             background-color: #e9ecef;
@@ -911,7 +911,7 @@
             cursor: pointer;
             transition: all 0.2s ease;
             color: #495057;
-            font-size: 14px;
+            font-size: 18px; 
             font-weight: bold;
             z-index: 10;
         }
@@ -922,7 +922,7 @@
         }
         
         .sidebar:not(.expanded) .aura-logo:hover::before {
-            opacity: 0;
+            opacity: 0.3;
         }
         
         .expand-indicator:hover {
@@ -1015,7 +1015,7 @@
         /* Submenu deslizable para propiedades */
         .sidebar-submenu {
             position: fixed;
-            left: 280px; /* CAMBIO: Posición relativa a sidebar expandida */
+            left: 80px; /* CAMBIO: Posición junto a sidebar colapsada */
             top: 0;
             width: 180px;
             height: 100vh;
@@ -1032,7 +1032,6 @@
         .sidebar-submenu.visible {
             transform: translateX(0);
         }
-        
         
         .new-chat-circular {
             background: #333;
@@ -4071,16 +4070,20 @@
                         // Activar modo propiedades
                         this.classList.add('active');
                         
-                        // CAMBIO: Asegurar que la sidebar esté expandida antes de mostrar submenu
+                        // CAMBIO: Colapsar sidebar y mostrar submenu
                         const sidebar = document.getElementById('sidebar');
-                        if (!sidebar.classList.contains('expanded')) {
-                            expandSidebar();
-                            // Esperar a que termine la expansión antes de activar modo propiedades
+                        const container = document.querySelector('.container');
+                        
+                        // Primero colapsar la sidebar si está expandida
+                        if (sidebar.classList.contains('expanded')) {
+                            collapseSidebar();
+                            // Esperar a que termine la animación de colapso
                             setTimeout(() => {
-                                togglePropertiesMode();
+                                activatePropertiesMode();
                             }, 250);
                         } else {
-                            togglePropertiesMode();
+                            // Si ya está colapsada, activar directamente
+                            activatePropertiesMode();
                         }
                         
                         // Si no hay chat activo, mostrar la interfaz
@@ -4304,6 +4307,33 @@
             
             console.log('Modo propiedades activado');
         }
+
+        function activatePropertiesMode() {
+            const sidebar = document.querySelector('.sidebar');
+            const container = document.querySelector('.container');
+            const submenu = document.getElementById('submenu');
+            const topBar = document.getElementById('topBar');
+            
+            isPropertiesMode = true;
+            
+            console.log('Activando modo propiedades con sidebar colapsada');
+            
+            // Asegurar que la sidebar esté colapsada
+            sidebar.classList.remove('expanded');
+            container.classList.remove('sidebar-expanded');
+            
+            // Mostrar submenu junto a la sidebar colapsada
+            submenu.classList.add('visible');
+            container.classList.add('submenu-open');
+            
+            // Mostrar barra superior solo si estamos en "buscar"
+            if (currentSubmenuOption === 'buscar') {
+                topBar.style.display = 'flex';
+                document.querySelector('.main-area').style.paddingTop = '60px';
+            }
+            
+            console.log('Modo propiedades activado con sidebar colapsada');
+        }
         
         function exitPropertiesMode() {
             const sidebar = document.querySelector('.sidebar');
@@ -4321,8 +4351,10 @@
             submenu.classList.remove('visible');
             container.classList.remove('submenu-open');
             
-            // Volver al estado expandido normal (no colapsar automáticamente)
-            container.classList.add('sidebar-expanded');
+            // La sidebar permanece en su estado actual (colapsada o expandida)
+            // No forzamos ningún estado específico
+            
+            console.log('Modo propiedades desactivado');
         }
 
         function updateSubmenuIcons(activeOption) {
