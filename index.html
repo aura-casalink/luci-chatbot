@@ -951,7 +951,7 @@
             margin: 0 10px 8px 10px;
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: background-color 0.2s ease;;
             font-family: 'Graphik', sans-serif;
             font-size: 16px;
             color: #000;
@@ -971,24 +971,27 @@
         }
         
         .sidebar-option.active .sidebar-text {
-            font-weight: 700;
+            font-weight: 700 !important;
         }
                 
        
        .sidebar-icon {
             width: 24px;
             height: 24px;
-            transition: all 0.2s ease;
+            transition: none !important;
             flex-shrink: 0;
             display: block !important;
             visibility: visible !important;
             opacity: 1 !important;
+            z-index: 999 !important;
         }
         
         /* Estado expandido */
         .sidebar.expanded .sidebar-icon {
-            margin-right: 15px;
-            margin-left: 0;
+            margin-left: 0 !important;
+            margin-right: 15px !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
         }
         
        .sidebar:not(.expanded) .sidebar-icon {
@@ -1001,19 +1004,32 @@
         }
 
        .sidebar:not(.expanded) .sidebar-option[data-option="propiedades"] .sidebar-icon {
-            margin-left: 94px !important; 
+            margin-left: 94px !important;
+            margin-right: 0 !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
         }
         
         .sidebar:not(.expanded) .sidebar-option[data-option="financiacion"] .sidebar-icon {
-            margin-left: 87px !important; 
+            margin-left: 87px !important;
+            margin-right: 0 !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
         }
         
         .sidebar:not(.expanded) .sidebar-option[data-option="tasaciones"] .sidebar-icon {
-            margin-left: 78px !important; 
+            margin-left: 78px !important;
+            margin-right: 0 !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
         }
+
         
         .sidebar:not(.expanded) .sidebar-option[data-option="suministros"] .sidebar-icon {
             margin-left: 80px !important; 
+            margin-right: 0 !important;
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
         }
         
         /* FORZAR que el contenedor centre el icono */
@@ -1033,6 +1049,7 @@
             visibility: hidden;
             transition: opacity 0.3s ease, visibility 0.3s ease;
             display: block;
+            white-space: nowrap;
         }
         
         /* MOSTRAR texto cuando sidebar está expandido */
