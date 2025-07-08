@@ -813,8 +813,9 @@
             position: relative;
             display: flex;
             align-items: center;
-            justify-content: center; /* CAMBIO: Centrar en ambos estados */
-            width: 80px; /* CAMBIO: Ancho completo del sidebar colapsado */
+            justify-content: center;
+            width: 80px;
+            height: 32px;
         }
         
         .sidebar.expanded .aura-logo {
@@ -887,10 +888,11 @@
             cursor: pointer;
             transition: all 0.2s ease;
             color: #495057;
-            font-size: 36px; /* CAMBIO: Doble de tamaño */
+            font-size: 24px;
             font-weight: bold;
             position: relative;
-            margin-right: 20px; /* CAMBIO: Más separación del borde */
+            margin-right: 20px;
+            line-height: 1;
         }
                 
         .sidebar.expanded .sidebar-logo:hover .collapse-arrow {
@@ -903,27 +905,6 @@
             color: white;
         }
         
-        .expand-indicator {
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            visibility: hidden;
-            background-color: #e9ecef;
-            border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: #495057;
-            font-size: 18px; 
-            font-weight: bold;
-            z-index: 10;
-        }
         
         .sidebar:not(.expanded) .aura-logo:hover .expand-indicator {
             opacity: 1;
@@ -1237,14 +1218,20 @@
             border-radius: 50%;
         }
         
-        .sidebar:not(.expanded) .new-chat-btn::before {
-            content: '+';
+        .sidebar:not(.expanded) .new-chat-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             font-size: 20px;
             font-weight: 300;
         }
         
+        .sidebar:not(.expanded) .new-chat-btn::before {
+            content: '+';
+        }
+        
         .sidebar:not(.expanded) .new-chat-btn::after {
-            content: ''; /* LIMPIAR */
+            content: '';
         }
         
         /* ESTADO EXPANDIDO: Mostrar texto completo */
@@ -1257,11 +1244,11 @@
         }
         
         .sidebar.expanded .new-chat-btn::before {
-            content: ''; /* LIMPIAR el + */
+            content: '';
         }
         
         .sidebar.expanded .new-chat-btn::after {
-            content: 'Nuevo Chat'; /* CAMBIO: Sin + al inicio */
+            content: 'Nuevo Chat';
             font-size: 14px;
             font-weight: 500;
         }
@@ -2004,9 +1991,7 @@
             
             <!-- Botón nuevo chat -->
             <div class="new-chat-container">
-                <button class="new-chat-btn" onclick="startNewChat()">
-                    <span>+ Nuevo Chat</span>
-                </button>
+               <button class="new-chat-btn" onclick="startNewChat()"></button>
             </div>
             
             <!-- Perfil de usuario -->
