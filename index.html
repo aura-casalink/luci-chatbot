@@ -766,7 +766,7 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 280px;
+            width: 80px; 
             height: 100vh;
             background-color: white;
             border-right: 1px solid #e9ecef;
@@ -776,8 +776,8 @@
             transition: width 0.2s ease;
         }
         
-        .sidebar.collapsed {
-            width: 80px;
+        .sidebar.expanded {
+            width: 280px;
         }
         
         .sidebar-content {
@@ -787,54 +787,120 @@
             padding: 20px 0;
         }
         
-        /* Logo AURA */
+       /* Logo AURA */
         .sidebar-logo {
-            padding: 0 0 30px 35px;
+            padding: 0 0 30px 28px; /* CAMBIO: Padding para estado colapsado */
             text-align: left;
+            position: relative; /* AÑADIR: Para posicionar las flechas */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 60px;
         }
         
-        .sidebar.collapsed .sidebar-logo {
-            padding: 0 0 30px 28px;
+        .sidebar.expanded .sidebar-logo {
+            padding: 0 0 30px 35px; /* Padding para estado expandido */
         }
-                
+        
         .aura-logo {
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
-            font-size: 24px;
+            font-size: 28px;
             color: #000;
             transition: all 0.3s ease;
+            cursor: pointer; /* AÑADIR: Cursor pointer */
         }
-        
-        .sidebar.collapsed .aura-logo {
-            font-size: 20px;
-        }
-        
-        .sidebar.collapsed .aura-logo::before {
+
+       .sidebar:not(.expanded) .aura-logo::before {
             content: 'A';
-        }
-        
-        .sidebar.collapsed .aura-logo {
-            font-size: 0;
-        }
-        
-        .sidebar.collapsed .aura-logo::before {
             font-size: 28px;
             font-weight: 700;
         }
         
+        .sidebar:not(.expanded) .aura-logo {
+            font-size: 0;
+        }
+
+       .collapse-arrow {
+            opacity: 0;
+            visibility: hidden;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #495057;
+            font-size: 14px;
+            font-weight: bold;
+            position: relative;
+        }
+
+       .sidebar.expanded .sidebar-logo:hover .collapse-arrow {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .collapse-arrow:hover {
+            background-color: #6c757d;
+            color: white;
+        }
+
+       .expand-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            visibility: hidden;
+            background-color: #e9ecef;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #495057;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 10;
+        }
+        
+        .sidebar:not(.expanded) .aura-logo:hover .expand-indicator {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .sidebar:not(.expanded) .aura-logo:hover::before {
+            opacity: 0;
+        }
+        
+        .expand-indicator:hover {
+            background-color: #6c757d;
+            color: white;
+        }
+        
         .sidebar-options {
             flex: 1;
-            padding: 0 20px;
+            padding: 0 10px;
         }
         
         .sidebar.collapsed .sidebar-options {
-            padding: 0 10px;
+            padding: 0 20px;
         }
         
         .sidebar-option {
             display: flex;
             align-items: center;
-            padding: 15px 20px;
+            padding: 15px;
+            justify-content: center;
             margin-bottom: 8px;
             border-radius: 12px;
             cursor: pointer;
@@ -845,6 +911,11 @@
             position: relative;
             min-height: 54px;
             box-sizing: border-box;
+        }
+
+       .sidebar.expanded .sidebar-option {
+            padding: 15px 20px;
+            justify-content: flex-start; 
         }
         
         .sidebar.collapsed .sidebar-option {
@@ -865,24 +936,24 @@
         .sidebar-icon {
             width: 24px;
             height: 24px;
-            margin-right: 15px;
+            margin-right: 0;
             transition: all 0.2s ease;
             flex-shrink: 0;
             display: block;
         }
         
-        .sidebar.collapsed .sidebar-icon {
-            margin-right: 0;
-            margin-left: 0;
+        .sidebar.expanded .sidebar-icon {
+            margin-right: 15px; 
         }
         
         .sidebar-text {
             font-weight: 500;
             transition: all 0.3s ease;
+            display: none;
         }
         
-        .sidebar.collapsed .sidebar-text {
-            display: none;
+      .sidebar.expanded .sidebar-text {
+            display: block; /* Visible en estado expandido */
         }
         
         /* Indicador visual para sidebar contraído */
@@ -1004,7 +1075,78 @@
             width: 20px;
             height: 20px;
         }
+
+        /* =================== TOOLTIPS PARA FLECHAS =================== */
+        .collapse-arrow::after,
+        .expand-indicator::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 45px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Graphik', sans-serif;
+            font-size: 14px;
+            font-weight: 300;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
         
+        .collapse-arrow:hover::after,
+        .expand-indicator:hover::after {
+            opacity: 1;
+            visibility: visible;
+            left: 50px;
+        }
+        
+        /* Flecha del tooltip */
+        .collapse-arrow::before,
+        .expand-indicator::before {
+            content: '';
+            position: absolute;
+            left: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 5px solid transparent;
+            border-right-color: rgba(0, 0, 0, 0.9);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        
+        .collapse-arrow:hover::before,
+        .expand-indicator:hover::before {
+            opacity: 1;
+            visibility: visible;
+            left: 45px;
+        }
+
+       /* =================== ACTUALIZAR CONTENEDOR =================== */
+        .container {
+            margin-left: 80px; /* CAMBIO: Estado base colapsado */
+            width: calc(100% - 80px);
+            transition: all 0.2s ease;
+        }
+        
+        .container.sidebar-expanded {
+            margin-left: 280px; /* CAMBIO: Estado expandido */
+            width: calc(100% - 280px);
+        }
+        
+        .container.submenu-open {
+            margin-left: 260px; /* Submenu activo */
+            width: calc(100% - 260px);
+        }
+       
         /* =================== BOTÓN NUEVO CHAT CIRCULAR =================== */
         .new-chat-container {
             padding: 0 20px;
@@ -1138,22 +1280,6 @@
             display: none;
         }
         
-        /* Ajustar contenido principal */
-        .container {
-            margin-left: 280px;
-            width: calc(100% - 280px);
-            transition: all 0.2s ease;
-        }
-        
-        .container.sidebar-collapsed {
-            margin-left: 80px;
-            width: calc(100% - 80px);
-        }
-        
-        .container.submenu-open {
-            margin-left: 260px;
-            width: calc(100% - 260px);
-        } 
 
        /* =================== POPUP CREAR CUENTA =================== */
         .popup-overlay {
@@ -1724,12 +1850,13 @@
 </head>
 <body>
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-content">
-            <!-- Logo AURA -->
-            <div class="sidebar-logo">
-                <div class="aura-logo">AURA</div>
+        <div class="sidebar-logo">
+            <div class="aura-logo" onclick="toggleSidebar()">
+                AURA
+                <div class="expand-indicator" data-tooltip="Expandir" onclick="event.stopPropagation(); expandSidebar()">›</div>
             </div>
-            
+            <button class="collapse-arrow" data-tooltip="Contraer" onclick="collapseSidebar()">‹</button>
+        </div>
             <!-- Lista de opciones principales -->
             <div class="sidebar-options">
                 <div class="sidebar-option active" data-option="propiedades" data-tooltip="Propiedades">
@@ -2027,6 +2154,8 @@
         // Inicialización
         document.addEventListener('DOMContentLoaded', async function() {
             initSidebar();
+            const container = document.querySelector('.container');
+            container.classList.remove('sidebar-expanded', 'submenu-open');
             await initializeSupabase();
             await initializeApp();
             updateTexts();
@@ -3819,6 +3948,44 @@
             }
         }
 
+        // =================== FUNCIONES SIDEBAR =================== 
+        function expandSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const container = document.querySelector('.container');
+            
+            sidebar.classList.add('expanded');
+            container.classList.add('sidebar-expanded');
+            
+            console.log('Sidebar expandida');
+        }
+        
+        function collapseSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const container = document.querySelector('.container');
+            const submenu = document.getElementById('submenu');
+            
+            // Si está en modo propiedades, salir primero
+            if (isPropertiesMode) {
+                exitPropertiesMode();
+            }
+            
+            sidebar.classList.remove('expanded');
+            container.classList.remove('sidebar-expanded');
+            
+            console.log('Sidebar colapsada');
+        }
+        
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            
+            if (sidebar.classList.contains('expanded')) {
+                collapseSidebar();
+            } else {
+                expandSidebar();
+            }
+        }
+        
+        
         // =================== GESTIÓN BARRA LATERAL ===================
         function initSidebar() {
             // URLs de iconos activos e inactivos
@@ -3972,6 +4139,9 @@
             shownTimeoutPopups.clear();
             
             console.log('Nuevo chat iniciado');
+            if (isPropertiesMode) {
+                exitPropertiesMode();
+            }
         }
         
         function showChatInterface() {
@@ -4071,16 +4241,23 @@
             
             isPropertiesMode = true;
             
-            // Contraer sidebar y mostrar submenu al mismo tiempo
-            sidebar.classList.add('collapsed');
-            submenu.classList.add('visible');
-            container.classList.add('submenu-open');
-            
-            // Mostrar barra superior solo si estamos en "buscar"
-            if (currentSubmenuOption === 'buscar') {
-                topBar.style.display = 'flex';
-                document.querySelector('.main-area').style.paddingTop = '60px';
+            // Asegurar que la sidebar esté expandida primero
+            if (!sidebar.classList.contains('expanded')) {
+                expandSidebar();
             }
+            
+            // Esperar a que termine la animación de expansión antes de mostrar submenu
+            setTimeout(() => {
+                submenu.classList.add('visible');
+                container.classList.add('submenu-open');
+                container.classList.remove('sidebar-expanded'); // Remover clase de expansión simple
+                
+                // Mostrar barra superior solo si estamos en "buscar"
+                if (currentSubmenuOption === 'buscar') {
+                    topBar.style.display = 'flex';
+                    document.querySelector('.main-area').style.paddingTop = '60px';
+                }
+            }, 200);
         }
         
         function exitPropertiesMode() {
@@ -4099,15 +4276,8 @@
             submenu.classList.remove('visible');
             container.classList.remove('submenu-open');
             
-            // Expandir sidebar
-            setTimeout(() => {
-                sidebar.classList.remove('collapsed');
-                container.classList.add('sidebar-collapsed');
-                
-                setTimeout(() => {
-                    container.classList.remove('sidebar-collapsed');
-                }, 300);
-            }, 300);
+            // Volver al estado expandido normal (no colapsar automáticamente)
+            container.classList.add('sidebar-expanded');
         }
 
         function updateSubmenuIcons(activeOption) {
