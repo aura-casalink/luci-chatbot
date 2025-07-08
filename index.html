@@ -1026,6 +1026,7 @@
             text-align: center !important;
         }
         
+        /* TEXTO SIDEBAR - REGLAS DEFINITIVAS */
         .sidebar-text {
             font-weight: 500;
             opacity: 0;
@@ -1034,32 +1035,39 @@
             display: block;
         }
         
-       .sidebar.expanded .sidebar-option.active > .sidebar-text {
-            font-weight: 700 !important;
-            color: #000 !important;
-        }
-        
-        /* También forzar en general */
-        .sidebar-option.active > .sidebar-text {
-            font-weight: 700 !important;
-        } 
-       
-       .sidebar.expanded .sidebar-text {
+        /* MOSTRAR texto cuando sidebar está expandido */
+        .sidebar.expanded .sidebar-text {
             opacity: 1 !important;
             visibility: visible !important;
-            display: block !important;
         }
-
-       /* TEXTO NEGRITA SIDEBAR EXPANDIDO - MÁS ESPECÍFICO */
+        
+        /* REGLA DEFINITIVA: Opción activa SIEMPRE en negrita - MÁX ESPECIFICIDAD */
+        .sidebar-option.active .sidebar-text,
+        .sidebar.expanded .sidebar-option.active .sidebar-text,
+        .sidebar:not(.expanded) .sidebar-option.active .sidebar-text,
+        .sidebar.collapsed .sidebar-option.active .sidebar-text {
+            font-weight: 700 !important;
+        }
+        
+        /* FORZAR negrita en estado expandido para opción activa */
         .sidebar.expanded .sidebar-option.active .sidebar-text {
-            font-weight: 700 !important;
-            color: #000 !important;
             opacity: 1 !important;
             visibility: visible !important;
+            font-weight: 700 !important;
+            color: #000 !important;
         }
         
-        /* TAMBIÉN asegurar que la regla general funcione */
-        .sidebar-option.active .sidebar-text {
+        /* SOBRESCRIBIR cualquier regla que ponga peso normal */
+        .sidebar.expanded .sidebar-text {
+            font-weight: 500; /* peso normal por defecto */
+        }
+        
+        .sidebar.expanded .sidebar-option.active .sidebar-text {
+            font-weight: 700 !important; /* FORZAR negrita para activo */
+        }
+        
+        /* REGLA DE EMERGENCIA - máxima especificidad */
+        .sidebar.expanded .sidebar-options .sidebar-option.active .sidebar-text {
             font-weight: 700 !important;
         }
         
