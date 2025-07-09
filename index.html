@@ -1727,7 +1727,7 @@
             height: 100%;
             box-sizing: border-box;
             display: grid;
-            grid-template-columns: 1fr 400px; /* Mapa dos veces más grande */
+            grid-template-columns: 1fr 600px; /* Mapa 50% más ancho (era 400px) */
             grid-template-rows: auto auto auto auto auto auto 1fr auto;
             gap: 15px;
             grid-template-areas: 
@@ -1837,15 +1837,16 @@
             background-color: #FFC900;
             color: #333;
             border: none;
-            padding: 4px 8px; /* 75% más pequeño */
+            padding: 8px 10px; /* Doble de altura (era 4px 8px), 25% más ancho */
             border-radius: 6px;
             font-family: 'Graphik', sans-serif;
-            font-size: 11px; /* Fuente más pequeña */
+            font-size: 11px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
             align-self: start;
-            width: fit-content; /* Solo el ancho necesario */
+            width: fit-content;
+            margin-top: 5px; /* Más pegado a las specs */
         }
         
         .contact-sales-btn:hover {
@@ -1856,7 +1857,7 @@
         
         .property-slide-map {
             grid-area: map;
-            height: 400px; /* Dos veces más grande (era 200px) */
+            height: 200px; /* 50% menos altura (era 400px) */
             border-radius: 8px;
             overflow: hidden;
             border: 1px solid #ddd;
@@ -1864,6 +1865,7 @@
         
         .property-slide-carousel-area {
             grid-area: carousel;
+            margin-top: 5px; /* Más pegado al botón */
         }
         
         .property-slide-carousel {
@@ -1948,24 +1950,25 @@
             font-family: 'Graphik', sans-serif;
             font-weight: bold;
             font-size: 14px;
-            margin: 0 0 10px 0;
+            margin: 0;
             color: #333;
-            text-align: left; /* Alineado a la izquierda */
+            display: inline-block; /* Para que esté en la misma línea */
+            margin-right: 15px; /* Espacio entre pregunta y botones */
         }
         
         .feedback-buttons {
-            display: flex;
-            justify-content: flex-start; /* Alineado a la izquierda */
+            display: inline-flex; /* En la misma línea que la pregunta */
             gap: 15px;
+            align-items: center; /* Centrar verticalmente con la pregunta */
         }
         
         .feedback-btn {
             background: none;
-            border: 2px solid #ddd; /* Círculo con borde */
+            border: 2px solid #ddd;
             font-size: 20px;
             cursor: pointer;
             padding: 8px;
-            border-radius: 50%; /* Círculo perfecto */
+            border-radius: 50%;
             transition: all 0.2s;
             opacity: 0.6;
             width: 45px;
