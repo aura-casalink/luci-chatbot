@@ -1887,6 +1887,37 @@
             color: #888;
             font-size: 12px;
         }
+
+       /* =================== LOADER PARA MENSAJES =================== */
+        .loader {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #007bff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 70%;
+            margin-bottom: 15px;
+            padding: 12px 18px;
+            border-radius: 18px;
+            background-color: white;
+            border: 1px solid #ddd;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            font-family: 'Graphik', sans-serif;
+        }
        
        @media (max-width: 768px) {
     
