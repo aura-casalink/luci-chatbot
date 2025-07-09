@@ -2615,6 +2615,27 @@
               container.classList.toggle('sidebar-expanded');
             });
           }
+            console.log('=== VERIFICACIÓN FINAL ===');
+    
+            // Verificar que todo esté listo
+            setTimeout(() => {
+                console.log('Verificando elementos después del load...');
+                
+                const sidebarOptions = document.querySelectorAll('.sidebar-option');
+                const loginPopup = document.getElementById('loginPopup');
+                
+                console.log('Opciones sidebar:', sidebarOptions.length);
+                console.log('Login popup:', loginPopup ? 'ENCONTRADO' : 'NO ENCONTRADO');
+                
+                if (loginPopup) {
+                    console.log('Popup display actual:', window.getComputedStyle(loginPopup).display);
+                }
+                
+                // Test rápido
+                console.log('Para probar manualmente, ejecuta: forceShowLoginPopup()');
+                console.log('Para probar clicks: testSidebarClicks()');
+                
+            }, 1000);
         });
 
         window.debugRealtimeConnection = function() {
@@ -3969,7 +3990,28 @@
         
         // =================== POPUP CREAR CUENTA ===================
         function showLoginPopup() {
-            document.getElementById('loginPopup').style.display = 'flex';
+            console.log('=== EJECUTANDO showLoginPopup ===');
+            
+            const popup = document.getElementById('loginPopup');
+            console.log('Popup encontrado:', popup);
+            
+            if (popup) {
+                popup.style.display = 'flex';
+                console.log('Popup mostrado exitosamente');
+                
+                // Forzar reflow para asegurar que se muestre
+                popup.offsetHeight;
+                
+                // Verificar que se mostró
+                const computedStyle = window.getComputedStyle(popup);
+                console.log('Display del popup después de mostrar:', computedStyle.display);
+            } else {
+                console.error('¡Popup con ID loginPopup no encontrado!');
+                
+                // Listar todos los popups disponibles
+                const allPopups = document.querySelectorAll('[id*="popup"], [class*="popup"]');
+                console.log('Popups disponibles:', allPopups);
+            }
         }
         
         function closeLoginPopup() {
@@ -4013,38 +4055,75 @@
                 
         // =================== FUNCIONES SIDEBAR ===================
         function initSidebar() {
+            console.log('=== INICIALIZANDO SIDEBAR ===');
+            
+            // Verificar que el popup existe
+            const loginPopup = document.getElementById('loginPopup');
+            console.log('Popup de login encontrado:', loginPopup);
+            
             // Obtener todas las opciones de la sidebar
             const options = document.querySelectorAll('.sidebar-option');
+            console.log('Opciones de sidebar encontradas:', options.length);
+            
+            // Listar todas las opciones encontradas
+            options.forEach((option, index) => {
+                const optionName = option.dataset.option;
+                console.log(`Opción ${index + 1}: ${optionName}`);
+            });
+            
+            // Remover event listeners existentes (si los hay)
+            options.forEach(option => {
+                const newOption = option.cloneNode(true);
+                option.parentNode.replaceChild(newOption, option);
+            });
+            
+            // Obtener las opciones refrescadas después del cloning
+            const refreshedOptions = document.querySelectorAll('.sidebar-option');
             
             // Manejar clicks en opciones de la sidebar
-            options.forEach(option => {
+            refreshedOptions.forEach((option, index) => {
+                const optionName = option.dataset.option;
+                
                 option.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     
-                    const optionName = this.dataset.option;
-                    console.log('Clicked on sidebar option:', optionName);
+                    console.log(`=== CLICK EN SIDEBAR ===`);
+                    console.log('Opción clickeada:', optionName);
+                    console.log('Elemento clickeado:', this);
                     
                     if (optionName === 'propiedades') {
-                        // Activar opción propiedades
+                        console.log('Opción propiedades - activando');
                         setActiveSidebarOption('propiedades');
-                        // No hacer nada más, la funcionalidad ya está activa
                     } else {
-                        // Para cualquier otra opción, mostrar popup de login
-                        console.log('Showing login popup for:', optionName);
-                        showLoginPopup();
-                        return false; // Prevenir cualquier acción adicional
+                        console.log('Opción NO propiedades - mostrando login popup');
+                        
+                        // Verificar que la función existe
+                        if (typeof showLoginPopup === 'function') {
+                            console.log('Función showLoginPopup existe, ejecutando...');
+                            showLoginPopup();
+                        } else {
+                            console.error('Función showLoginPopup no existe!');
+                        }
+                        
+                        return false;
                     }
                 });
+                
+                console.log(`Event listener añadido a: ${optionName}`);
             });
             
             // Inicializar iconos correctos
             updateSidebarIcons();
         
+            // Manejar expand arrow
             const expandArrow = document.querySelector('.expand-arrow');
             if (expandArrow) {
                 expandArrow.addEventListener('click', toggleSidebar);
+                console.log('Event listener añadido a expand arrow');
             }
+            
+            console.log('=== SIDEBAR INICIALIZADA ===');
         }
         
         // Función para expandir/contraer sidebar
