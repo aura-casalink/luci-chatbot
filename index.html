@@ -4018,25 +4018,29 @@
             
             // Manejar clicks en opciones de la sidebar
             options.forEach(option => {
-                option.addEventListener('click', function() {
+                option.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
                     const optionName = this.dataset.option;
+                    console.log('Clicked on sidebar option:', optionName);
                     
                     if (optionName === 'propiedades') {
                         // Activar opción propiedades
                         setActiveSidebarOption('propiedades');
-                        
-                        // Si no hay chat activo, no hacer nada especial
-                        // La funcionalidad de propiedades ya funciona con selectOption
+                        // No hacer nada más, la funcionalidad ya está activa
                     } else {
                         // Para cualquier otra opción, mostrar popup de login
+                        console.log('Showing login popup for:', optionName);
                         showLoginPopup();
+                        return false; // Prevenir cualquier acción adicional
                     }
                 });
             });
             
             // Inicializar iconos correctos
             updateSidebarIcons();
-
+        
             const expandArrow = document.querySelector('.expand-arrow');
             if (expandArrow) {
                 expandArrow.addEventListener('click', toggleSidebar);
@@ -4622,6 +4626,8 @@
         }
 
         function updateGridWithResults(properties) {
+            console.log('Actualizando grid con propiedades:', properties.length);
+            
             // Obtener número total de propiedades del mensaje
             const totalProperties = properties.length;
             
@@ -4698,23 +4704,37 @@
         }
 
         function addViewMoreButton(totalProperties) {
+            console.log('Intentando añadir botón ver más. Total propiedades:', totalProperties);
+            
             // Remover botón existente si lo hay
             const existingButton = document.getElementById('viewMorePropertiesBtn');
             if (existingButton) {
                 existingButton.remove();
+                console.log('Botón existente removido');
             }
             
             // Solo añadir si hay más de 9 propiedades
             if (totalProperties > 9) {
                 const propertiesHeader = document.querySelector('.properties-header');
+                console.log('Properties header encontrado:', propertiesHeader);
                 
-                const viewMoreBtn = document.createElement('button');
-                viewMoreBtn.id = 'viewMorePropertiesBtn';
-                viewMoreBtn.className = 'view-more-btn';
-                viewMoreBtn.textContent = 'Ver más propiedades';
-                viewMoreBtn.onclick = showLoginPopup;
-                
-                propertiesHeader.appendChild(viewMoreBtn);
+                if (propertiesHeader) {
+                    const viewMoreBtn = document.createElement('button');
+                    viewMoreBtn.id = 'viewMorePropertiesBtn';
+                    viewMoreBtn.className = 'view-more-btn';
+                    viewMoreBtn.textContent = `Ver las ${totalProperties} propiedades`;
+                    viewMoreBtn.onclick = function() {
+                        console.log('Botón ver más clicked');
+                        showLoginPopup();
+                    };
+                    
+                    propertiesHeader.appendChild(viewMoreBtn);
+                    console.log('Botón ver más añadido exitosamente');
+                } else {
+                    console.error('No se encontró properties-header');
+                }
+            } else {
+                console.log('No se añade botón ver más - solo', totalProperties, 'propiedades');
             }
         }
         
@@ -4862,6 +4882,24 @@
             if (priceComparison.includes('por debajo')) return 'below-average';
             return 'neutral';
         }
+
+        // Función para probar el botón "Ver más propiedades"
+        window.testViewMoreButton = function() {
+            // Simular propiedades para testing
+            const mockProperties = [];
+            for (let i = 1; i <= 15; i++) {
+                mockProperties.push({
+                    id: i,
+                    title: `Propiedad ${i}`,
+                    price: 300000 + (i * 10000),
+                    location: `Ubicación ${i}`,
+                    thumbnail: 'https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/be/b2/f1/1217657644.webp'
+                });
+            }
+            
+            console.log('Probando con', mockProperties.length, 'propiedades');
+            updateGridWithResults(mockProperties);
+        };
                 
     </script>
 </body>
