@@ -1728,10 +1728,10 @@
             padding: 3px;
         }
         
-        .amenity-icon svg {
+        .amenity-icon img {
             width: 12px;
             height: 12px;
-            fill: #333;
+            filter: brightness(0); /* Hace los iconos negros */
         }
 
       /* =================== TARJETA DESLIZANTE DE PROPIEDAD =================== */
@@ -2396,171 +2396,171 @@
                         <h3>Propiedades Destacadas</h3>
                     </div>
                     <div class="grid-container">
-                        <!-- Propiedad 1 -->
-                        <div class="property-card" onclick="openPropertyDetail(1)">
-                            <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/be/b2/f1/1217657644.webp'); background-size: cover; background-position: center;">
-                                <div class="amenities-icons">
-                                    <div class="amenity-icon" title="Ascensor">
-                                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14H9v-2h2v2zm0-4H9V7h2v6zm6 4h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                                    </div>
-                                    <div class="amenity-icon" title="Parking">
-                                        <svg viewBox="0 0 24 24"><path d="M13 3H6v18h4v-6h3c3.31 0 6-2.69 6-6s-2.69-6-6-6zm.2 8H10V7h3.2c1.1 0 2 .9 2 2s-.9 2-2 2z"/></svg>
-                                    </div>
-                                    <div class="amenity-icon" title="Terraza">
-                                        <svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2zm0 3.08L15.42 14H8.58L12 5.08z"/></svg>
-                                    </div>
-                                    <div class="amenity-icon" title="Piscina">
-                                        <svg viewBox="0 0 24 24"><path d="M22 21c-1.11 0-1.73-.37-2.18-.64-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.07.64-2.18.64v-2c.56 0 .78-.13 1.15-.36.46-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36.56 0 .78-.13 1.15-.36.46-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36.56 0 .78-.13 1.15-.36.46-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36v2zM2 17h20v2H2v-2zm1.15-3.64c.46-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36.56 0 .78-.13 1.15-.36.46-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36.56 0 .78-.13 1.15-.36.46-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36v2c-1.11 0-1.73-.37-2.18-.64-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.07.64-2.18.64v-2c.56 0 .78-.13 1.15-.36z"/></svg>
-                                    </div>
-                                    <div class="amenity-icon" title="Jardín">
-                                        <svg viewBox="0 0 24 24"><path d="M12 22c4.97 0 9-4.03 9-9-4.97 0-9 4.03-9 9z"/><path d="M5.6 10.25c0-1.38 1.12-2.5 2.5-2.5.53 0 1.01.16 1.42.44l-.02.19c0 1.38-1.12 2.5-2.5 2.5-.53 0-1.01-.16-1.4-.44v-.19zm6.4-2.75c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4-4-1.79-4-4z"/></svg>
-                                    </div>
+                    <!-- Propiedad 1 -->
+                    <div class="property-card" onclick="openPropertyDetail(1)">
+                        <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/be/b2/f1/1217657644.webp'); background-size: cover; background-position: center;">
+                            <div class="amenities-icons">
+                                <div class="amenity-icon" title="Ascensor">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/948/948747.png" alt="Ascensor">
                                 </div>
-                            </div>
-                            <div class="property-info">
-                                <div class="property-price">332.000€</div>
-                                <div class="property-location">Puerto de Sotogrande-La Marina</div>
+                                <div class="amenity-icon" title="Parking">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/75/75905.png" alt="Parking">
+                                </div>
+                                <div class="amenity-icon" title="Terraza">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/3623/3623094.png" alt="Terraza">
+                                </div>
+                                <div class="amenity-icon" title="Piscina">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/2932/2932366.png" alt="Piscina">
+                                </div>
+                                <div class="amenity-icon" title="Jardín">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/1973/1973668.png" alt="Jardín">
+                                </div>
                             </div>
                         </div>
-                        
-                        <!-- Propiedad 2 -->
-                        <div class="property-card" onclick="openPropertyDetail(2)">
-                            <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/47/aa/2a/1217657655.webp'); background-size: cover; background-position: center;">
-                                <div class="amenities-icons">
-                                    <div class="amenity-icon" title="Ascensor">
-                                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14H9v-2h2v2zm0-4H9V7h2v6zm6 4h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                                    </div>
-                                    <div class="amenity-icon" title="Parking">
-                                        <svg viewBox="0 0 24 24"><path d="M13 3H6v18h4v-6h3c3.31 0 6-2.69 6-6s-2.69-6-6-6zm.2 8H10V7h3.2c1.1 0 2 .9 2 2s-.9 2-2 2z"/></svg>
-                                    </div>
-                                    <div class="amenity-icon" title="Piscina">
-                                        <svg viewBox="0 0 24 24"><path d="M22 21c-1.11 0-1.73-.37-2.18-.64-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.07.64-2.18.64v-2c.56 0 .78-.13 1.15-.36.46-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36.56 0 .78-.13 1.15-.36.46-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36.56 0 .78-.13 1.15-.36.46-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36v2zM2 17h20v2H2v-2zm1.15-3.64c.46-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36.56 0 .78-.13 1.15-.36.46-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36.56 0 .78-.13 1.15-.36.46-.27 1.07-.64 2.18-.64s1.73.37 2.18.64c.37.22.6.36 1.15.36v2c-1.11 0-1.73-.37-2.18-.64-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.07.64-2.18.64s-1.73-.37-2.18-.64c-.37-.22-.6-.36-1.15-.36-.56 0-.78.13-1.15.36-.46.27-1.07.64-2.18.64v-2c.56 0 .78-.13 1.15-.36z"/></svg>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="property-info">
-                                <div class="property-price">489.000€</div>
-                                <div class="property-location">Puerto de Sotogrande-La Marina</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Propiedad 3 -->
-                        <div class="property-card" onclick="openPropertyDetail(3)">
-                            <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/ef/da/02/1352099408.webp'); background-size: cover; background-position: center;">
-                                <div class="amenities-icons">
-                                    <div class="amenity-icon" title="Ascensor">
-                                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14H9v-2h2v2zm0-4H9V7h2v6zm6 4h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                                    </div>
-                                    <div class="amenity-icon" title="Terraza">
-                                        <svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2zm0 3.08L15.42 14H8.58L12 5.08z"/></svg>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="property-info">
-                                <div class="property-price">459.000€</div>
-                                <div class="property-location">Nueva Atalaya, Estepona</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Propiedad 4 -->
-                        <div class="property-card" onclick="openPropertyDetail(4)">
-                            <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/26/87/e3/1257669860.webp'); background-size: cover; background-position: center;">
-                                <div class="amenities-icons">
-                                    <div class="amenity-icon" title="Ascensor">
-                                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14H9v-2h2v2zm0-4H9V7h2v6zm6 4h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                                    </div>
-                                    <div class="amenity-icon" title="Parking">
-                                        <svg viewBox="0 0 24 24"><path d="M13 3H6v18h4v-6h3c3.31 0 6-2.69 6-6s-2.69-6-6-6zm.2 8H10V7h3.2c1.1 0 2 .9 2 2s-.9 2-2 2z"/></svg>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="property-info">
-                                <div class="property-price">849.000€</div>
-                                <div class="property-location">Lomas de Marbella Club, Marbella</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Propiedad 5 -->
-                        <div class="property-card" onclick="openPropertyDetail(5)">
-                            <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/5a/c4/85/1347007848.webp'); background-size: cover; background-position: center;">
-                                <div class="amenities-icons">
-                                    <div class="amenity-icon" title="Ascensor">
-                                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14H9v-2h2v2zm0-4H9V7h2v6zm6 4h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="property-info">
-                                <div class="property-price">320.000€</div>
-                                <div class="property-location">Retiro, Madrid</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Propiedad 6 -->
-                        <div class="property-card" onclick="openPropertyDetail(6)">
-                            <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/3c/54/a2/1347007801.webp'); background-size: cover; background-position: center;">
-                                <div class="amenities-icons">
-                                    <div class="amenity-icon" title="Terraza">
-                                        <svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2zm0 3.08L15.42 14H8.58L12 5.08z"/></svg>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="property-info">
-                                <div class="property-price">550.000€</div>
-                                <div class="property-location">Malasaña, Madrid</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Propiedad 7 -->
-                        <div class="property-card" onclick="openPropertyDetail(7)">
-                            <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/96/6b/9a/1347007850.webp'); background-size: cover; background-position: center;">
-                                <div class="amenities-icons">
-                                    <div class="amenity-icon" title="Ascensor">
-                                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8 14H9v-2h2v2zm0-4H9V7h2v6zm6 4h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-                                    </div>
-                                    <div class="amenity-icon" title="Terraza">
-                                        <svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2zm0 3.08L15.42 14H8.58L12 5.08z"/></svg>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="property-info">
-                                <div class="property-price">680.000€</div>
-                                <div class="property-location">Chueca, Madrid</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Propiedad 8 -->
-                        <div class="property-card" onclick="openPropertyDetail(8)">
-                            <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/77/54/29/1347007867.webp'); background-size: cover; background-position: center;">
-                                <div class="amenities-icons">
-                                    <div class="amenity-icon" title="Parking">
-                                        <svg viewBox="0 0 24 24"><path d="M13 3H6v18h4v-6h3c3.31 0 6-2.69 6-6s-2.69-6-6-6zm.2 8H10V7h3.2c1.1 0 2 .9 2 2s-.9 2-2 2z"/></svg>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="property-info">
-                                <div class="property-price">395.000€</div>
-                                <div class="property-location">Lavapiés, Madrid</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Propiedad 9 -->
-                        <div class="property-card" onclick="openPropertyDetail(9)">
-                            <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/a2/c9/8a/1347007851.webp'); background-size: cover; background-position: center;">
-                                <div class="amenities-icons">
-                                    <div class="amenity-icon" title="Terraza">
-                                        <svg viewBox="0 0 24 24"><path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71L12 2zm0 3.08L15.42 14H8.58L12 5.08z"/></svg>
-                                    </div>
-                                    <div class="amenity-icon" title="Jardín">
-                                        <svg viewBox="0 0 24 24"><path d="M12 22c4.97 0 9-4.03 9-9-4.97 0-9 4.03-9 9z"/><path d="M5.6 10.25c0-1.38 1.12-2.5 2.5-2.5.53 0 1.01.16 1.42.44l-.02.19c0 1.38-1.12 2.5-2.5 2.5-.53 0-1.01-.16-1.4-.44v-.19zm6.4-2.75c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4-4-1.79-4-4z"/></svg>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="property-info">
-                                <div class="property-price">445.000€</div>
-                                <div class="property-location">La Latina, Madrid</div>
-                            </div>
+                        <div class="property-info">
+                            <div class="property-price">332.000€</div>
+                            <div class="property-location">Puerto de Sotogrande-La Marina</div>
                         </div>
                     </div>
+                    
+                    <!-- Propiedad 2 -->
+                    <div class="property-card" onclick="openPropertyDetail(2)">
+                        <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/47/aa/2a/1217657655.webp'); background-size: cover; background-position: center;">
+                            <div class="amenities-icons">
+                                <div class="amenity-icon" title="Ascensor">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/948/948747.png" alt="Ascensor">
+                                </div>
+                                <div class="amenity-icon" title="Parking">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/75/75905.png" alt="Parking">
+                                </div>
+                                <div class="amenity-icon" title="Piscina">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/2932/2932366.png" alt="Piscina">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-info">
+                            <div class="property-price">489.000€</div>
+                            <div class="property-location">Puerto de Sotogrande-La Marina</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Propiedad 3 -->
+                    <div class="property-card" onclick="openPropertyDetail(3)">
+                        <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/ef/da/02/1352099408.webp'); background-size: cover; background-position: center;">
+                            <div class="amenities-icons">
+                                <div class="amenity-icon" title="Ascensor">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/948/948747.png" alt="Ascensor">
+                                </div>
+                                <div class="amenity-icon" title="Terraza">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/3623/3623094.png" alt="Terraza">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-info">
+                            <div class="property-price">459.000€</div>
+                            <div class="property-location">Nueva Atalaya, Estepona</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Propiedad 4 -->
+                    <div class="property-card" onclick="openPropertyDetail(4)">
+                        <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/26/87/e3/1257669860.webp'); background-size: cover; background-position: center;">
+                            <div class="amenities-icons">
+                                <div class="amenity-icon" title="Ascensor">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/948/948747.png" alt="Ascensor">
+                                </div>
+                                <div class="amenity-icon" title="Parking">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/75/75905.png" alt="Parking">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-info">
+                            <div class="property-price">849.000€</div>
+                            <div class="property-location">Lomas de Marbella Club, Marbella</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Propiedad 5 -->
+                    <div class="property-card" onclick="openPropertyDetail(5)">
+                        <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/5a/c4/85/1347007848.webp'); background-size: cover; background-position: center;">
+                            <div class="amenities-icons">
+                                <div class="amenity-icon" title="Ascensor">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/948/948747.png" alt="Ascensor">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-info">
+                            <div class="property-price">320.000€</div>
+                            <div class="property-location">Retiro, Madrid</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Propiedad 6 -->
+                    <div class="property-card" onclick="openPropertyDetail(6)">
+                        <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/3c/54/a2/1347007801.webp'); background-size: cover; background-position: center;">
+                            <div class="amenities-icons">
+                                <div class="amenity-icon" title="Terraza">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/3623/3623094.png" alt="Terraza">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-info">
+                            <div class="property-price">550.000€</div>
+                            <div class="property-location">Malasaña, Madrid</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Propiedad 7 -->
+                    <div class="property-card" onclick="openPropertyDetail(7)">
+                        <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/96/6b/9a/1347007850.webp'); background-size: cover; background-position: center;">
+                            <div class="amenities-icons">
+                                <div class="amenity-icon" title="Ascensor">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/948/948747.png" alt="Ascensor">
+                                </div>
+                                <div class="amenity-icon" title="Terraza">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/3623/3623094.png" alt="Terraza">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-info">
+                            <div class="property-price">680.000€</div>
+                            <div class="property-location">Chueca, Madrid</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Propiedad 8 -->
+                    <div class="property-card" onclick="openPropertyDetail(8)">
+                        <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/77/54/29/1347007867.webp'); background-size: cover; background-position: center;">
+                            <div class="amenities-icons">
+                                <div class="amenity-icon" title="Parking">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/75/75905.png" alt="Parking">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-info">
+                            <div class="property-price">395.000€</div>
+                            <div class="property-location">Lavapiés, Madrid</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Propiedad 9 -->
+                    <div class="property-card" onclick="openPropertyDetail(9)">
+                        <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/a2/c9/8a/1347007851.webp'); background-size: cover; background-position: center;">
+                            <div class="amenities-icons">
+                                <div class="amenity-icon" title="Terraza">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/3623/3623094.png" alt="Terraza">
+                                </div>
+                                <div class="amenity-icon" title="Jardín">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/1973/1973668.png" alt="Jardín">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="property-info">
+                            <div class="property-price">445.000€</div>
+                            <div class="property-location">La Latina, Madrid</div>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
         </div>
