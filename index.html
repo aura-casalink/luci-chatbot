@@ -425,34 +425,69 @@
             color: white;
         }
 
+        /* Reemplaza estas reglas CSS existentes */
         .sidebar.expanded .sidebar-option,
         .sidebar.expanded .sidebar-login,
         .sidebar.expanded .sidebar-new-chat {
           justify-content: flex-start;
-          padding-left: 20px; /* desplaza todo el contenido a la izquierda */
+          padding-left: 20px;
+          width: 100%;
         }
-
-        .sidebar-option,
-        .sidebar-login,
-        .sidebar-new-chat {
-          justify-content: center;
-        }
-
-       .sidebar.expanded .sidebar-option .sidebar-icon,
+        
+        .sidebar.expanded .sidebar-option .sidebar-icon,
         .sidebar.expanded .sidebar-login .login-circle,
         .sidebar.expanded .sidebar-new-chat .new-chat-circle {
           margin-left: 0;
-          margin-right: 10px;
-          justify-content: flex-start;
+          margin-right: 12px;
+          flex-shrink: 0;
         }
         
         .sidebar.expanded .sidebar-text {
-          position: static;           /* sin posicionamiento absoluto */
-          transform: none;            /* sin desplazamiento */
+          position: static;
+          transform: none;
           opacity: 1;
           visibility: visible;
           pointer-events: auto;
-          display: inline-block;      /* asegura que se muestre en línea */
+          display: inline-block;
+          white-space: nowrap;
+          font-size: 14px;
+          font-weight: 500;
+          color: #333;
+        }
+        
+        /* Asegurar que los elementos estén en línea cuando expandido */
+        .sidebar.expanded .sidebar-option,
+        .sidebar.expanded .sidebar-login,
+        .sidebar.expanded .sidebar-new-chat {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: flex-start;
+          padding-left: 20px;
+          padding-right: 20px;
+          width: 100%;
+        }
+        
+        /* Ajustar el comportamiento específico de los iconos */
+        .sidebar.expanded .sidebar-option .sidebar-icon {
+          width: 24px;
+          height: 24px;
+          margin-right: 12px;
+          flex-shrink: 0;
+        }
+        
+        .sidebar.expanded .sidebar-login .login-circle {
+          width: 40px;
+          height: 40px;
+          margin-right: 12px;
+          flex-shrink: 0;
+        }
+        
+        .sidebar.expanded .sidebar-new-chat .new-chat-circle {
+          width: 40px;
+          height: 40px;
+          margin-right: 12px;
+          flex-shrink: 0;
         }
        
        
