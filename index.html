@@ -465,9 +465,7 @@
           justify-content: flex-start;
           padding-left: 75px;
           padding-right: 20px;
-          width: 250px;
-          max-width: 250px;
-          box-sizing: border-box;      
+          width: 100%;
         }
 
        .sidebar.expanded .sidebar-icons-container {
@@ -554,27 +552,6 @@
             transition: all 0.3s ease;
             z-index: 1000;
             pointer-events: none;
-        }
-
-       /* Limitar hover sin mover iconos */
-        .sidebar.expanded .sidebar-option:hover,
-        .sidebar.expanded .sidebar-new-chat:hover,
-        .sidebar.expanded .sidebar-login:hover {
-            margin-right: 0;
-            width: 230px; /* Limitar el ancho del hover */
-        }
-       
-       /* Hover coherente para botones inferiores cuando sidebar está expandida */
-        .sidebar.expanded .sidebar-new-chat:hover,
-        .sidebar.expanded .sidebar-login:hover {
-            background-color: #f8f9fa;
-        }
-        
-        /* Asegurar que el hover cubra toda el área del botón */
-        .sidebar.expanded .sidebar-new-chat,
-        .sidebar.expanded .sidebar-login {
-            border-radius: 12px;
-            transition: background-color 0.2s ease;
         }
         
         .sidebar-new-chat:hover::after {
@@ -712,33 +689,6 @@
             padding-left: 0;
             width: 250px; /* Ancho específico del sidebar expandido */
             height: 80px;
-        }
-
-       /* Tooltip específico para botón contraer cuando sidebar está expandida */
-        .sidebar.expanded .expand-arrow::after {
-            content: "Esconder" !important;
-            left: auto !important;
-            right: -80px !important;
-            transform: translateY(-50%) !important; /* Sin rotación */
-        }
-
-       .sidebar.expanded .expand-arrow:hover::after {
-            left: auto !important;
-            right: -75px !important;
-        }
-        
-        /* Flecha del tooltip para botón contraer expandida */
-        .sidebar.expanded .expand-arrow::before {
-            left: auto !important;
-            right: -70px !important;
-            transform: translateY(-50%) !important; /* Sin rotación */
-            border-left-color: rgba(0, 0, 0, 0.9) !important;
-            border-right-color: transparent !important;
-        }
-                
-        .sidebar.expanded .expand-arrow:hover::before {
-            left: auto !important;
-            right: -75px !important;
         }
      
        
