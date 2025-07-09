@@ -2937,6 +2937,11 @@
             if (data.message) {
                 addMessage(data.message, 'assistant');
             }
+
+           // Si hay propiedades, actualizar el grid
+            if (data.properties && Array.isArray(data.properties) && data.properties.length > 0) {
+                updateGridWithResults(data.properties);
+            }
             
             // Resetear estado de callback pendiente
             pendingCallback = false;
@@ -4590,6 +4595,204 @@
                 stopGridSearch();
             }, 10000);
         };
+
+        function updateGridWithResults(properties) {
+            // Detener estado de búsqueda
+            stopGridSearch();
+            
+            const propertyCards = document.querySelectorAll('.property-card');
+            
+            properties.forEach((property, index) => {
+                if (index < propertyCards.length) {
+                    const card = propertyCards[index];
+                    
+                    // Actualizar imagen de fondo
+                    const imageDiv = card.querySelector('.property-image');
+                    if (imageDiv && property.thumbnail) {
+                        imageDiv.style.backgroundImage = `url('${property.thumbnail}')`;
+                        imageDiv.style.backgroundSize = 'cover';
+                        imageDiv.style.backgroundPosition = 'center';
+                    }
+                    
+                    // Actualizar precio
+                    const priceElement = card.querySelector('.property-price');
+                    if (priceElement && property.price) {
+                        priceElement.textContent = formatPrice(property.price);
+                        priceElement.style.color = '#333';
+                        priceElement.style.fontSize = '14px';
+                    }
+                    
+                    // Actualizar ubicación
+                    const locationElement = card.querySelector('.property-location');
+                    if (locationElement && property.location) {
+                        locationElement.textContent = property.location;
+                        locationElement.style.display = 'block';
+                    }
+                    
+                    // Actualizar amenities
+                    updateCardAmenities(card, property.amenities || {});
+                    
+                    // Actualizar click handler para abrir la propiedad correcta
+                    card.onclick = () => openDynamicPropertyDetail(property);
+                    
+                    // Guardar datos de la propiedad en el elemento para futura referencia
+                    card.dataset.propertyData = JSON.stringify(property);
+                }
+            });
+            
+            // Si hay menos de 9 propiedades, atenuar las tarjetas sobrantes
+            for (let i = properties.length; i < propertyCards.length; i++) {
+                propertyCards[i].style.opacity = '0.5';
+                propertyCards[i].onclick = null;
+            }
+            
+            console.log(`Grid actualizado con ${properties.length} propiedades`);
+        }
+
+        function updateCardAmenities(card, amenities) {
+            const amenitiesContainer = card.querySelector('.amenities-icons');
+            if (!amenitiesContainer) return;
+            
+            // Limpiar amenities existentes
+            amenitiesContainer.innerHTML = '';
+            
+            // Mapeo de amenities a iconos
+            const amenityIcons = {
+                elevator: { icon: 'https://cdn-icons-png.flaticon.com/512/948/948747.png', title: 'Ascensor' },
+                parking: { icon: 'https://cdn-icons-png.flaticon.com/512/75/75905.png', title: 'Parking' },
+                terrace: { icon: 'https://cdn-icons-png.flaticon.com/512/3623/3623094.png', title: 'Terraza' },
+                pool: { icon: 'https://cdn-icons-png.flaticon.com/512/2932/2932366.png', title: 'Piscina' },
+                garden: { icon: 'https://cdn-icons-png.flaticon.com/512/1973/1973668.png', title: 'Jardín' }
+            };
+            
+            // Añadir iconos para amenities activos (máximo 5 para que no se desborde)
+            let count = 0;
+            Object.keys(amenities).forEach(amenityKey => {
+                if (count < 5 && amenities[amenityKey] && amenityIcons[amenityKey]) {
+                    const amenityDiv = document.createElement('div');
+                    amenityDiv.className = 'amenity-icon';
+                    amenityDiv.title = amenityIcons[amenityKey].title;
+                    
+                    const img = document.createElement('img');
+                    img.src = amenityIcons[amenityKey].icon;
+                    img.alt = amenityIcons[amenityKey].title;
+                    
+                    amenityDiv.appendChild(img);
+                    amenitiesContainer.appendChild(amenityDiv);
+                    count++;
+                }
+            });
+        }
+
+        function openDynamicPropertyDetail(property) {
+            // Similar a openPropertyDetail pero usando datos dinámicos
+            const propertiesColumn = document.querySelector('.properties-column');
+            
+            const slideCard = document.createElement('div');
+            slideCard.className = 'property-slide-card';
+            slideCard.id = 'propertySlideCard';
+            
+            const priceComparisonClass = getPriceComparisonClass(property.priceComparison || '');
+            
+            slideCard.innerHTML = `
+                <div class="property-slide-content">
+                    <button class="property-slide-close" onclick="closePropertySlide()">×</button>
+                    
+                    <div class="property-slide-header">
+                        <div class="property-slide-title">${property.title}</div>
+                    </div>
+                    
+                    <div class="property-slide-location-area">
+                        <div class="property-slide-location">${property.location}</div>
+                    </div>
+                    
+                    <div class="property-slide-price-area">
+                        <div class="property-slide-price">${formatPrice(property.price)}</div>
+                        <div class="property-slide-price-per-sqm">${property.pricePerSqm?.toLocaleString('es-ES', { maximumFractionDigits: 2 }) || 'N/A'} €/m²</div>
+                        ${property.priceComparison ? `
+                            <div class="price-comparison ${priceComparisonClass}">
+                                <span class="price-comparison-text">${property.priceComparison}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="property-slide-specs-area">
+                        <div class="property-slide-specs">
+                            <div class="property-slide-spec">${property.builtArea || 'N/A'} m² construidos, ${property.usefulArea || 'N/A'} m² útiles</div>
+                            <div class="property-slide-spec">${property.bedrooms || 'N/A'} habitaciones</div>
+                            <div class="property-slide-spec">${property.bathrooms || 'N/A'} baños</div>
+                        </div>
+                    </div>
+                    
+                    <button class="contact-sales-btn" onclick="showContactInfoPopup('${property.title}')">
+                        Más Información
+                    </button>
+                    
+                    <div class="property-slide-map">
+                        ${property.lat && property.lng ? `
+                            <iframe 
+                                width="100%" 
+                                height="100%" 
+                                frameborder="0" 
+                                style="border:0"
+                                src="https://www.google.com/maps/embed/v1/view?key=AIzaSyAf-L38UI3hGyYrMJjeFO0Ij2n1p1mCyMk&center=${property.lat},${property.lng}&zoom=16"
+                                allowfullscreen>
+                            </iframe>
+                        ` : '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #888;">Ubicación no disponible</div>'}
+                    </div>
+                    
+                    <div class="property-slide-carousel-area">
+                        <div class="property-slide-carousel" id="slideCarousel">
+                            ${property.images && property.images.length > 0 ? 
+                                property.images.map((img, index) => 
+                                    `<img src="${img}" alt="${property.title}" ${index === 0 ? 'class="active"' : ''} onclick="openImageZoom('${img}')">`
+                                ).join('') :
+                                `<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #888;">No hay imágenes disponibles</div>`
+                            }
+                            ${property.images && property.images.length > 1 ? `
+                                <button class="slide-carousel-nav slide-carousel-prev" onclick="changeSlideImage(-1)">‹</button>
+                                <button class="slide-carousel-nav slide-carousel-next" onclick="changeSlideImage(1)">›</button>
+                            ` : ''}
+                        </div>
+                        
+                        ${property.images && property.images.length > 1 ? `
+                            <div class="carousel-indicators">
+                                ${property.images.map((_, index) => 
+                                    `<div class="carousel-dot ${index === 0 ? 'active' : ''}" onclick="goToSlideImage(${index})"></div>`
+                                ).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="property-slide-description-area">
+                        <div class="description-title">Descripción</div>
+                        <div class="property-slide-description">${property.description || 'No hay descripción disponible.'}</div>
+                    </div>
+                    
+                    <div class="property-feedback-area">
+                        <div class="feedback-question">¿Qué te parece esta propiedad?</div>
+                        <div class="feedback-buttons">
+                            <button class="feedback-btn" onclick="selectFeedback('like', this)" data-property-id="${property.property_id}">👍</button>
+                            <button class="feedback-btn" onclick="selectFeedback('dislike', this)" data-property-id="${property.property_id}">👎</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            propertiesColumn.appendChild(slideCard);
+            
+            setTimeout(() => {
+                slideCard.classList.add('active');
+            }, 10);
+            
+            window.currentSlideImageIndex = 0;
+        }
+
+        function getPriceComparisonClass(priceComparison) {
+            if (priceComparison.includes('por encima')) return 'above-average';
+            if (priceComparison.includes('por debajo')) return 'below-average';
+            return 'neutral';
+        }
                 
     </script>
 </body>
