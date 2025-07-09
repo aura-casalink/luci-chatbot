@@ -906,39 +906,6 @@
             color: #888;
             filter: grayscale(0.7) opacity(0.8);
         }
-        
-        .message.old.with-properties {
-            filter: none !important;
-            color: inherit !important;
-        }
-        
-        .message.old.with-properties .properties-container {
-            filter: none !important;
-            opacity: 1 !important;
-        }
-        
-        .message.old.with-properties .property-thumbnail {
-            filter: none !important;
-            opacity: 1 !important;
-        }
-        
-        .message.old.with-properties .property-thumbnail img {
-            filter: none !important;
-            opacity: 1 !important;
-        }
-
-       .message.recent-callback {
-            filter: none !important;
-            opacity: 1 !important;
-            color: inherit !important;
-        }
-        
-        .message.recent-callback .properties-container,
-        .message.recent-callback .property-thumbnail,
-        .message.recent-callback .property-thumbnail img {
-            filter: none !important;
-            opacity: 1 !important;
-        }
 
         .chat-input-container {
             padding: 30px;
@@ -2356,7 +2323,6 @@
         // Variables para timeout y popup
         let callbackTimeout = null;
         let shownTimeoutPopups = new Set();
-        let shownProperties = [];
         let currentPollingInterval = null;
         let pollingTimeout = null;
         let currentConversationTitle = null;
@@ -2408,11 +2374,7 @@
                 hideConversations: 'Ocultar conversaciones',
                 inputPlaceholder: 'Escribe tu mensaje...',
                 disclaimer: 'Luci se encuentra actualmente en <span class="beta-badge">BETA</span>, por lo que puede cometer errores. Considera verificar la información importante.',
-                timeoutTitle: '¡Continuamos con tu búsqueda exhaustiva de {searchContext}, pero nos va a llevar algún minuto más!',
-                timeoutText: 'Si lo prefieres, te podemos mandar los resultados por correo electrónico.',
-                timeoutEmailPlaceholder: 'tu@email.com',
-                timeoutContinueButton: 'Continuar esperando',
-                timeoutEmailSent: 'Te enviaremos los resultados por email cuando estén listos.'
+
             },
             english: {
                 welcomeTitle: 'Hello, I\'m Luci. How can I help you?',
@@ -2423,11 +2385,6 @@
                 hideConversations: 'Hide conversations',
                 inputPlaceholder: 'Type your message...',
                 disclaimer: 'Luci is currently in <span class="beta-badge">BETA</span>, so it may make mistakes. Consider verifying important information.',
-                timeoutTitle: 'We continue with your exhaustive search for {searchContext}, but it will take a few more minutes!',
-                timeoutText: 'If you prefer, we can send you the results by email.',
-                timeoutEmailPlaceholder: 'your@email.com',
-                timeoutContinueButton: 'Continue waiting',
-                timeoutEmailSent: 'We will send you the results by email when they are ready.'
             },
             french: {
                 welcomeTitle: 'Bonjour, je suis Luci. Comment puis-je vous aider?',
@@ -2438,11 +2395,6 @@
                 hideConversations: 'Masquer les conversations',
                 inputPlaceholder: 'Tapez votre message...',
                 disclaimer: 'Luci est actuellement en <span class="beta-badge">BETA</span>, elle peut donc faire des erreurs. Considérez vérifier les informations importantes.',
-                timeoutTitle: 'Nous continuons votre recherche exhaustive de {searchContext}, mais cela prendra quelques minutes de plus!',
-                timeoutText: 'Si vous préférez, nous pouvons vous envoyer les résultats par email.',
-                timeoutEmailPlaceholder: 'votre@email.com',
-                timeoutContinueButton: 'Continuer à attendre',
-                timeoutEmailSent: 'Nous vous enverrons les résultats par email quand ils seront prêts.'
             }
         };
         
@@ -2884,10 +2836,11 @@
             }
             
         // Función para manejar callbacks desde n8n
-        function handleCallback(data) {
+       function handleCallback(data) {
             console.log('handleCallback ejecutado con:', data);
             console.log('currentSessionId:', currentSessionId);
             console.log('pendingCallback:', pendingCallback);
+            
             // Verificar que el callback es para la sesión actual
             if (!data.session_id || data.session_id !== currentSessionId) {
                 console.log('Session ID mismatch:', data.session_id, 'vs', currentSessionId);
@@ -2898,7 +2851,7 @@
                 console.log('No active session');
                 return { success: false, message: 'No active session' };
             }
-
+        
             console.log('Processing callback - pendingCallback:', pendingCallback);
             
             // Actualizar topic si viene en la respuesta
@@ -2906,7 +2859,6 @@
                 currentTopic = data.topic;
             }
             
-        
             // Siempre añadir el mensaje si existe
             if (data.message) {
                 addMessage(data.message, 'assistant');
@@ -2914,42 +2866,11 @@
             
             // Resetear estado de callback pendiente
             pendingCallback = false;
+            hideLoading(); 
             console.log('Callback procesado exitosamente');
             return { success: true, message: 'Callback procesado correctamente' };
         }
-
-        // Función para generar device_id único
-        function generateDeviceId() {
-            // Primero intentar obtener desde localStorage
-            let deviceId = localStorage.getItem('lucy_device_id');
-            if (deviceId) {
-                return deviceId;
-            }
-            
-            // Si no existe, intentar generar uno basado en características del navegador
-            const fingerprint = [
-                navigator.userAgent,
-                navigator.language,
-                screen.width + 'x' + screen.height,
-                navigator.platform,
-                Intl.DateTimeFormat().resolvedOptions().timeZone
-            ].join('|');
-            
-            // Generar hash simple del fingerprint
-            let hash = 0;
-            for (let i = 0; i < fingerprint.length; i++) {
-                const char = fingerprint.charCodeAt(i);
-                hash = ((hash << 5) - hash) + char;
-                hash = hash & hash; // Convertir a 32-bit integer
-            }
-            
-            // Convertir a string hexadecimal positivo
-            deviceId = Math.abs(hash).toString(16) + Date.now().toString(16);
-            
-            localStorage.setItem('lucy_device_id', deviceId);
-            return deviceId;
-        }
-
+        
         // Función para intentar recuperar conversaciones por IP cuando no hay device_id match
         async function tryRecoverConversationsByIP() {
             if (!supabase || !userIP) return [];
@@ -3203,7 +3124,6 @@
             currentConversation = conversation.conversations || [];
             currentTopic = conversation.topic || null;
             pendingCallback = false;
-            shownProperties = [];
         
             // Cambiar a vista de chat
             showChatScreen();
@@ -3213,12 +3133,7 @@
             messagesContainer.innerHTML = '';
         
             currentConversation.forEach(msg => {
-                if (msg.properties && Array.isArray(msg.properties)) {
-                    // Si el mensaje tiene propiedades, mostrarlas SIN GUARDAR (del historial)
-                    addPropertiesMessageFromHistory(msg.properties);
-                } else {
-                    addMessage(msg.text, msg.sender, false);
-                }
+                addMessage(msg.text, msg.sender, false);
             });
             
             // Marcar conversación como activa
@@ -3284,7 +3199,6 @@
             currentSessionId = generateSessionId();
             currentConversation = [];
             currentTopic = getTopicInSpanish(optionKey);
-            shownProperties = [];
 
             // Fade out de la pantalla de bienvenida
             const welcomeScreen = document.getElementById('welcomeScreen');
@@ -3501,7 +3415,6 @@
             currentConversation = [];
             currentTopic = null;
             pendingCallback = false;
-            shownProperties = [];
             
             // Mostrar pantalla de bienvenida
             const welcomeScreen = document.getElementById('welcomeScreen');
@@ -3890,7 +3803,6 @@
             currentConversation = [];
             currentTopic = null;
             pendingCallback = false;
-            shownProperties = [];
             
             // Resetear título de conversación
             document.getElementById('conversationTitle').textContent = 'Nuevo chat';
