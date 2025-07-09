@@ -1017,197 +1017,6 @@
             font-weight: 500;
         } 
                
-       /* =================== PROPIEDADES =================== */
-        .properties-container {
-            display: flex;
-            gap: 15px;
-            margin: 10px 0;
-            justify-content: flex-start;
-        }
-        
-        .property-thumbnail {
-            width: 80px;
-            height: 80px;
-            border-radius: 8px;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.3s ease;
-            overflow: hidden;
-            z-index: 2;
-        }
-        
-        .property-thumbnail::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(255, 255, 255, 0.7);
-            transition: opacity 0.3s ease;
-            z-index: 1;
-        }
-        
-        .property-thumbnail:hover::before {
-            opacity: 0;
-        }
-        
-        .property-thumbnail:hover {
-            transform: scale(1.1);
-        }
-        
-        .property-thumbnail img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            cursor: zoom-in;
-        }
-        
-        /* =================== MODAL DE PROPIEDAD =================== */
-        .property-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        
-        .property-card {
-            background-color: white;
-            border-radius: 12px;
-            padding: 20px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            position: relative;
-        }
-        
-        .property-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(0, 0, 0, 0.7);
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            z-index: 1001;
-        }
-        
-        .property-close:hover {
-            background: rgba(0, 0, 0, 0.9);
-            transform: scale(1.1);
-        }
-        
-        .property-title {
-            font-family: 'Graphik', sans-serif;
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: black;
-        }
-        
-        .property-price {
-            font-size: 16px;
-            color: #007bff;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-        
-        .property-images {
-            position: relative;
-            margin-bottom: 15px;
-        }
-        
-        .property-carousel {
-            width: 100%;
-            height: 200px;
-            overflow: hidden;
-            border-radius: 8px;
-            position: relative;
-        }
-        
-        .property-carousel img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: none;
-        }
-        
-        .property-carousel img.active {
-            display: block;
-        }
-        
-        .carousel-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        
-        .carousel-prev {
-            left: 10px;
-        }
-        
-        .carousel-next {
-            right: 10px;
-        }
-        
-        .property-details {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-        
-        .property-specs {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            font-family: 'Graphik', sans-serif;
-            font-size: 14px;
-        }
-        
-        .property-spec {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .property-info-button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-family: 'Graphik', sans-serif;
-            margin-top: 20px;
-            width: 100%;
-        }
-        
-        .property-info-button:hover {
-            background-color: #0056b3;
-        }
 
         /* =================== MODAL DE ZOOM PARA IMÁGENES =================== */
         .image-zoom-modal {
@@ -1241,41 +1050,6 @@
             z-index: 2001;
         }
 
-        /* =================== LOADER =================== */
-        .loader {
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #007bff;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .loading-message {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            max-width: 70%;
-            margin-bottom: 15px;
-            padding: 12px 18px;
-            border-radius: 18px;
-            background-color: white;
-            border: 1px solid #ddd;
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-            font-family: 'Graphik', sans-serif;
-        }
-        
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; }
-        }
         
         /* =================== POP-UPS =================== */
         .popup-overlay {
@@ -1394,34 +1168,13 @@
             justify-content: center;
         }
 
-       /* Transición suave para el texto de búsqueda */
-        #searchMessageText {
-            transition: opacity 0.5s ease-in-out;
-        }
-        
-        .fade-out-text {
-            opacity: 0;
-        }
 
         /* Atenuar emojis en mensajes antiguos */
         .message.old {
             color: #888;
             filter: grayscale(0.7) opacity(0.8);
         }
-        
-        /* Contorno mostaza para bocadillos con propiedades */
-        .message.assistant.with-properties {
-            border: 2px solid #FFC900 !important;
-            background-color: rgba(218, 165, 32, 0.05) !important;
-            position: relative;
-            z-index: 0;
-        }
-        
-        /* Remover padding extra del container de propiedades */
-        .message.assistant .properties-container {
-            padding: 0;
-            margin: 0;
-        }
+
         
         /* Popup de funcionalidad no disponible */
         .not-available-popup {
@@ -2602,8 +2355,6 @@
         let realtimeChannel = null;
         // Variables para timeout y popup
         let callbackTimeout = null;
-        let searchMessageInterval = null;
-        let currentSearchMessageIndex = 0;
         let shownTimeoutPopups = new Set();
         let shownProperties = [];
         let currentPollingInterval = null;
@@ -2657,11 +2408,6 @@
                 hideConversations: 'Ocultar conversaciones',
                 inputPlaceholder: 'Escribe tu mensaje...',
                 disclaimer: 'Luci se encuentra actualmente en <span class="beta-badge">BETA</span>, por lo que puede cometer errores. Considera verificar la información importante.',
-                searchMessages: [
-                    "Buscando Propiedades",
-                    "Tardamos 2 minutos de media",
-                    "Ajustando búsqueda a tus Criterios"
-                ],
                 timeoutTitle: '¡Continuamos con tu búsqueda exhaustiva de {searchContext}, pero nos va a llevar algún minuto más!',
                 timeoutText: 'Si lo prefieres, te podemos mandar los resultados por correo electrónico.',
                 timeoutEmailPlaceholder: 'tu@email.com',
@@ -2677,11 +2423,6 @@
                 hideConversations: 'Hide conversations',
                 inputPlaceholder: 'Type your message...',
                 disclaimer: 'Luci is currently in <span class="beta-badge">BETA</span>, so it may make mistakes. Consider verifying important information.',
-                searchMessages: [
-                    "Searching Properties",
-                    "We take 2 minutes on average",
-                    "Adjusting search to your Criteria"
-                ],
                 timeoutTitle: 'We continue with your exhaustive search for {searchContext}, but it will take a few more minutes!',
                 timeoutText: 'If you prefer, we can send you the results by email.',
                 timeoutEmailPlaceholder: 'your@email.com',
@@ -2697,11 +2438,6 @@
                 hideConversations: 'Masquer les conversations',
                 inputPlaceholder: 'Tapez votre message...',
                 disclaimer: 'Luci est actuellement en <span class="beta-badge">BETA</span>, elle peut donc faire des erreurs. Considérez vérifier les informations importantes.',
-                searchMessages: [
-                    "Recherche de Propriétés",
-                    "Nous prenons 2 minutes en moyenne",
-                    "Ajustement de la recherche à vos Critères"
-                ],
                 timeoutTitle: 'Nous continuons votre recherche exhaustive de {searchContext}, mais cela prendra quelques minutes de plus!',
                 timeoutText: 'Si vous préférez, nous pouvons vous envoyer les résultats par email.',
                 timeoutEmailPlaceholder: 'votre@email.com',
@@ -3170,10 +2906,6 @@
                 currentTopic = data.topic;
             }
             
-            // Si hay propiedades Y no está vacío el array, mostrar las tarjetas
-            if (data.properties && Array.isArray(data.properties) && data.properties.length > 0) {
-                addPropertiesMessage(data.properties);
-            }
         
             // Siempre añadir el mensaje si existe
             if (data.message) {
@@ -3182,7 +2914,6 @@
             
             // Resetear estado de callback pendiente
             pendingCallback = false;
-            hideSearchLoading(); 
             console.log('Callback procesado exitosamente');
             return { success: true, message: 'Callback procesado correctamente' };
         }
@@ -3625,98 +3356,7 @@
             }
         }
 
-        function showSearchLoading() {
-            // Limpiar intervalos previos
-            if (searchMessageInterval) {
-                clearInterval(searchMessageInterval);
-                searchMessageInterval = null;
-            }
-            
-            const messagesContainer = document.getElementById('chatMessages');
-            
-            // Eliminar mensaje de búsqueda previo si existe
-            const existingSearchMessage = document.getElementById('searchLoadingMessage');
-            if (existingSearchMessage) {
-                existingSearchMessage.remove();
-            }
-
-            // Obtener mensajes en el idioma actual
-            const searchMessages = translations[currentLanguage].searchMessages;
-            
-            const loadingDiv = document.createElement('div');
-            loadingDiv.className = 'loading-message'; // QUITAR 'search-loading-messages'
-            loadingDiv.id = 'searchLoadingMessage';
-            loadingDiv.innerHTML = '<div class="loader"></div><span id="searchMessageText" style="color: #666;">Buscando Propiedades</span>';
-            messagesContainer.appendChild(loadingDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            
-            // Iniciar rotación de mensajes cada 4 segundos
-            currentSearchMessageIndex = 0;
-            searchMessageInterval = setInterval(() => {
-                const messageText = document.getElementById('searchMessageText');
-                if (messageText) {
-                    // Hacer fade out
-                    messageText.classList.add('fade-out-text');
-                    
-                    // Después de 500ms (duración del fade out), cambiar texto y hacer fade in
-                    setTimeout(() => {
-                        currentSearchMessageIndex = (currentSearchMessageIndex + 1) % searchMessages.length;
-                        messageText.textContent = searchMessages[currentSearchMessageIndex];
-                        messageText.classList.remove('fade-out-text');
-                    }, 500);
-                }
-            }, 4000);
-            
-            // Iniciar timeout de 4 minutos
-            if (callbackTimeout) {
-                clearTimeout(callbackTimeout);
-            }
-            callbackTimeout = setTimeout(() => {
-                showTimeoutPopup();
-            }, 240000);
-        }
-        
-        function hideSearchLoading() {
-            const searchLoadingMessage = document.getElementById('searchLoadingMessage');
-            if (searchLoadingMessage) {
-                searchLoadingMessage.remove();
-            }
-            
-            if (searchMessageInterval) {
-                clearInterval(searchMessageInterval);
-                searchMessageInterval = null;
-            }
-            
-            if (callbackTimeout) {
-                clearTimeout(callbackTimeout);
-                callbackTimeout = null;
-            }
-            
-            // Limpiar polling Y su timeout
-            if (window.currentPollingInterval) {
-                clearInterval(window.currentPollingInterval);
-                window.currentPollingInterval = null;
-                console.log('Polling interval limpiado en hideSearchLoading');
-            }
-            
-            if (window.pollingTimeout) {
-                clearTimeout(window.pollingTimeout);
-                window.pollingTimeout = null;
-                console.log('Polling timeout limpiado en hideSearchLoading');
-            }
-            
-            // Limpiar suscripción si no hay callback pendiente
-            if (!pendingCallback && realtimeChannel) {
-                try {
-                    supabase.removeChannel(realtimeChannel);
-                    realtimeChannel.unsubscribe();
-                } catch (error) {
-                    console.log('Error limpiando canal en hideSearchLoading:', error);
-                }
-                realtimeChannel = null;
-                console.log('Suscripción limpiada en hideSearchLoading');
-            }
-        }
+    
 
         function formatConversationAsText() {
             let conversationText = "Historial de conversación:\n\n";
@@ -3786,7 +3426,6 @@
                 if (data.started_search === "yes") {
                     pendingCallback = true;
                     startRealtimeSubscription(currentSessionId);
-                    showSearchLoading();
                 } else {
                     pendingCallback = false;
                 }
@@ -3915,178 +3554,8 @@
                 topic: currentTopic
             };
             return handleCallback(testData);
-        };
-        
-        function addPropertiesMessage(properties) {
-            const messagesContainer = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message assistant with-properties';
-            messageDiv.classList.add('recent-callback');
-            
-            const propertiesContainer = document.createElement('div');
-            propertiesContainer.className = 'properties-container';
-            
-            properties.forEach((property, index) => {
-                const thumbnail = document.createElement('div');
-                thumbnail.className = 'property-thumbnail';
-                thumbnail.onclick = () => openPropertyModal(property, index);
-                
-                const img = document.createElement('img');
-                img.src = property.thumbnail;
-                img.alt = property.title;
-                
-                thumbnail.appendChild(img);
-                propertiesContainer.appendChild(thumbnail);
-            });
-            
-            messageDiv.appendChild(propertiesContainer);
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            
-            // Guardar en conversación
-            currentConversation.push({
-                text: '[Propiedades mostradas]',
-                sender: 'assistant',
-                timestamp: new Date().toISOString(),
-                properties: properties
-            });
-            
-            saveConversationToSupabase();
-
-            // Guardar property_ids de las propiedades mostradas
-            properties.forEach(property => {
-                if (property.property_id && !shownProperties.includes(property.property_id)) {
-                    shownProperties.push(property.property_id);
-                }
-            });
-
-            console.log('Properties added to conversation:', properties.length, 'properties');
-            console.log('Current conversation length:', currentConversation.length);
-            console.log('All shown properties:', shownProperties);
-        }
-        
-       // Mostrar propiedades del historial sin duplicar
-        function addPropertiesMessageFromHistory(properties) {
-            const messagesContainer = document.getElementById('chatMessages');
-            
-            // Marcar todos los mensajes existentes como antiguos
-            const existingMessages = messagesContainer.querySelectorAll('.message:not(.loading-message)');
-            existingMessages.forEach(msg => {
-                if (!msg.classList.contains('old')) {
-                    msg.classList.add('old');
-                }
-            });
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message assistant with-properties';
-            
-            const propertiesContainer = document.createElement('div');
-            propertiesContainer.className = 'properties-container';
-            
-            properties.forEach((property, index) => {
-                const uniqueIndex = Date.now() + index; // Índice único para evitar conflictos
-                const thumbnail = document.createElement('div');
-                thumbnail.className = 'property-thumbnail';
-                thumbnail.onclick = () => openPropertyModal(property, uniqueIndex);
-                
-                const img = document.createElement('img');
-                img.src = property.thumbnail;
-                img.alt = property.title;
-                
-                thumbnail.appendChild(img);
-                propertiesContainer.appendChild(thumbnail);
-            });
-            
-            messageDiv.appendChild(propertiesContainer);
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-        
-        function openPropertyModal(property, index) {
-            const modal = document.createElement('div');
-            modal.className = 'property-modal';
-            modal.id = 'propertyModal';
-            window.currentPropertyId = property.property_id;
-            
-            modal.innerHTML = `
-                <div class="property-card">
-                    <button class="property-close" onclick="closePropertyModal()">×</button>
-                    <div class="property-title">${property.title}</div>
-                    <div class="property-price">${formatPrice(property.price)}</div>
-                    
-                    <div class="property-images">
-                        <div class="property-carousel" id="carousel-${index}">
-                            ${property.images.map((img, imgIndex) => 
-                                `<img src="${img}" alt="${property.title}" ${imgIndex === 0 ? 'class="active"' : ''} onclick="openImageZoom('${img}')" style="cursor: zoom-in;">`
-                            ).join('')}
-                            ${property.images.length > 1 ? `
-                                <button class="carousel-nav carousel-prev" onclick="changeImage(${index}, -1)">‹</button>
-                                <button class="carousel-nav carousel-next" onclick="changeImage(${index}, 1)">›</button>
-                            ` : ''}
-                        </div>
-                    </div>
-                    
-                    <div class="property-details">
-                        <div class="property-specs">
-                            <div class="property-spec">🛏️ ${property.rooms} habitaciones</div>
-                            <div class="property-spec">🚿 ${property.bathrooms} baños</div>
-                            <div class="property-spec">📏 ${property.size} m²</div>
-                            <div class="property-spec">🏢 Planta ${property.floor}</div>
-                        </div>
-                    </div>
-                    
-                    <button class="property-info-button" onclick="requestMoreInfo(\`${property.title}\`)">
-                        Más información
-                    </button>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            modal.style.display = 'flex';
-            
-            // Store current image index
-            window.currentImageIndex = window.currentImageIndex || {};
-            window.currentImageIndex[index] = 0;
-        
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) {
-                    closePropertyModal();
-                }
-            });
-        }
-        
-        function closePropertyModal() {
-            const modal = document.getElementById('propertyModal');
-            if (modal) {
-                modal.remove();
-            }
-
-            // Cerrar modal con tecla Escape
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closePropertyModal();
-                }
-            });
-        }
-        
-        function changeImage(propertyIndex, direction) {
-            const carousel = document.getElementById(`carousel-${propertyIndex}`);
-            const images = carousel.querySelectorAll('img');
-            
-            if (!window.currentImageIndex) window.currentImageIndex = {};
-            
-            images[window.currentImageIndex[propertyIndex]].classList.remove('active');
-            
-            window.currentImageIndex[propertyIndex] += direction;
-            
-            if (window.currentImageIndex[propertyIndex] >= images.length) {
-                window.currentImageIndex[propertyIndex] = 0;
-            } else if (window.currentImageIndex[propertyIndex] < 0) {
-                window.currentImageIndex[propertyIndex] = images.length - 1;
-            }
-            
-            images[window.currentImageIndex[propertyIndex]].classList.add('active');
-        }
+        };     
+    
         
         function formatPrice(price) {
             return new Intl.NumberFormat('es-ES', {
@@ -4095,179 +3564,8 @@
                 maximumFractionDigits: 0
             }).format(price);
         }
-        
-        function requestMoreInfo(propertyTitle) {
-            closePropertyModal();
-            showContactInfoPopup(propertyTitle);
-        }
-
-        // Función para activar el modo test y simular estado de callback pendiente
-        window.activateTestMode = function(sessionId) {
-            if (!sessionId) {
-                console.error('Se necesita un session_id para activar el modo test');
-                return false;
-            }
-            
-            // Activar estado de test
-            currentSessionId = sessionId;
-            pendingCallback = true;
-            
-            // Si no hay conversación activa, crear una mínima
-            if (!currentConversation || currentConversation.length === 0) {
-                currentConversation = [
-                    {
-                        text: 'Hola, soy Luci. ¿Con qué te puedo ayudar?',
-                        sender: 'assistant',
-                        timestamp: new Date().toISOString()
-                    },
-                    {
-                        text: 'Buscar propiedades para comprar',
-                        sender: 'user',
-                        timestamp: new Date().toISOString()
-                    }
-                ];
-                
-                // Mostrar chat screen si no está visible
-                if (document.getElementById('welcomeScreen').style.display !== 'none') {
-                    showChatScreen();
-                    // Mostrar los mensajes
-                    const messagesContainer = document.getElementById('chatMessages');
-                    messagesContainer.innerHTML = '';
-                    currentConversation.forEach(msg => {
-                        addMessage(msg.text, msg.sender, false);
-                    });
-                }
-            }
-
-            console.log(`Modo test activado para sesión: ${sessionId}`);
-            console.log(`Callback pendiente: ${pendingCallback}`);
-            return true;
-        };
-        
-        // Función para desactivar el modo test
-        window.deactivateTestMode = function() {
-            pendingCallback = false;
-            console.log('Modo test desactivado');
-        };
-        
-        // Función combinada para test completo
-        window.fullTestCallback = function(sessionId, testData) {
-            console.log('=== INICIANDO TEST COMPLETO ===');
-            
-            // Activar modo test
-            if (!window.activateTestMode(sessionId)) {
-                return { success: false, message: 'No se pudo activar el modo test' };
-            }
-            
-            // Simular datos de test si no se proporcionan
-            const defaultTestData = {
-                session_id: sessionId,
-                message: "¡Claro Pablo! Aquí tienes tus propiedades!",
-                properties: [
-                    {
-                        title: "Piso en calle Goya",
-                        thumbnail: "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/e9/3a/4c/1340892243.webp",
-                        price: 310000,
-                        floor: "6",
-                        size: 79,
-                        rooms: 2,
-                        bathrooms: 1,
-                        images: [
-                            "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/e9/3a/4c/1340892243.webp",
-                            "https://img4.idealista.com/blur/WEB_DETAIL-XL-P/0/id.pro.es.image.master/c1/2d/8c/1340892242.webp"
-                        ]
-                    },
-                    {
-                        title: "Ático en Salamanca",
-                        thumbnail: "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/12/34/56/1340892244.webp",
-                        price: 450000,
-                        floor: "7",
-                        size: 95,
-                        rooms: 3,
-                        bathrooms: 2,
-                        images: [
-                            "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/12/34/56/1340892244.webp"
-                        ]
-                    }
-                ]
-            };
-            
-            const dataToUse = testData || defaultTestData;
-            
-            // Ejecutar callback
-            const result = handleCallback(dataToUse);
-            
-            console.log('=== RESULTADO DEL TEST ===');
-            console.log('Resultado:', result);
-            console.log('Estado pendingCallback después del test:', pendingCallback);
-            
-            return result;
-        };
-
-                
-        
-        // Función para mostrar popup de timeout
-        function showTimeoutPopup() {
-            // Verificar si ya se mostró popup para esta sesión
-            if (shownTimeoutPopups.has(currentSessionId)) {
-                return;
-            }
-            
-            // Verificar si ya existe un popup visible
-            if (document.getElementById('timeoutPopup')) {
-                return;
-            }
-            
-            // Marcar esta sesión como que ya mostró popup
-            shownTimeoutPopups.add(currentSessionId);
-
-            // Obtener textos en el idioma actual
-            const texts = translations[currentLanguage];
-            
-            // Obtener el título de la conversación para personalizar el mensaje
-            const searchContext = currentConversationTitle || currentTopic || 'tu búsqueda';
-            
-            const popup = document.createElement('div');
-            popup.className = 'popup-overlay';
-            popup.id = 'timeoutPopup';
-
-            const timeoutTitle = texts.timeoutTitle.replace('{searchContext}', searchContext);
-            
-            popup.innerHTML = `
-                <div class="popup-content">
-                    <div class="popup-title">${timeoutTitle}</div>
-                    <p>${texts.timeoutText}</p>
-                    
-                    <div class="input-with-send">
-                        <input type="email" class="popup-input" id="timeoutEmail" placeholder="${texts.timeoutEmailPlaceholder}">
-                        <button class="send-icon-btn" onclick="sendEmailNotification()">➤</button>
-                    </div>
-                    
-                    <div class="popup-buttons">
-                        <button class="popup-btn secondary" onclick="continueWaiting()">${texts.timeoutContinueButton}</button>
-                    </div>
-                </div>
-            `;
-                    
-            document.body.appendChild(popup);
-            popup.style.display = 'flex';
-        }
-        
-        function continueWaiting() {
-            const popup = document.getElementById('timeoutPopup');
-            if (popup) popup.remove();
-            
-            // Renovar timeout por otros 4 minutos
-            callbackTimeout = setTimeout(() => {
-                showTimeoutPopup();
-            }, 240000);
-            
-            // Renovar suscripción realtime
-            if (currentSessionId) {
-                startRealtimeSubscription(currentSessionId);
-            }
-        }
-        
+     
+  
         function sendEmailNotification() {
             const email = document.getElementById('timeoutEmail').value;
             const texts = translations[currentLanguage];
