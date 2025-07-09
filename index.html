@@ -556,11 +556,18 @@
             pointer-events: none;
         }
 
+       /* Limitar hover sin mover iconos */
+        .sidebar.expanded .sidebar-option:hover,
+        .sidebar.expanded .sidebar-new-chat:hover,
+        .sidebar.expanded .sidebar-login:hover {
+            margin-right: 0;
+            width: 230px; /* Limitar el ancho del hover */
+        }
+       
        /* Hover coherente para botones inferiores cuando sidebar está expandida */
         .sidebar.expanded .sidebar-new-chat:hover,
         .sidebar.expanded .sidebar-login:hover {
             background-color: #f8f9fa;
-            border-radius: 12px;
         }
         
         /* Asegurar que el hover cubra toda el área del botón */
@@ -709,52 +716,29 @@
 
        /* Tooltip específico para botón contraer cuando sidebar está expandida */
         .sidebar.expanded .expand-arrow::after {
-            content: "Esconder";
-            position: absolute;
-            right: -80px; /* Posicionado a la derecha del botón */
-            top: 50%;
-            transform: translateY(-50%); /* Sin rotación */
-            background-color: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-family: 'Graphik', sans-serif;
-            font-size: 14px;
-            font-weight: 300;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 1000;
-            pointer-events: none;
+            content: "Esconder" !important;
+            left: auto !important;
+            right: -80px !important;
+            transform: translateY(-50%) !important; /* Sin rotación */
         }
 
        .sidebar.expanded .expand-arrow:hover::after {
-            opacity: 1;
-            visibility: visible;
-            right: -75px;
+            left: auto !important;
+            right: -75px !important;
         }
         
         /* Flecha del tooltip para botón contraer expandida */
         .sidebar.expanded .expand-arrow::before {
-            content: '';
-            position: absolute;
-            right: -70px;
-            top: 50%;
-            transform: translateY(-50%); /* Sin rotación */
-            border: 5px solid transparent;
-            border-right-color: rgba(0, 0, 0, 0.9);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 1000;
-            pointer-events: none;
+            left: auto !important;
+            right: -70px !important;
+            transform: translateY(-50%) !important; /* Sin rotación */
+            border-left-color: rgba(0, 0, 0, 0.9) !important;
+            border-right-color: transparent !important;
         }
-        
+                
         .sidebar.expanded .expand-arrow:hover::before {
-            opacity: 1;
-            visibility: visible;
-            right: -75px;
+            left: auto !important;
+            right: -75px !important;
         }
      
        
