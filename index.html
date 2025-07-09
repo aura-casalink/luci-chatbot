@@ -1575,7 +1575,107 @@
             background: #f0f0f0;
             color: #333;
         }
+
+       /* =================== LAYOUT DE DOS COLUMNAS =================== */
+        .main-area {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
         
+        .chat-column {
+            flex: 0 0 75%; /* El chat ocupa el 75% */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .properties-column {
+            flex: 0 0 25%; /* El mosaico ocupa el 25% */
+            background-color: #f5f5f5;
+            border-left: 1px solid #ddd;
+            overflow-y: auto;
+        }
+        
+        /* =================== MOSAICO DE PROPIEDADES =================== */
+        .properties-grid {
+            padding: 20px;
+            height: 100%;
+        }
+        
+        .properties-header {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .properties-header h3 {
+            margin: 0;
+            color: #333;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .property-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            aspect-ratio: 1; /* Hace las tarjetas cuadradas */
+        }
+        
+        .property-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .property-card.placeholder {
+            opacity: 0.7;
+        }
+        
+        .property-image {
+            height: 60%;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .placeholder-image {
+            font-size: 24px;
+            color: #6c757d;
+        }
+        
+        .property-info {
+            padding: 8px;
+            height: 40%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .property-price {
+            font-weight: 600;
+            color: #333;
+            font-size: 12px;
+            text-align: center;
+        }
+        
+        .property-location {
+            color: #666;
+            font-size: 10px;
+            text-align: center;
+        }
+                
                
        @media (max-width: 768px) {
     
@@ -1671,6 +1771,30 @@
             .properties-container {
                 margin-bottom: 100px; /* Espacio para el input fijo */
             }
+
+            .main-area {
+                flex-direction: column;
+            }
+            
+            .chat-column {
+                flex: 1;
+            }
+            
+            .properties-column {
+                flex: 0 0 30vh; /* En móvil, el mosaico ocupará 30% de la altura */
+                border-left: none;
+                border-top: 1px solid #ddd;
+            }
+            
+            .grid-container {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+            
+            .properties-grid {
+                padding: 15px;
+            }
+        }
             
       
     </style>
@@ -1752,59 +1876,155 @@
     <div class="container sidebar-active">
         <!-- Área principal -->
         <div class="main-area">
-            <!-- Pantalla de bienvenida -->
-            <div class="welcome-screen" id="welcomeScreen">
-                <div class="language-selector">
-                    <img src="https://flagcdn.com/w40/es.png" alt="Español" class="flag-btn active" onclick="changeLanguage('spanish')" data-lang="spanish">
-                    <img src="https://flagcdn.com/w40/gb.png" alt="English" class="flag-btn" onclick="changeLanguage('english')" data-lang="english">
-                    <img src="https://flagcdn.com/w40/fr.png" alt="Français" class="flag-btn" onclick="changeLanguage('french')" data-lang="french">
-                </div>
-                <h1 class="welcome-title">Hola, soy Luci. ¿Con qué te puedo ayudar?</h1>
-                <div class="buttons-container">
-                    <button class="option-button primary" onclick="selectOption('buy_properties')">
-                        Buscar propiedades para comprar
-                    </button>
-                    <button class="option-button" onclick="showNotAvailablePopup()">
-                        Buscar propiedades para alquilar
-                    </button>
-                    <button class="option-button" onclick="showNotAvailablePopup()">
-                        Gestión de alquiler
-                    </button>
-                     <button class="option-button" onclick="showNotAvailablePopup()">
-                        Gestión de financiación
-                    </button>
-                </div>
-            </div>
-    
-            <!-- Pantalla de chat -->
-            <div class="chat-screen" id="chatScreen">
-                <div class="chat-header">
-                    <h2 class="chat-title">Hola, soy Luci. ¿Con qué te puedo ayudar?</h2>
-                </div>
-                
-                <div class="chat-messages" id="chatMessages">
-                    <!-- Los mensajes aparecerán aquí -->
-                </div>
-    
-                <div class="chat-input-container">
-                    <div class="chat-input-wrapper">
-                        <textarea 
-                            class="chat-input" 
-                            id="chatInput" 
-                            placeholder="Escribe tu mensaje..."
-                            rows="1"
-                        ></textarea>
-                        <button class="send-button" id="sendButton" onclick="sendMessage()">
-                            ➤
+            <!-- Columna izquierda: Chat existente -->
+            <div class="chat-column">
+                <!-- Pantalla de bienvenida -->
+                <div class="welcome-screen" id="welcomeScreen">
+                    <div class="language-selector">
+                        <img src="https://flagcdn.com/w40/es.png" alt="Español" class="flag-btn active" onclick="changeLanguage('spanish')" data-lang="spanish">
+                        <img src="https://flagcdn.com/w40/gb.png" alt="English" class="flag-btn" onclick="changeLanguage('english')" data-lang="english">
+                        <img src="https://flagcdn.com/w40/fr.png" alt="Français" class="flag-btn" onclick="changeLanguage('french')" data-lang="french">
+                    </div>
+                    <h1 class="welcome-title">Hola, soy Luci. ¿Con qué te puedo ayudar?</h1>
+                    <div class="buttons-container">
+                        <button class="option-button primary" onclick="selectOption('buy_properties')">
+                            Buscar propiedades para comprar
+                        </button>
+                        <button class="option-button" onclick="showNotAvailablePopup()">
+                            Buscar propiedades para alquilar
+                        </button>
+                        <button class="option-button" onclick="showNotAvailablePopup()">
+                            Gestión de alquiler
+                        </button>
+                        <button class="option-button" onclick="showNotAvailablePopup()">
+                            Gestión de financiación
                         </button>
                     </div>
-                    <div class="disclaimer">
-                    Luci se encuentra actualmente en <span class="beta-badge">BETA</span>, por lo que puede cometer errores. Considera verificar la información importante.
                 </div>
+        
+                <!-- Pantalla de chat -->
+                <div class="chat-screen" id="chatScreen">
+                    <div class="chat-header">
+                        <h2 class="chat-title">Hola, soy Luci. ¿Con qué te puedo ayudar?</h2>
+                    </div>
+                    
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Los mensajes aparecerán aquí -->
+                    </div>
+        
+                    <div class="chat-input-container">
+                        <div class="chat-input-wrapper">
+                            <textarea 
+                                class="chat-input" 
+                                id="chatInput" 
+                                placeholder="Escribe tu mensaje..."
+                                rows="1"
+                            ></textarea>
+                            <button class="send-button" id="sendButton" onclick="sendMessage()">
+                                ➤
+                            </button>
+                        </div>
+                        <div class="disclaimer">
+                            Luci se encuentra actualmente en <span class="beta-badge">BETA</span>, por lo que puede cometer errores. Considera verificar la información importante.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Columna derecha: Mosaico de propiedades -->
+            <div class="properties-column">
+                <div class="properties-grid" id="propertiesGrid">
+                    <div class="properties-header">
+                        <h3>Propiedades Destacadas</h3>
+                    </div>
+                    <div class="grid-container">
+                        <!-- Aquí irán las 9 tarjetas de propiedades -->
+                        <div class="property-card placeholder" onclick="openPropertyDetail(1)">
+                            <div class="property-image">
+                                <div class="placeholder-image">🏠</div>
+                            </div>
+                            <div class="property-info">
+                                <div class="property-price">Precio</div>
+                                <div class="property-location">Ubicación</div>
+                            </div>
+                        </div>
+                        <!-- Repetir 8 veces más -->
+                        <div class="property-card placeholder" onclick="openPropertyDetail(2)">
+                            <div class="property-image">
+                                <div class="placeholder-image">🏠</div>
+                            </div>
+                            <div class="property-info">
+                                <div class="property-price">Precio</div>
+                                <div class="property-location">Ubicación</div>
+                            </div>
+                        </div>
+                        <div class="property-card placeholder" onclick="openPropertyDetail(3)">
+                            <div class="property-image">
+                                <div class="placeholder-image">🏠</div>
+                            </div>
+                            <div class="property-info">
+                                <div class="property-price">Precio</div>
+                                <div class="property-location">Ubicación</div>
+                            </div>
+                        </div>
+                        <div class="property-card placeholder" onclick="openPropertyDetail(4)">
+                            <div class="property-image">
+                                <div class="placeholder-image">🏠</div>
+                            </div>
+                            <div class="property-info">
+                                <div class="property-price">Precio</div>
+                                <div class="property-location">Ubicación</div>
+                            </div>
+                        </div>
+                        <div class="property-card placeholder" onclick="openPropertyDetail(5)">
+                            <div class="property-image">
+                                <div class="placeholder-image">🏠</div>
+                            </div>
+                            <div class="property-info">
+                                <div class="property-price">Precio</div>
+                                <div class="property-location">Ubicación</div>
+                            </div>
+                        </div>
+                        <div class="property-card placeholder" onclick="openPropertyDetail(6)">
+                            <div class="property-image">
+                                <div class="placeholder-image">🏠</div>
+                            </div>
+                            <div class="property-info">
+                                <div class="property-price">Precio</div>
+                                <div class="property-location">Ubicación</div>
+                            </div>
+                        </div>
+                        <div class="property-card placeholder" onclick="openPropertyDetail(7)">
+                            <div class="property-image">
+                                <div class="placeholder-image">🏠</div>
+                            </div>
+                            <div class="property-info">
+                                <div class="property-price">Precio</div>
+                                <div class="property-location">Ubicación</div>
+                            </div>
+                        </div>
+                        <div class="property-card placeholder" onclick="openPropertyDetail(8)">
+                            <div class="property-image">
+                                <div class="placeholder-image">🏠</div>
+                            </div>
+                            <div class="property-info">
+                                <div class="property-price">Precio</div>
+                                <div class="property-location">Ubicación</div>
+                            </div>
+                        </div>
+                        <div class="property-card placeholder" onclick="openPropertyDetail(9)">
+                            <div class="property-image">
+                                <div class="placeholder-image">🏠</div>
+                            </div>
+                            <div class="property-info">
+                                <div class="property-price">Precio</div>
+                                <div class="property-location">Ubicación</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
     <!-- Popup Crear Cuenta -->
     <div class="popup-overlay" id="loginPopup">
@@ -4017,7 +4237,13 @@
                 }
             });
         }
-       
+
+        // Función para abrir detalle de propiedad (placeholder)
+        function openPropertyDetail(propertyId) {
+            console.log('Abriendo detalle de propiedad:', propertyId);
+            // Aquí irá la lógica para mostrar la ficha de la propiedad
+            alert(`Abriendo propiedad ${propertyId} - Funcionalidad pendiente de implementar`);
+        }
         
     </script>
 </body>
