@@ -118,8 +118,29 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px 0 25px 0; 
+            padding: 20px 0 15px 0; 
             min-height: 0; 
+            overflow: hidden;
+        }
+       
+       /* Contenedor de iconos principales */
+        .sidebar-icons-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-bottom: auto; /* Empujar hacia arriba */
+        }
+
+       /* Contenedor de botones inferiores */
+        .sidebar-bottom-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-top: auto; /* Empujar hacia abajo */
+            gap: 8px; /* Espacio entre botones */
+            padding-bottom: 15px; /* Espacio desde el borde inferior */
         }
         
         .sidebar-option {
@@ -164,7 +185,6 @@
             position: relative;
             width: 60px;
             height: 60px;
-            margin: 8px auto 15px auto; /* Margen consistente */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -369,7 +389,6 @@
             position: relative;
             width: 60px;
             height: 60px;
-            margin: 10px auto 8px auto; /* Reducido el margen */
             display: flex;
             align-items: center;
             justify-content: center;
