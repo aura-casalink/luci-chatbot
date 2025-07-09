@@ -1707,7 +1707,7 @@
         .property-slide-card {
             position: absolute;
             top: 0;
-            left: 100%; /* Cambio: empezar desde la derecha */
+            left: 100%;
             width: 100%;
             height: 100%;
             background: white;
@@ -1727,7 +1727,7 @@
             height: 100%;
             box-sizing: border-box;
             display: grid;
-            grid-template-columns: 1fr 200px;
+            grid-template-columns: 1fr 400px; /* Mapa dos veces más grande */
             grid-template-rows: auto auto auto auto auto auto 1fr auto;
             gap: 15px;
             grid-template-areas: 
@@ -1837,14 +1837,15 @@
             background-color: #FFC900;
             color: #333;
             border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
+            padding: 4px 8px; /* 75% más pequeño */
+            border-radius: 6px;
             font-family: 'Graphik', sans-serif;
-            font-size: 14px;
+            font-size: 11px; /* Fuente más pequeña */
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
             align-self: start;
+            width: fit-content; /* Solo el ancho necesario */
         }
         
         .contact-sales-btn:hover {
@@ -1855,7 +1856,7 @@
         
         .property-slide-map {
             grid-area: map;
-            height: 200px;
+            height: 400px; /* Dos veces más grande (era 200px) */
             border-radius: 8px;
             overflow: hidden;
             border: 1px solid #ddd;
@@ -1941,7 +1942,6 @@
             background-color: #f5f5f5;
             padding: 15px;
             border-radius: 8px;
-            text-align: center;
         }
         
         .feedback-question {
@@ -1950,34 +1950,41 @@
             font-size: 14px;
             margin: 0 0 10px 0;
             color: #333;
+            text-align: left; /* Alineado a la izquierda */
         }
         
         .feedback-buttons {
             display: flex;
-            justify-content: center;
-            gap: 20px;
+            justify-content: flex-start; /* Alineado a la izquierda */
+            gap: 15px;
         }
         
         .feedback-btn {
             background: none;
-            border: none;
-            font-size: 24px;
+            border: 2px solid #ddd; /* Círculo con borde */
+            font-size: 20px;
             cursor: pointer;
-            padding: 5px 10px;
-            border-radius: 8px;
+            padding: 8px;
+            border-radius: 50%; /* Círculo perfecto */
             transition: all 0.2s;
             opacity: 0.6;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .feedback-btn:hover {
             opacity: 1;
-            transform: scale(1.1);
-            background-color: rgba(0, 0, 0, 0.05);
+            transform: scale(1.05);
+            border-color: #999;
         }
         
         .feedback-btn.selected {
             opacity: 1;
-            background-color: rgba(255, 201, 0, 0.2);
+            border-color: #FFC900;
+            background-color: rgba(255, 201, 0, 0.1);
         }
         
         /* Indicador de posición del carrousel */
@@ -4632,142 +4639,142 @@
             });
         }
 
-        function openPropertyDetail(propertyId) {
-            // Crear datos de ejemplo (en producción vendrían de tu base de datos)
-            const propertyData = {
-                1: {
-                    title: "Propiedad en venta",
-                    location: "Trafalgar, Madrid",
-                    price: 795000,
-                    pricePerSqm: 8368.42,
-                    builtArea: 95,
-                    usefulArea: 89,
-                    bedrooms: 2,
-                    bathrooms: 2,
-                    lat: 40.4296,
-                    lng: -3.6896,
-                    images: [
-                        "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/e9/3a/4c/1340892243.webp",
-                        "https://img4.idealista.com/blur/WEB_DETAIL-XL-P/0/id.pro.es.image.master/c1/2d/8c/1340892242.webp",
-                        "https://img4.idealista.com/blur/WEB_DETAIL-XL-P/0/id.pro.es.image.master/a1/b2/c3/1340892245.webp"
-                    ],
-                    description: "Encantador piso exterior de 95 m² en Trafalgar, Chamberí, con distribución moderna y funcional. La cocina está integrada al salón, creando un espacio diáfano y luminoso, complementado por un pequeño cuarto de lavandería. Dispone de dos habitaciones con armarios empotrados y dos baños completos, asegurando comodidad y practicidad. La ubicación en Trafalgar brinda acceso a calles arboladas, arquitectura clásica, una variada oferta de restaurantes y tiendas, y excelentes conexiones de transporte público, fusionando la vida urbana con un ambiente residencial acogedor."
-                },
-                2: {
-                    title: "Ático en venta",
-                    location: "Salamanca, Madrid", 
-                    price: 450000,
-                    pricePerSqm: 4736.84,
-                    builtArea: 95,
-                    usefulArea: 89,
-                    bedrooms: 3,
-                    bathrooms: 2,
-                    lat: 40.4376,
-                    lng: -3.6802,
-                    images: [
-                        "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/12/34/56/1340892244.webp"
-                    ],
-                    description: "Espectacular ático con terraza en el barrio de Salamanca. Completamente reformado con materiales de primera calidad."
-                }
-            };
+    function openPropertyDetail(propertyId) {
+        // Crear datos de ejemplo (en producción vendrían de tu base de datos)
+        const propertyData = {
+            1: {
+                title: "Propiedad en venta",
+                location: "Trafalgar, Madrid",
+                price: 795000,
+                pricePerSqm: 8368.42,
+                builtArea: 95,
+                usefulArea: 89,
+                bedrooms: 2,
+                bathrooms: 2,
+                lat: 40.4296,
+                lng: -3.6896,
+                images: [
+                    "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/e9/3a/4c/1340892243.webp",
+                    "https://img4.idealista.com/blur/WEB_DETAIL-XL-P/0/id.pro.es.image.master/c1/2d/8c/1340892242.webp",
+                    "https://img4.idealista.com/blur/WEB_DETAIL-XL-P/0/id.pro.es.image.master/a1/b2/c3/1340892245.webp"
+                ],
+                description: "Encantador piso exterior de 95 m² en Trafalgar, Chamberí, con distribución moderna y funcional. La cocina está integrada al salón, creando un espacio diáfano y luminoso, complementado por un pequeño cuarto de lavandería. Dispone de dos habitaciones con armarios empotrados y dos baños completos, asegurando comodidad y practicidad. La ubicación en Trafalgar brinda acceso a calles arboladas, arquitectura clásica, una variada oferta de restaurantes y tiendas, y excelentes conexiones de transporte público, fusionando la vida urbana con un ambiente residencial acogedor."
+            },
+            2: {
+                title: "Ático en venta",
+                location: "Salamanca, Madrid", 
+                price: 450000,
+                pricePerSqm: 4736.84,
+                builtArea: 95,
+                usefulArea: 89,
+                bedrooms: 3,
+                bathrooms: 2,
+                lat: 40.4376,
+                lng: -3.6802,
+                images: [
+                    "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/12/34/56/1340892244.webp"
+                ],
+                description: "Espectacular ático con terraza en el barrio de Salamanca. Completamente reformado con materiales de primera calidad."
+            }
+        };
+    
+        const property = propertyData[propertyId] || propertyData[1];
+    
+        // Obtener el contenedor del grid
+        const propertiesColumn = document.querySelector('.properties-column');
         
-            const property = propertyData[propertyId] || propertyData[1];
+        // Crear la tarjeta deslizante
+        const slideCard = document.createElement('div');
+        slideCard.className = 'property-slide-card';
+        slideCard.id = 'propertySlideCard';
         
-            // Obtener el contenedor del grid
-            const propertiesColumn = document.querySelector('.properties-column');
-            
-            // Crear la tarjeta deslizante
-            const slideCard = document.createElement('div');
-            slideCard.className = 'property-slide-card';
-            slideCard.id = 'propertySlideCard';
-            
-            slideCard.innerHTML = `
-                <div class="property-slide-content">
-                    <button class="property-slide-close" onclick="closePropertySlide()">×</button>
-                    
-                    <div class="property-slide-header">
-                        <div class="property-slide-title">${property.title}</div>
+        slideCard.innerHTML = `
+            <div class="property-slide-content">
+                <button class="property-slide-close" onclick="closePropertySlide()">×</button>
+                
+                <div class="property-slide-header">
+                    <div class="property-slide-title">${property.title}</div>
+                </div>
+                
+                <div class="property-slide-location-area">
+                    <div class="property-slide-location">${property.location}</div>
+                </div>
+                
+                <div class="property-slide-price-area">
+                    <div class="property-slide-price">${formatPrice(property.price)}</div>
+                    <div class="property-slide-price-per-sqm">${property.pricePerSqm.toLocaleString('es-ES', { maximumFractionDigits: 2 })} €/m²</div>
+                    <div class="price-comparison">3% por encima de la media de precios de la zona</div>
+                </div>
+                
+                <div class="property-slide-specs-area">
+                    <div class="property-slide-specs">
+                        <div class="property-slide-spec">${property.builtArea} m² construidos, ${property.usefulArea} m² útiles</div>
+                        <div class="property-slide-spec">${property.bedrooms} habitaciones</div>
+                        <div class="property-slide-spec">${property.bathrooms} baños</div>
                     </div>
-                    
-                    <div class="property-slide-location-area">
-                        <div class="property-slide-location">${property.location}</div>
-                    </div>
-                    
-                    <div class="property-slide-price-area">
-                        <div class="property-slide-price">${formatPrice(property.price)}</div>
-                        <div class="property-slide-price-per-sqm">${property.pricePerSqm.toLocaleString('es-ES', { maximumFractionDigits: 2 })} €/m²</div>
-                        <div class="price-comparison">3% por encima de la media de precios de la zona</div>
-                    </div>
-                    
-                    <div class="property-slide-specs-area">
-                        <div class="property-slide-specs">
-                            <div class="property-slide-spec">${property.builtArea} m² construidos, ${property.usefulArea} m² útiles</div>
-                            <div class="property-slide-spec">${property.bedrooms} habitaciones</div>
-                            <div class="property-slide-spec">${property.bathrooms} baños</div>
-                        </div>
-                    </div>
-                    
-                    <button class="contact-sales-btn" onclick="showContactInfoPopup('${property.title}')">
-                        Contactar con Ventas
-                    </button>
-                    
-                    <div class="property-slide-map">
-                        <iframe 
-                            width="100%" 
-                            height="100%" 
-                            frameborder="0" 
-                            style="border:0"
-                            src="https://www.google.com/maps/embed/v1/view?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dQWTRNJ8IwGYo4&center=${property.lat},${property.lng}&zoom=16"
-                            allowfullscreen>
-                        </iframe>
-                    </div>
-                    
-                    <div class="property-slide-carousel-area">
-                        <div class="property-slide-carousel" id="slideCarousel">
-                            ${property.images.map((img, index) => 
-                                `<img src="${img}" alt="${property.title}" ${index === 0 ? 'class="active"' : ''} onclick="openImageZoom('${img}')">`
-                            ).join('')}
-                            ${property.images.length > 1 ? `
-                                <button class="slide-carousel-nav slide-carousel-prev" onclick="changeSlideImage(-1)">‹</button>
-                                <button class="slide-carousel-nav slide-carousel-next" onclick="changeSlideImage(1)">›</button>
-                            ` : ''}
-                        </div>
-                        
+                </div>
+                
+                <button class="contact-sales-btn" onclick="showContactInfoPopup('${property.title}')">
+                    Contactar con Ventas
+                </button>
+                
+                <div class="property-slide-map">
+                    <iframe 
+                        width="100%" 
+                        height="100%" 
+                        frameborder="0" 
+                        style="border:0"
+                        src="https://www.google.com/maps/embed/v1/view?key=AIzaSyAf-L38UI3hGyYrMJjeFO0Ij2n1p1mCyMk&center=${property.lat},${property.lng}&zoom=16"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                
+                <div class="property-slide-carousel-area">
+                    <div class="property-slide-carousel" id="slideCarousel">
+                        ${property.images.map((img, index) => 
+                            `<img src="${img}" alt="${property.title}" ${index === 0 ? 'class="active"' : ''} onclick="openImageZoom('${img}')">`
+                        ).join('')}
                         ${property.images.length > 1 ? `
-                            <div class="carousel-indicators">
-                                ${property.images.map((_, index) => 
-                                    `<div class="carousel-dot ${index === 0 ? 'active' : ''}" onclick="goToSlideImage(${index})"></div>`
-                                ).join('')}
-                            </div>
+                            <button class="slide-carousel-nav slide-carousel-prev" onclick="changeSlideImage(-1)">‹</button>
+                            <button class="slide-carousel-nav slide-carousel-next" onclick="changeSlideImage(1)">›</button>
                         ` : ''}
                     </div>
                     
-                    <div class="property-slide-description-area">
-                        <div class="description-title">Descripción</div>
-                        <div class="property-slide-description">${property.description}</div>
-                    </div>
-                    
-                    <div class="property-feedback-area">
-                        <div class="feedback-question">¿Qué te parece esta propiedad?</div>
-                        <div class="feedback-buttons">
-                            <button class="feedback-btn" onclick="selectFeedback('like', this)" data-property-id="${propertyId}">👍</button>
-                            <button class="feedback-btn" onclick="selectFeedback('dislike', this)" data-property-id="${propertyId}">👎</button>
+                    ${property.images.length > 1 ? `
+                        <div class="carousel-indicators">
+                            ${property.images.map((_, index) => 
+                                `<div class="carousel-dot ${index === 0 ? 'active' : ''}" onclick="goToSlideImage(${index})"></div>`
+                            ).join('')}
                         </div>
+                    ` : ''}
+                </div>
+                
+                <div class="property-slide-description-area">
+                    <div class="description-title">Descripción</div>
+                    <div class="property-slide-description">${property.description}</div>
+                </div>
+                
+                <div class="property-feedback-area">
+                    <div class="feedback-question">¿Qué te parece esta propiedad?</div>
+                    <div class="feedback-buttons">
+                        <button class="feedback-btn" onclick="selectFeedback('like', this)" data-property-id="${propertyId}">👍</button>
+                        <button class="feedback-btn" onclick="selectFeedback('dislike', this)" data-property-id="${propertyId}">👎</button>
                     </div>
                 </div>
-            `;
-            
-            // Añadir la tarjeta al contenedor de propiedades
-            propertiesColumn.appendChild(slideCard);
-            
-            // Activar la animación de deslizamiento
-            setTimeout(() => {
-                slideCard.classList.add('active');
-            }, 10);
-            
-            // Inicializar índice de imagen actual
-            window.currentSlideImageIndex = 0;
-        }
+            </div>
+        `;
+        
+        // Añadir la tarjeta al contenedor de propiedades
+        propertiesColumn.appendChild(slideCard);
+        
+        // Activar la animación de deslizamiento
+        setTimeout(() => {
+            slideCard.classList.add('active');
+        }, 10);
+        
+        // Inicializar índice de imagen actual
+        window.currentSlideImageIndex = 0;
+    }
 
     function closePropertySlide() {
     const slideCard = document.getElementById('propertySlideCard');
@@ -4850,30 +4857,7 @@
             // Aquí puedes enviar el feedback a tu backend
             console.log(`Feedback para propiedad ${propertyId}: ${type}`);
             
-            // Opcional: mostrar mensaje de confirmación
-            setTimeout(() => {
-                const feedbackArea = document.querySelector('.property-feedback-area');
-                if (feedbackArea) {
-                    const originalContent = feedbackArea.innerHTML;
-                    feedbackArea.innerHTML = `
-                        <div class="feedback-question" style="color: #22c55e;">
-                            ¡Gracias por tu opinión! 📝
-                        </div>
-                    `;
-                    
-                    // Restaurar contenido después de 2 segundos
-                    setTimeout(() => {
-                        feedbackArea.innerHTML = originalContent;
-                        // Re-marcar el botón seleccionado
-                        const selectedBtn = feedbackArea.querySelector(`[data-property-id="${propertyId}"]`);
-                        if (selectedBtn && type === 'like') {
-                            selectedBtn.classList.add('selected');
-                        } else if (selectedBtn && type === 'dislike') {
-                            selectedBtn.nextElementSibling.classList.add('selected');
-                        }
-                    }, 2000);
-                }
-            }, 100);
+            // No mostrar mensaje de confirmación, solo mantener la selección
         }
                 
     </script>
