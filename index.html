@@ -1593,13 +1593,13 @@
         }
         
         .properties-column {
-            flex: 0 0 50%; /* El mosaico ocupa el 50% */
+            flex: 0 0 calc(50% + 2px); /* Cambio: +2px de ancho */
             background-color: #f5f5f5;
             border-radius: 15px;
-            margin: 0 15px 15px 0; /* Cambio: 0 arriba para llegar al topbar */
+            margin: 0 15px 15px 0; /* Volver al margin original */
             overflow: hidden;
-            min-height: calc(100vh - 75px); /* Altura exacta desde topbar hasta abajo */
-            max-height: calc(100vh - 75px); /* Evitar que crezca más */
+            min-height: calc(100vh - 73px); /* Cambio: +2px de altura (era -75px, ahora -73px) */
+            max-height: calc(100vh - 73px); /* Cambio: +2px de altura */
         }
         
         /* =================== MOSAICO DE PROPIEDADES =================== */
