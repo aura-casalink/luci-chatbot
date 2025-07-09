@@ -512,13 +512,13 @@
             content: "AURA";
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
-            font-size: 28px; /* Mismo tamaño que la "A" original */
+            font-size: 28px;
             color: #000;
-            padding-left: 75px;
+            padding-left: 20px; /* Cambiado de 75px a 20px (2cm menos) */
             padding-right: 20px;
             display: flex;
             align-items: center;
-            justify-content: flex-start; /* Alineado a la izquierda */
+            justify-content: flex-start;
             width: 100%;
             position: absolute;
             left: 0;
@@ -641,12 +641,12 @@
         /* Botón de colapsar cuando está expandida */
         .sidebar.expanded .expand-arrow {
             position: absolute;
-            right: 15px; /* Alineado totalmente a la derecha */
+            right: 5px; /* Cambiado de 15px a 5px (más cerca del borde) */
             top: 50%;
-            transform: translateY(-50%);
+            transform: translateY(-50%) rotate(180deg); /* Añadida rotación para mostrar < */
             opacity: 0;
             visibility: hidden;
-            background-color: #f8f9fa; /* Gris claro */
+            background-color: #f8f9fa;
             border: none;
             border-radius: 50%;
             width: 32px;
@@ -670,15 +670,15 @@
         
         /* Hover del botón */
         .sidebar.expanded .expand-arrow:hover {
-            background-color: #e9ecef; /* Gris un poco más oscuro */
-            transform: translateY(-50%) scale(1.1);
+            background-color: #e9ecef;
+            transform: translateY(-50%) rotate(180deg) scale(1.1);
         }
         
         /* Click del botón */
         .sidebar.expanded .expand-arrow:active {
-            background-color: #6c757d; /* Gris oscuro */
+            background-color: #6c757d;
             color: white;
-            transform: translateY(-50%) scale(0.95);
+            transform: translateY(-50%) rotate(180deg) scale(0.95);
         }
         
         /* Ajustar el contenedor del logo para permitir hover */
