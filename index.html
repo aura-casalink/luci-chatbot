@@ -1703,7 +1703,7 @@
             line-height: 1.2;
         }
 
-       /* =================== TARJETA DESLIZANTE DE PROPIEDAD =================== */
+      /* =================== TARJETA DESLIZANTE DE PROPIEDAD =================== */
         .property-slide-card {
             position: absolute;
             top: 0;
@@ -1727,7 +1727,7 @@
             height: 100%;
             box-sizing: border-box;
             display: grid;
-            grid-template-columns: 1fr 600px; /* Mapa 50% más ancho (era 400px) */
+            grid-template-columns: 1fr 600px;
             grid-template-rows: auto auto auto auto auto auto 1fr auto;
             gap: 15px;
             grid-template-areas: 
@@ -1769,6 +1769,7 @@
         .property-slide-header {
             grid-area: header;
             margin-top: 25px;
+            margin-bottom: 5px; /* Reducir espacio después del título */
         }
         
         .property-slide-title {
@@ -1782,6 +1783,7 @@
         
         .property-slide-location-area {
             grid-area: location;
+            margin-top: -5px; /* Acercar más al título */
         }
         
         .property-slide-location {
@@ -1812,9 +1814,20 @@
         
         .price-comparison {
             font-size: 12px;
-            color: #22c55e;
             margin-top: 2px;
             font-weight: 500;
+        }
+        
+        .price-comparison.above-average {
+            color: #dc2626; /* Rojo para "por encima" */
+        }
+        
+        .price-comparison.below-average {
+            color: #22c55e; /* Verde para "por debajo" */
+        }
+        
+        .price-comparison.neutral {
+            color: #888; /* Gris para el resto */
         }
         
         .property-slide-specs-area {
@@ -1837,7 +1850,7 @@
             background-color: #FFC900;
             color: #333;
             border: none;
-            padding: 8px 10px; /* Doble de altura (era 4px 8px), 25% más ancho */
+            padding: 8px 12px; /* 25% más ancho (era 10px) */
             border-radius: 6px;
             font-family: 'Graphik', sans-serif;
             font-size: 11px;
@@ -1846,7 +1859,7 @@
             transition: all 0.2s;
             align-self: start;
             width: fit-content;
-            margin-top: 5px; /* Más pegado a las specs */
+            margin-top: 8px; /* Más pegado a las specs */
         }
         
         .contact-sales-btn:hover {
@@ -1857,15 +1870,16 @@
         
         .property-slide-map {
             grid-area: map;
-            height: 200px; /* 50% menos altura (era 400px) */
+            height: 100%; /* Ocupar toda la altura del área del grid */
             border-radius: 8px;
             overflow: hidden;
             border: 1px solid #ddd;
+            align-self: stretch; /* Asegurar que se estire por toda el área */
         }
         
         .property-slide-carousel-area {
             grid-area: carousel;
-            margin-top: 5px; /* Más pegado al botón */
+            margin-top: 2px; /* Más pegado al botón */
         }
         
         .property-slide-carousel {
@@ -1952,14 +1966,14 @@
             font-size: 14px;
             margin: 0;
             color: #333;
-            display: inline-block; /* Para que esté en la misma línea */
-            margin-right: 15px; /* Espacio entre pregunta y botones */
+            display: inline-block;
+            margin-right: 15px;
         }
         
         .feedback-buttons {
-            display: inline-flex; /* En la misma línea que la pregunta */
+            display: inline-flex;
             gap: 15px;
-            align-items: center; /* Centrar verticalmente con la pregunta */
+            align-items: center;
         }
         
         .feedback-btn {
@@ -4650,6 +4664,7 @@
                 location: "Trafalgar, Madrid",
                 price: 795000,
                 pricePerSqm: 8368.42,
+                priceComparison: "3% por encima de la media de precios de la zona", // Ejemplo "por encima"
                 builtArea: 95,
                 usefulArea: 89,
                 bedrooms: 2,
@@ -4668,6 +4683,7 @@
                 location: "Salamanca, Madrid", 
                 price: 450000,
                 pricePerSqm: 4736.84,
+                priceComparison: "5% por debajo de la media de precios de la zona", // Ejemplo "por debajo"
                 builtArea: 95,
                 usefulArea: 89,
                 bedrooms: 3,
@@ -4682,6 +4698,14 @@
         };
     
         const property = propertyData[propertyId] || propertyData[1];
+    
+        // Determinar la clase CSS para el precio comparativo
+        let priceComparisonClass = 'neutral';
+        if (property.priceComparison.includes('por encima')) {
+            priceComparisonClass = 'above-average';
+        } else if (property.priceComparison.includes('por debajo')) {
+            priceComparisonClass = 'below-average';
+        }
     
         // Obtener el contenedor del grid
         const propertiesColumn = document.querySelector('.properties-column');
@@ -4706,7 +4730,7 @@
                 <div class="property-slide-price-area">
                     <div class="property-slide-price">${formatPrice(property.price)}</div>
                     <div class="property-slide-price-per-sqm">${property.pricePerSqm.toLocaleString('es-ES', { maximumFractionDigits: 2 })} €/m²</div>
-                    <div class="price-comparison">3% por encima de la media de precios de la zona</div>
+                    <div class="price-comparison ${priceComparisonClass}">${property.priceComparison}</div>
                 </div>
                 
                 <div class="property-slide-specs-area">
@@ -4718,7 +4742,7 @@
                 </div>
                 
                 <button class="contact-sales-btn" onclick="showContactInfoPopup('${property.title}')">
-                    Contactar con Ventas
+                    Más Información
                 </button>
                 
                 <div class="property-slide-map">
@@ -4778,7 +4802,7 @@
         // Inicializar índice de imagen actual
         window.currentSlideImageIndex = 0;
     }
-
+        
     function closePropertySlide() {
     const slideCard = document.getElementById('propertySlideCard');
     if (slideCard) {
