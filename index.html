@@ -512,14 +512,18 @@
             content: "AURA";
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
-            font-size: 18px;
+            font-size: 28px; /* Mismo tamaño que la "A" original */
             color: #000;
             padding-left: 75px;
             padding-right: 20px;
             display: flex;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: flex-start; /* Alineado a la izquierda */
             width: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
         }
         
         /* Ajustar el contenedor del logo cuando está expandido */
@@ -634,9 +638,54 @@
             visibility: hidden !important;
         }
         
-        /* Cambiar flecha de expandir a contraer */
+        /* Botón de colapsar cuando está expandida */
         .sidebar.expanded .expand-arrow {
-            transform: translate(-50%, -50%) rotate(180deg);
+            position: absolute;
+            right: 15px; /* Alineado totalmente a la derecha */
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            visibility: hidden;
+            background-color: #f8f9fa; /* Gris claro */
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #495057;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+       /* Mostrar botón solo en hover sobre la línea del logo */
+        .sidebar.expanded .sidebar-logo:hover .expand-arrow {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Hover del botón */
+        .sidebar.expanded .expand-arrow:hover {
+            background-color: #e9ecef; /* Gris un poco más oscuro */
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        /* Click del botón */
+        .sidebar.expanded .expand-arrow:active {
+            background-color: #6c757d; /* Gris oscuro */
+            color: white;
+            transform: translateY(-50%) scale(0.95);
+        }
+        
+        /* Ajustar el contenedor del logo para permitir hover */
+        .sidebar.expanded .sidebar-logo {
+            position: relative;
+            justify-content: flex-start;
+            padding-left: 0;
         }
      
        
