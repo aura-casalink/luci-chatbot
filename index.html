@@ -1593,13 +1593,15 @@
         }
         
         .properties-column {
-            flex: 0 0 calc(50% + 2px); /* Cambio: +2px de ancho */
+            flex: 0 0 calc(50% + 2px); /* +2px de ancho */
             background-color: #f5f5f5;
             border-radius: 15px;
-            margin: -2 17px 15px 0; /* Volver al margin original */
+            margin: 0 15px 15px 0;
             overflow: hidden;
-            min-height: calc(100vh - 60px); /* Cambio: +2px de altura (era -75px, ahora -73px) */
-            max-height: calc(100vh - 60px); /* Cambio: +2px de altura */
+            min-height: calc(100vh - 73px); /* +2px de altura */
+            max-height: calc(100vh - 73px);
+            position: relative; /* CLAVE: permite salirse del flujo normal */
+            top: -2px; /* CLAVE: sube 2px hacia arriba */
         }
         
         /* =================== MOSAICO DE PROPIEDADES =================== */
