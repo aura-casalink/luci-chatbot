@@ -640,10 +640,10 @@
         
         /* Botón de colapsar cuando está expandida */
         .sidebar.expanded .expand-arrow {
-            position: absolute;
-            right: 30px;
-            top: 50%;
-            transform: translateY(-50%) rotate(180deg); /* Añadida rotación para mostrar < */
+            position: fixed; /* Cambiado de absolute a fixed */
+            right: calc(100vw - 250px + 15px); /* Calculado desde el borde derecho del sidebar */
+            top: 40px; /* Posición fija desde arriba para alinearlo con AURA */
+            transform: rotate(180deg); /* Removido translateY ya que usamos top fijo */
             opacity: 0;
             visibility: hidden;
             background-color: #f8f9fa;
@@ -671,14 +671,14 @@
         /* Hover del botón */
         .sidebar.expanded .expand-arrow:hover {
             background-color: #e9ecef;
-            transform: translateY(-50%) rotate(180deg) scale(1.1);
+            transform: rotate(180deg) scale(1.1);
         }
         
         /* Click del botón */
         .sidebar.expanded .expand-arrow:active {
             background-color: #6c757d;
             color: white;
-            transform: translateY(-50%) rotate(180deg) scale(0.95);
+            transform: rotate(180deg) scale(0.95);
         }
         
         /* Ajustar el contenedor del logo para permitir hover */
