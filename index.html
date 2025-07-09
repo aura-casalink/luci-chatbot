@@ -2548,115 +2548,123 @@
 
         // Inicialización
         document.addEventListener('DOMContentLoaded', async function() {
-            await initializeSupabase();
-            await initializeApp();
-            updateTexts();
-            supabaseClient = supabase;
-            initSidebar();
-             if (supabase) {
-                await checkExistingSession();
-            }
+            console.log('=== DOM CONTENT LOADED ===');
             
-            // Exponemos estas dos funciones para poder invocarlas desde consola o botones
-            window.activateTestMode = function(sessionId) {
-                if (!sessionId) {
-                    console.error('Se necesita un session_id para activar el modo test');
-                    return false;
-                }   
-                currentSessionId = sessionId;
-                pendingCallback = true; 
-                console.log(`Modo test activado para sesión: ${sessionId}`);
-                console.log(`Callback pendiente: ${pendingCallback}`);
-                return true;
-            };
-            
-            window.sendCallbackManually = async function(textoUsuario) {
-                if (!currentSessionId) return;
-                addMessage(textoUsuario, 'user');
-                try {
-                  const response = await fetch(`/api/callback?sessionId=${currentSessionId}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      message: textoUsuario,
-                      session_id: currentSessionId
-                    })
-                  });
-                  const json = await response.json();
-                  console.log('Respuesta /api/callback:', json);
-                } catch (err) {
-                  console.error('Error enviando callback:', err);
-                }
-              };
-            
-              document.getElementById('sendButton').addEventListener('click', () => {
-                const texto = document.getElementById('chatInput').value.trim();
-                if (texto) {
-                  sendCallbackManually(texto);
-                  document.getElementById('chatInput').value = '';
-                }
-              });
-            
-              window.addEventListener('beforeunload', () => {
-                if (realtimeChannel) {
-                  supabase.removeChannel(realtimeChannel);
-                  realtimeChannel = null;
-                  console.log('Suscripción Realtime cancelada por navegación');
-                }
-              });
-            
-            const expandArrow = document.querySelector('.expand-arrow');
-            const sidebar = document.querySelector('.sidebar');
-            const container = document.querySelector('.container');
-            
-            if (expandArrow && sidebar && container) {
-            expandArrow.addEventListener('click', () => {
-              sidebar.classList.toggle('expanded');
-              container.classList.toggle('sidebar-expanded');
-            });
-          }
-            console.log('=== VERIFICACIÓN FINAL ===');
-    
-            // Verificar que todo esté listo
-            setTimeout(() => {
-                console.log('Verificando elementos después del load...');
+            try {
+                await initializeSupabase();
+                await initializeApp();
+                updateTexts();
+                supabaseClient = supabase;
+                initSidebar(); // Mover esto ANTES de checkExistingSession
                 
-                const sidebarOptions = document.querySelectorAll('.sidebar-option');
-                const loginPopup = document.getElementById('loginPopup');
-                
-                console.log('Opciones sidebar:', sidebarOptions.length);
-                console.log('Login popup:', loginPopup ? 'ENCONTRADO' : 'NO ENCONTRADO');
-                
-                if (loginPopup) {
-                    console.log('Popup display actual:', window.getComputedStyle(loginPopup).display);
+                if (supabase) {
+                    await checkExistingSession();
                 }
                 
-                // Test rápido
-                console.log('Para probar manualmente, ejecuta: forceShowLoginPopup()');
-                console.log('Para probar clicks: testSidebarClicks()');
+                // Exponemos estas dos funciones para poder invocarlas desde consola o botones
+                window.activateTestMode = function(sessionId) {
+                    if (!sessionId) {
+                        console.error('Se necesita un session_id para activar el modo test');
+                        return false;
+                    }   
+                    currentSessionId = sessionId;
+                    pendingCallback = true; 
+                    console.log(`Modo test activado para sesión: ${sessionId}`);
+                    console.log(`Callback pendiente: ${pendingCallback}`);
+                    return true;
+                };
                 
-            }, 1000);
-        });
-
-        window.debugRealtimeConnection = function() {
-            console.log('=== DEBUG REALTIME CONNECTION ===');
-            console.log('Supabase URL:', SUPABASE_URL);
-            console.log('Current session:', currentSessionId);
-            console.log('Channel status:', realtimeChannel?.state);
-            console.log('Pending callback:', pendingCallback);
-            
-            // Test de conectividad
-            const testChannel = supabase.channel('test-connection')
-                .subscribe((status) => {
-                    console.log('Test channel status:', status);
-                    if (status === 'SUBSCRIBED') {
-                        console.log('✅ Conexión WebSocket OK');
-                        supabase.removeChannel(testChannel);
-                    } else if (status === 'CHANNEL_ERROR') {
-                        console.log('❌ Error en conexión WebSocket');
+                window.sendCallbackManually = async function(textoUsuario) {
+                    if (!currentSessionId) return;
+                    addMessage(textoUsuario, 'user');
+                    try {
+                      const response = await fetch(`/api/callback?sessionId=${currentSessionId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          message: textoUsuario,
+                          session_id: currentSessionId
+                        })
+                      });
+                      const json = await response.json();
+                      console.log('Respuesta /api/callback:', json);
+                    } catch (err) {
+                      console.error('Error enviando callback:', err);
+                    }
+                };
+                
+                document.getElementById('sendButton').addEventListener('click', () => {
+                    const texto = document.getElementById('chatInput').value.trim();
+                    if (texto) {
+                      sendCallbackManually(texto);
+                      document.getElementById('chatInput').value = '';
                     }
                 });
-        };
+                
+                window.addEventListener('beforeunload', () => {
+                    if (realtimeChannel) {
+                      supabase.removeChannel(realtimeChannel);
+                      realtimeChannel = null;
+                      console.log('Suscripción Realtime cancelada por navegación');
+                    }
+                });
+                
+                const expandArrow = document.querySelector('.expand-arrow');
+                const sidebar = document.querySelector('.sidebar');
+                const container = document.querySelector('.container');
+                
+                if (expandArrow && sidebar && container) {
+                    expandArrow.addEventListener('click', () => {
+                      sidebar.classList.toggle('expanded');
+                      container.classList.toggle('sidebar-expanded');
+                    });
+                }
+                
+                // VERIFICACIÓN FINAL
+                setTimeout(() => {
+                    console.log('=== VERIFICACIÓN POST-INICIALIZACIÓN ===');
+                    
+                    const sidebarOptions = document.querySelectorAll('.sidebar-option');
+                    const loginPopup = document.getElementById('loginPopup');
+                    
+                    console.log('Opciones sidebar encontradas:', sidebarOptions.length);
+                    console.log('Login popup encontrado:', loginPopup ? 'SÍ' : 'NO');
+                    
+                    // Exponer funciones de testing
+                    window.testSidebarClicks = function() {
+                        console.log('=== TESTING SIDEBAR CLICKS ===');
+                        
+                        sidebarOptions.forEach((option, index) => {
+                            const optionName = option.dataset.option;
+                            console.log(`Opción ${index + 1}: ${optionName}`);
+                            
+                            if (optionName !== 'propiedades') {
+                                console.log(`Simulando click en ${optionName}...`);
+                                option.click();
+                                return; // Solo probar la primera opción no-propiedades
+                            }
+                        });
+                    };
+                    
+                    window.forceShowLoginPopup = function() {
+                        console.log('Forzando mostrar popup...');
+                        if (typeof showLoginPopup === 'function') {
+                            showLoginPopup();
+                        } else {
+                            console.error('showLoginPopup no está definida');
+                        }
+                    };
+                    
+                    console.log('Funciones de testing disponibles:');
+                    console.log('- testSidebarClicks()');
+                    console.log('- forceShowLoginPopup()');
+                    
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Error en DOMContentLoaded:', error);
+            }
+        });
         
         function startRealtimeSubscription(sessionId) {
             // Limpiar suscripción anterior
@@ -3061,15 +3069,47 @@
 
         // Función para inicializar la aplicación
         async function initializeApp() {
-            deviceId = generateDeviceId();
-            userIP = await getUserIP();
+            console.log('=== INICIALIZANDO APP ===');
             
-            // Esperar un poco para asegurar que Supabase esté listo
-            setTimeout(async () => {
-                await loadPreviousConversations();
-            }, 500);
+            try {
+                deviceId = generateDeviceId();
+                console.log('Device ID generado:', deviceId);
+                
+                userIP = await getUserIP();
+                console.log('IP obtenida:', userIP);
+                
+                // Esperar un poco para asegurar que Supabase esté listo
+                setTimeout(async () => {
+                    await loadPreviousConversations();
+                }, 500);
+                
+                console.log('App inicializada correctamente');
+            } catch (error) {
+                console.error('Error al inicializar app:', error);
+            }
         }
 
+        // Función para generar device_id único
+        function generateDeviceId() {
+            // Comprobar si ya existe en localStorage
+            let deviceId = localStorage.getItem('luci_device_id');
+            
+            if (!deviceId) {
+                // Generar nuevo device_id
+                deviceId = 'device_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                
+                // Guardar en localStorage
+                try {
+                    localStorage.setItem('luci_device_id', deviceId);
+                } catch (error) {
+                    console.log('No se pudo guardar en localStorage:', error);
+                }
+            }
+            
+            console.log('Device ID:', deviceId);
+            return deviceId;
+        }
+        
         // Función para cambiar idioma
         function changeLanguage(language) {
             currentLanguage = language;
@@ -4046,7 +4086,7 @@
                 
                 if (session && session.user) {
                     console.log('Sesión existente encontrada:', session.user);
-                    updateUserProfile(session.user);
+                    // updateUserProfile(session.user); // Comentar esta línea si la función no existe
                 }
             } catch (error) {
                 console.error('Error verificando sesión:', error);
