@@ -118,7 +118,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px 0 10px 0; 
+            padding: 10px 0 10px 0; 
             min-height: 0; 
             overflow: visible;
             max-height: calc(100vh - 100px); 
@@ -210,9 +210,9 @@
         }
         
         .login-icon {
-            font-size: 18px;
-            color: #333;
-            font-weight: 500;
+            width: 18px;
+            height: 18px;
+            object-fit: contain;
         }
         
         /* Tooltip para login - usando la misma estructura que los otros */
@@ -1472,11 +1472,10 @@
                 <div class="new-chat-circle">
                     <span class="plus-icon">+</span>
                 </div>
-            </div>
-            
+            </div>  
             <div class="sidebar-login" data-tooltip="Inicia Sesión" onclick="showLoginPopup()">
                 <div class="login-circle">
-                    <span class="login-icon">👤</span>
+                    <img src="https://cdn-icons-png.flaticon.com/512/17468/17468741.png" alt="Login" class="login-icon">
                 </div>
             </div>
         </div>
