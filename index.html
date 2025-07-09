@@ -1503,40 +1503,53 @@
         
         <!-- Opciones del menú -->
         <div class="sidebar-options">
-            <div class="sidebar-option active" data-option="propiedades" data-tooltip="Propiedades">
-                <img src="https://cdn-icons-png.flaticon.com/512/9664/9664027.png" alt="Propiedades" class="sidebar-icon">
-            </div>
-            <div class="sidebar-option" data-option="financiacion" data-tooltip="Financiación">
-                <img src="https://cdn-icons-png.flaticon.com/512/2769/2769362.png" alt="Financiación" class="sidebar-icon">
-            </div>
-            <div class="sidebar-option" data-option="tasaciones" data-tooltip="Tasaciones">
-                <img src="https://cdn-icons-png.flaticon.com/512/2169/2169846.png" alt="Tasaciones" class="sidebar-icon">
-            </div>
-            <div class="sidebar-option" data-option="auditorias" data-tooltip="Auditorías">
-                <img src="https://cdn-icons-png.flaticon.com/512/4561/4561511.png" alt="Auditorías" class="sidebar-icon">
-            </div>
-            <div class="sidebar-option" data-option="mudanzas" data-tooltip="Mudanzas">
-                <img src="https://cdn-icons-png.flaticon.com/512/2787/2787413.png" alt="Mudanzas" class="sidebar-icon">
-            </div>
-            <div class="sidebar-option" data-option="reformas" data-tooltip="Reformas">
-                <img src="https://cdn-icons-png.flaticon.com/512/2963/2963833.png" alt="Reformas" class="sidebar-icon">
-            </div>
-            <div class="sidebar-option" data-option="suministros" data-tooltip="Gestión Suministros">
-                <img src="https://cdn-icons-png.flaticon.com/512/566/566359.png" alt="Gestión Suministros" class="sidebar-icon">
+            <div class="sidebar-icons-container">
+                <div class="sidebar-option active" data-option="propiedades" data-tooltip="Propiedades">
+                    <img src="https://cdn-icons-png.flaticon.com/512/9664/9664027.png" alt="Propiedades" class="sidebar-icon">
+                    <span class="sidebar-text">Propiedades</span>
+                </div>
+                <div class="sidebar-option" data-option="financiacion" data-tooltip="Financiación">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2769/2769362.png" alt="Financiación" class="sidebar-icon">
+                    <span class="sidebar-text">Financiación</span>
+                </div>
+                <div class="sidebar-option" data-option="tasaciones" data-tooltip="Tasaciones">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2169/2169846.png" alt="Tasaciones" class="sidebar-icon">
+                    <span class="sidebar-text">Tasaciones</span>
+                </div>
+                <div class="sidebar-option" data-option="auditorias" data-tooltip="Auditorías">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4561/4561511.png" alt="Auditorías" class="sidebar-icon">
+                    <span class="sidebar-text">Auditorías</span>
+                </div>
+                <div class="sidebar-option" data-option="mudanzas" data-tooltip="Mudanzas">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2787/2787413.png" alt="Mudanzas" class="sidebar-icon">
+                    <span class="sidebar-text">Mudanzas</span>
+                </div>
+                <div class="sidebar-option" data-option="reformas" data-tooltip="Reformas">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2963/2963833.png" alt="Reformas" class="sidebar-icon">
+                    <span class="sidebar-text">Reformas</span>
+                </div>
+                <div class="sidebar-option" data-option="suministros" data-tooltip="Gestión Suministros">
+                    <img src="https://cdn-icons-png.flaticon.com/512/566/566359.png" alt="Gestión Suministros" class="sidebar-icon">
+                    <span class="sidebar-text">Gestión Suministros</span>
+                </div>
             </div>
             
             <!-- Espaciador flexible -->
             <div style="flex: 1; min-height: 20px;"></div>
             
             <!-- Botones inferiores -->
-            <div class="sidebar-new-chat" data-tooltip="Nuevo Chat" onclick="startNewChat()">
-                <div class="new-chat-circle">
-                    <span class="plus-icon">+</span>
-                </div>
-            </div>  
-            <div class="sidebar-login" data-tooltip="Inicia Sesión" onclick="showLoginPopup()">
-                <div class="login-circle">
-                    <img src="https://cdn-icons-png.flaticon.com/512/17468/17468741.png" alt="Login" class="login-icon">
+            <div class="sidebar-bottom-buttons">
+                <div class="sidebar-new-chat" data-tooltip="Nuevo Chat" onclick="startNewChat()">
+                    <div class="new-chat-circle">
+                        <span class="plus-icon">+</span>
+                    </div>
+                    <span class="sidebar-text">Nuevo Chat</span>
+                </div>  
+                <div class="sidebar-login" data-tooltip="Inicia Sesión" onclick="showLoginPopup()">
+                    <div class="login-circle">
+                        <img src="https://cdn-icons-png.flaticon.com/512/17468/17468741.png" alt="Login" class="login-icon">
+                    </div>
+                    <span class="sidebar-text">Inicia Sesión</span>
                 </div>
             </div>
         </div>
