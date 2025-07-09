@@ -45,8 +45,6 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: width 0.3s ease;
-            overflow: hidden;
         }
         
         /* Logo AURA */
@@ -1323,194 +1321,7 @@
             color: #333;
         }
         
-       /* =================== SIDEBAR EXPANDIBLE =================== */
-        
-        .sidebar.expanded {
-            width: 220px;
-        }
-        
-        /* Ajustar container cuando sidebar está expandida */
-        .container.sidebar-active {
-            margin-left: 80px;
-            width: calc(100% - 80px);
-            transition: margin-left 0.3s ease, width 0.3s ease;
-        }
-        
-        .container.sidebar-expanded {
-            margin-left: 220px;
-            width: calc(100% - 220px);
-        }
-        
-        /* Texto expandido que aparece/desaparece */
-        .sidebar-text {
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease 0.1s, visibility 0.3s ease 0.1s;
-            margin-left: 15px;
-            font-family: 'Graphik', sans-serif;
-            font-size: 14px;
-            font-weight: 400;
-            color: #333;
-            white-space: nowrap;
-        }
-        
-        .sidebar.expanded .sidebar-text {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        /* Texto expandido para AURA */
-        .aura-text {
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease 0.1s, visibility 0.3s ease 0.1s;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            font-size: 28px;
-            color: #000;
-            margin-left: 5px;
-        }
-        
-        .sidebar.expanded .aura-text {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        /* Modificar logo para que sea horizontal */
-        .sidebar-logo {
-            padding: 20px 0;
-            text-align: left;
-            position: relative;
-            width: 100%;
-            height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            padding-left: 18px;
-        }
-        
-        /* Hover expandido para opciones */
-        .sidebar.expanded .sidebar-option {
-            width: 180px;
-            justify-content: flex-start;
-            padding-left: 18px;
-            margin-right: 20px;
-        }
-        
-        .sidebar.expanded .sidebar-option:hover {
-            background-color: #f8f9fa;
-        }
-
-       .sidebar:not(.expanded) .sidebar-option:hover {
-            background-color: #f8f9fa;
-        }
-        
-        /* Botón "Nuevo Chat" expandido */
-        .sidebar-new-chat-expanded {
-            opacity: 0;
-            visibility: hidden;
-            width: 180px;
-            height: 40px;
-            background-color: #e9ecef;
-            border-radius: 20px;
-            margin: 0 20px 5px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-family: 'Graphik', sans-serif;
-            font-size: 14px;
-            color: #495057;
-        }
-        
-        .sidebar.expanded .sidebar-new-chat-expanded {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .sidebar-new-chat-expanded:hover {
-            background-color: #6c757d;
-            color: white;
-        }
-        
-        /* Ocultar el botón + cuando está expandido */
-        .sidebar.expanded .sidebar-new-chat {
-            display: none;
-        }
-        
-        /* Botón de colapsar */
-        .collapse-arrow {
-            position: absolute;
-            top: 50%;
-            right: 15px;
-            transform: translateY(-50%);
-            opacity: 0;
-            visibility: hidden;
-            background-color: #6c757d;
-            border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: white;
-            font-size: 18px;
-            font-weight: bold;
-            z-index: 10;
-        }
-        
-        .sidebar.expanded .sidebar-logo:hover .collapse-arrow {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .collapse-arrow:hover {
-            background-color: #495057;
-            transform: translateY(-50%) scale(1.1);
-        }
-        
-        /* Texto en negrita para Propiedades */
-        .sidebar-text.bold {
-            font-weight: 600;
-        }
-        
-        /* Ajustar login expandido */
-        .sidebar.expanded .sidebar-login {
-            width: 180px;
-            justify-content: flex-start;
-            padding-left: 18px;
-            margin-right: 20px;
-        }
-
-       /* Asegurar que el login permanezca centrado cuando está colapsado */
-        .sidebar:not(.expanded) .sidebar-login {
-            justify-content: center;
-            padding-left: 0;
-        }
-        
-        /* Indicador de opción activa - ajustar para ambos estados */
-        .sidebar:not(.expanded) .sidebar-option.active::before {
-            content: '';
-            position: absolute;
-            right: -40px;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 24px;
-            width: 3px;
-            background-color: #000;
-            border-radius: 0;
-        }
-        
-        .sidebar.expanded .sidebar-option.active {
-            background-color: #f8f9fa;
-            font-weight: 600;
-        }
                
-       
        @media (max-width: 768px) {
     
             /* =================== BIENVENIDA MÓVIL =================== */
@@ -1626,40 +1437,31 @@
         <!-- Logo AURA -->
         <div class="sidebar-logo">
             <div class="aura-logo">A</div>
-            <div class="aura-text">URA</div>
-            <div class="expand-arrow" data-tooltip="Expandir" onclick="toggleSidebar()">›</div>
-            <div class="collapse-arrow" onclick="toggleSidebar()">‹</div>
+            <div class="expand-arrow" data-tooltip="Expandir">›</div>
         </div>
         
         <!-- Opciones del menú -->
         <div class="sidebar-options">
             <div class="sidebar-option active" data-option="propiedades" data-tooltip="Propiedades">
                 <img src="https://cdn-icons-png.flaticon.com/512/9664/9664027.png" alt="Propiedades" class="sidebar-icon">
-                <span class="sidebar-text bold">Propiedades</span>
             </div>
             <div class="sidebar-option" data-option="financiacion" data-tooltip="Financiación">
                 <img src="https://cdn-icons-png.flaticon.com/512/2769/2769362.png" alt="Financiación" class="sidebar-icon">
-                <span class="sidebar-text">Financiación</span>
             </div>
             <div class="sidebar-option" data-option="tasaciones" data-tooltip="Tasaciones">
                 <img src="https://cdn-icons-png.flaticon.com/512/2169/2169846.png" alt="Tasaciones" class="sidebar-icon">
-                <span class="sidebar-text">Tasaciones</span>
             </div>
             <div class="sidebar-option" data-option="auditorias" data-tooltip="Auditorías">
                 <img src="https://cdn-icons-png.flaticon.com/512/4561/4561511.png" alt="Auditorías" class="sidebar-icon">
-                <span class="sidebar-text">Auditorías</span>
             </div>
             <div class="sidebar-option" data-option="mudanzas" data-tooltip="Mudanzas">
                 <img src="https://cdn-icons-png.flaticon.com/512/2787/2787413.png" alt="Mudanzas" class="sidebar-icon">
-                <span class="sidebar-text">Mudanzas</span>
             </div>
             <div class="sidebar-option" data-option="reformas" data-tooltip="Reformas">
                 <img src="https://cdn-icons-png.flaticon.com/512/2963/2963833.png" alt="Reformas" class="sidebar-icon">
-                <span class="sidebar-text">Reformas</span>
             </div>
             <div class="sidebar-option" data-option="suministros" data-tooltip="Gestión Suministros">
                 <img src="https://cdn-icons-png.flaticon.com/512/566/566359.png" alt="Gestión Suministros" class="sidebar-icon">
-                <span class="sidebar-text">Gestión Suministros</span>
             </div>
             
             <!-- Espaciador flexible -->
@@ -1670,17 +1472,11 @@
                 <div class="new-chat-circle">
                     <span class="plus-icon">+</span>
                 </div>
-            </div>
-            
-            <div class="sidebar-new-chat-expanded" onclick="startNewChat()">
-                Nuevo Chat
-            </div>
-            
+            </div>  
             <div class="sidebar-login" data-tooltip="Inicia Sesión" onclick="showLoginPopup()">
                 <div class="login-circle">
                     <img src="https://cdn-icons-png.flaticon.com/512/17468/17468741.png" alt="Login" class="login-icon">
                 </div>
-                <span class="sidebar-text">Comprador</span>
             </div>
         </div>
     </div>
@@ -3882,20 +3678,6 @@
             
             // Inicializar iconos correctos
             updateSidebarIcons();
-        }
-
-        // Función para expandir/colapsar sidebar
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const container = document.querySelector('.container');
-            
-            sidebar.classList.toggle('expanded');
-            
-            if (sidebar.classList.contains('expanded')) {
-                container.classList.add('sidebar-expanded');
-            } else {
-                container.classList.remove('sidebar-expanded');
-            }
         }
         
         function setActiveSidebarOption(optionName) {
