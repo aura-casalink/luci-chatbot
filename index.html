@@ -1597,14 +1597,15 @@
             background-color: #f5f5f5;
             border-left: 1px solid #ddd;
             border-radius: 15px;
-            margin: 5px 15px 15px 0;
-            overflow-y: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            margin: 0 15px 15px 0; /* Cambio: 0 arriba para llegar al topbar */
+            overflow: hidden;
+            min-height: calc(100vh - 75px); /* Altura exacta desde topbar hasta abajo */
+            max-height: calc(100vh - 75px); /* Evitar que crezca más */
         }
         
         /* =================== MOSAICO DE PROPIEDADES =================== */
         .properties-grid {
-            padding: 10px; /* Cambio: menos padding */
+            padding: 15px;
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -1612,9 +1613,10 @@
         }
         
         .properties-header {
-            margin-bottom: 8px; /* Cambio: menos margin */
+            margin-bottom: 15px;
             text-align: center;
             flex-shrink: 0;
+            height: 30px; /* Altura fija para el header */
         }
         
         .properties-header h3 {
@@ -1622,36 +1624,37 @@
             color: #333;
             font-size: 16px;
             font-weight: 600;
+            line-height: 30px; /* Centrar verticalmente */
         }
         
         .grid-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            gap: 8px; /* Cambio: menos gap */
+            gap: 12px;
             width: 100%;
-            height: calc(100% - 40px); /* Cambio: restar menos espacio para el header */
+            height: calc(100% - 45px); /* Altura total menos header y margin */
             box-sizing: border-box;
+            align-items: stretch; /* Asegurar que las cards ocupen toda la altura */
+            justify-items: stretch; /* Asegurar que las cards ocupen todo el ancho */
         }
         
         .property-card {
             background: white;
-            border-radius: 6px; /* Cambio: menos border-radius */
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1); /* Cambio: sombra más sutil */
+            border-radius: 8px;
             overflow: hidden;
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            width: 100%; /* Añadido: ocupar todo el ancho del grid */
-            height: 100%; /* Añadido: ocupar toda la altura del grid */
             display: flex;
             flex-direction: column;
-            min-width: 0; /* Añadido: permitir contracción */
-            min-height: 0; /* Añadido: permitir contracción */
+            /* Eliminamos width, height, min-width, min-height para que el grid controle */
+            position: relative; /* Añadido para evitar solapamientos */
         }
         
         .property-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10; /* Añadido para que el hover quede encima */
         }
         
         .property-card.placeholder {
@@ -1659,43 +1662,44 @@
         }
         
         .property-image {
-            height: 65%; /* Cambio: era 60%, ahora 65% */
+            height: 70%;
             background-color: #e9ecef;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
-            flex-shrink: 0; /* Añadido: no contraer */
+            flex-shrink: 0;
         }
         
         .placeholder-image {
-            font-size: 20px;
+            font-size: 24px;
             color: #6c757d;
         }
         
         .property-info {
-            padding: 6px; /* Cambio: era 8px, ahora 6px */
-            height: 35%; /* Cambio: era 40%, ahora 35% */
+            height: 30%;
+            padding: 8px;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Cambio: centrar contenido */
-            flex-shrink: 0; /* Añadido: no contraer */
+            justify-content: space-between;
+            flex-shrink: 0;
             box-sizing: border-box;
         }
         
         .property-price {
             font-weight: 600;
             color: #333;
-            font-size: 10px; /* Cambio: era 11px, ahora 10px */
+            font-size: 11px;
             text-align: center;
-            margin-bottom: 2px; /* Añadido: separación */
+            margin: 0;
         }
-                
+        
         .property-location {
             color: #666;
-            font-size: 8px; /* Cambio: era 9px, ahora 8px */
+            font-size: 9px;
             text-align: center;
-            line-height: 1.2; /* Añadido: mejor spacing */
+            margin: 0;
+            line-height: 1.2;
         }
                 
                
