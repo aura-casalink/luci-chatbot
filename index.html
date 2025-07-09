@@ -1845,6 +1845,49 @@
             left: 250px; /* Empieza donde termina la sidebar expandida */
         }
        
+       /* =================== ESTADOS DE BÚSQUEDA DEL GRID =================== */
+        .property-card.searching {
+            pointer-events: none;
+            position: relative;
+        }
+        
+        .search-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            z-index: 5;
+        }
+        
+        .search-loader {
+            width: 24px;
+            height: 24px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            animation: searchSpin 1s linear infinite;
+        }
+        
+        @keyframes searchSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .properties-header h3 {
+            transition: opacity 0.3s ease;
+        }
+        
+        .property-card.searching .property-price {
+            color: #888;
+            font-size: 12px;
+        }
+       
        @media (max-width: 768px) {
     
             /* =================== BIENVENIDA MÓVIL =================== */
@@ -3340,6 +3383,7 @@
                 if (data.started_search === "yes") {
                     pendingCallback = true;
                     startRealtimeSubscription(currentSessionId);
+                    startGridSearch();
                 } else {
                     pendingCallback = false;
                 }
@@ -4413,6 +4457,108 @@
             // Extraer todo excepto el porcentaje
             return priceComparison.replace(/(\d+%)\s*/, '');
         }
+
+        function startGridSearch() {
+            const propertiesHeader = document.querySelector('.properties-header h3');
+            const gridContainer = document.querySelector('.grid-container');
+            
+            // Cambiar título con animación
+            let searchTitleInterval;
+            let visible = true;
+            
+            function animateSearchTitle() {
+                if (visible) {
+                    propertiesHeader.style.opacity = '0';
+                    setTimeout(() => {
+                        propertiesHeader.textContent = 'Buscando propiedades...';
+                        propertiesHeader.style.opacity = '1';
+                    }, 300);
+                } else {
+                    propertiesHeader.style.opacity = '0';
+                    setTimeout(() => {
+                        propertiesHeader.textContent = '';
+                        propertiesHeader.style.opacity = '1';
+                    }, 300);
+                }
+                visible = !visible;
+            }
+            
+            // Iniciar animación del título
+            animateSearchTitle();
+            searchTitleInterval = setInterval(animateSearchTitle, 2500);
+            
+            // Guardar el intervalo para poder limpiarlo después
+            window.gridSearchInterval = searchTitleInterval;
+            
+            // Aplicar overlays y loading a las propiedades
+            const propertyCards = document.querySelectorAll('.property-card');
+            propertyCards.forEach(card => {
+                card.classList.add('searching');
+                
+                // Cambiar precio a "Búsqueda en curso..."
+                const priceElement = card.querySelector('.property-price');
+                if (priceElement) {
+                    priceElement.textContent = 'Búsqueda en curso...';
+                }
+                
+                // Ocultar ubicación
+                const locationElement = card.querySelector('.property-location');
+                if (locationElement) {
+                    locationElement.style.display = 'none';
+                }
+                
+                // Añadir overlay con loading
+                const overlay = document.createElement('div');
+                overlay.className = 'search-overlay';
+                overlay.innerHTML = '<div class="search-loader"></div>';
+                card.appendChild(overlay);
+            });
+            
+            console.log('Estado de búsqueda activado en el grid');
+        }
+
+        function stopGridSearch() {
+            // Limpiar intervalo del título
+            if (window.gridSearchInterval) {
+                clearInterval(window.gridSearchInterval);
+                window.gridSearchInterval = null;
+            }
+            
+            // Restaurar título
+            const propertiesHeader = document.querySelector('.properties-header h3');
+            propertiesHeader.style.opacity = '1';
+            propertiesHeader.textContent = 'Nuestras Propiedades';
+            
+            // Remover overlays
+            const overlays = document.querySelectorAll('.search-overlay');
+            overlays.forEach(overlay => overlay.remove());
+            
+            // Remover clase searching
+            const propertyCards = document.querySelectorAll('.property-card');
+            propertyCards.forEach(card => {
+                card.classList.remove('searching');
+                
+                // Mostrar ubicación de nuevo
+                const locationElement = card.querySelector('.property-location');
+                if (locationElement) {
+                    locationElement.style.display = 'block';
+                }
+            });
+            
+            console.log('Estado de búsqueda desactivado en el grid');
+        }
+
+        // Función para testear el estado de búsqueda
+        window.testGridSearch = function() {
+            console.log('Iniciando test del grid search...');
+            startGridSearch();
+            
+            // Detener después de 10 segundos para ver el efecto
+            setTimeout(() => {
+                console.log('Deteniendo test del grid search...');
+                stopGridSearch();
+            }, 10000);
+        };
                 
     </script>
 </body>
