@@ -474,6 +474,67 @@
             visibility: visible;
             left: 70px;
         }
+
+       /* Sidebar expandido */
+        .sidebar.expanded {
+            width: 250px;
+            transition: width 0.3s ease;
+        }
+        
+        .sidebar {
+            transition: width 0.3s ease;
+        }
+        
+        /* Contenedor principal cuando sidebar está expandido */
+        .container.sidebar-expanded {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            transition: margin-left 0.3s ease, width 0.3s ease;
+        }
+        
+        .container {
+            transition: margin-left 0.3s ease, width 0.3s ease;
+        }
+        
+        /* Texto de las opciones del sidebar (oculto por defecto) */
+        .sidebar-text {
+            position: absolute;
+            left: 90px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-family: 'Graphik', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+        
+        /* Mostrar texto cuando sidebar está expandido */
+        .sidebar.expanded .sidebar-text {
+            opacity: 1;
+            visibility: visible;
+            left: 95px;
+        }
+        
+        /* Ocultar tooltips cuando sidebar está expandido */
+        .sidebar.expanded .sidebar-option::after,
+        .sidebar.expanded .sidebar-option::before,
+        .sidebar.expanded .sidebar-login::after,
+        .sidebar.expanded .sidebar-login::before,
+        .sidebar.expanded .sidebar-new-chat::after,
+        .sidebar.expanded .sidebar-new-chat::before {
+            opacity: 0 !important;
+            visibility: hidden !important;
+        }
+        
+        /* Cambiar flecha de expandir a contraer */
+        .sidebar.expanded .expand-arrow {
+            transform: translate(-50%, -50%) rotate(180deg);
+        }
      
        
        /* =================== PANTALLA DE BIENVENIDA =================== */
@@ -1437,7 +1498,7 @@
         <!-- Logo AURA -->
         <div class="sidebar-logo">
             <div class="aura-logo">A</div>
-            <div class="expand-arrow" data-tooltip="Expandir">›</div>
+            <div class="expand-arrow" data-tooltip="Expandir" onclick="toggleSidebar()">›</div>
         </div>
         
         <!-- Opciones del menú -->
@@ -3678,6 +3739,28 @@
             
             // Inicializar iconos correctos
             updateSidebarIcons();
+
+            const expandArrow = document.querySelector('.expand-arrow');
+            if (expandArrow) {
+                expandArrow.addEventListener('click', toggleSidebar);
+            }
+        }
+        
+        // Función para expandir/contraer sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const container = document.querySelector('.container');
+            
+            sidebar.classList.toggle('expanded');
+            container.classList.toggle('sidebar-expanded');
+            
+            // Actualizar tooltip del botón
+            const expandArrow = document.querySelector('.expand-arrow');
+            if (sidebar.classList.contains('expanded')) {
+                expandArrow.setAttribute('data-tooltip', 'Contraer');
+            } else {
+                expandArrow.setAttribute('data-tooltip', 'Expandir');
+            }
         }
         
         function setActiveSidebarOption(optionName) {
