@@ -1394,12 +1394,14 @@
             width: 180px;
             justify-content: flex-start;
             padding-left: 18px;
-            border-radius: 12px;
-            margin-left: 0;
             margin-right: 20px;
         }
         
         .sidebar.expanded .sidebar-option:hover {
+            background-color: #f8f9fa;
+        }
+
+       .sidebar:not(.expanded) .sidebar-option:hover {
             background-color: #f8f9fa;
         }
         
@@ -1482,7 +1484,31 @@
             justify-content: flex-start;
             padding-left: 18px;
             margin-right: 20px;
-        }        
+        }
+
+       /* Asegurar que el login permanezca centrado cuando está colapsado */
+        .sidebar:not(.expanded) .sidebar-login {
+            justify-content: center;
+            padding-left: 0;
+        }
+        
+        /* Indicador de opción activa - ajustar para ambos estados */
+        .sidebar:not(.expanded) .sidebar-option.active::before {
+            content: '';
+            position: absolute;
+            right: -40px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 24px;
+            width: 3px;
+            background-color: #000;
+            border-radius: 0;
+        }
+        
+        .sidebar.expanded .sidebar-option.active {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
                
        
        @media (max-width: 768px) {
