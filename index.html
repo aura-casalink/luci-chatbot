@@ -640,10 +640,10 @@
         
         /* Botón de colapsar cuando está expandida */
         .sidebar.expanded .expand-arrow {
-            position: fixed; /* Cambiado de absolute a fixed */
-            right: calc(100vw - 250px - 150px); /* Calculado desde el borde derecho del sidebar */
-            top: 40px; /* Posición fija desde arriba para alinearlo con AURA */
-            transform: rotate(180deg); /* Removido translateY ya que usamos top fijo */
+            position: absolute;
+            left: 200px; /* Posición específica desde la izquierda */
+            top: 50%;
+            transform: translateY(-50%) rotate(180deg);
             opacity: 0;
             visibility: hidden;
             background-color: #f8f9fa;
@@ -686,6 +686,8 @@
             position: relative;
             justify-content: flex-start;
             padding-left: 0;
+            width: 250px; /* Ancho específico del sidebar expandido */
+            height: 80px;
         }
      
        
