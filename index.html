@@ -338,8 +338,6 @@
             left: 45px;
             top: 50%;
             transform: translateY(-50%);
-            transform-origin: center center;
-            will-change: opacity, visibility;
             background-color: rgba(0, 0, 0, 0.9);
             color: white;
             padding: 8px 12px;
@@ -350,7 +348,7 @@
             white-space: nowrap;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
             z-index: 1000;
             pointer-events: none;
         }
@@ -391,13 +389,26 @@
             right: 45px;
             left: auto;
         }
+        
+       /* Tooltip cuando sidebar está expandida */
+        .sidebar.expanded .expand-arrow::after {
+            content: "Colapsar";
+            left: auto;
+            right: 45px;
+            transform: translateY(-50%);
+        }
+
+        /* Ocultar tooltip durante transición del sidebar */
+        .sidebar.transitioning .expand-arrow::after {
+            opacity: 0 !important;
+            visibility: hidden !important;
+        }
                 
         .expand-arrow:hover::after {
             opacity: 1;
             visibility: visible;
-            left: 50px;
         }
-        
+                
         .expand-arrow::before {
             content: '';
             position: absolute;
@@ -3968,17 +3979,26 @@
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const container = document.querySelector('.container');
+            const expandArrow = document.querySelector('.expand-arrow');
             
+            // Agregar clase de transición
+            sidebar.classList.add('transitioning');
+            
+            // Toggle classes
             sidebar.classList.toggle('expanded');
             container.classList.toggle('sidebar-expanded');
             
             // Actualizar tooltip del botón - LÓGICA CORREGIDA
-            const expandArrow = document.querySelector('.expand-arrow');
             if (sidebar.classList.contains('expanded')) {
-                expandArrow.setAttribute('data-tooltip', 'Expandir');
+                expandArrow.setAttribute('data-tooltip', 'Colapsar');
             } else {
                 expandArrow.setAttribute('data-tooltip', 'Expandir');
             }
+            
+            // Remover clase de transición después de que termine
+            setTimeout(() => {
+                sidebar.classList.remove('transitioning');
+            }, 300); // 300ms coincide con la duración de la transición CSS
         }
         
         function setActiveSidebarOption(optionName) {
