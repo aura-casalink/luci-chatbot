@@ -356,16 +356,40 @@
        /* Tooltip cuando sidebar está expandida */
         .sidebar.expanded .expand-arrow::after {
             content: "Esconder";
-            left: auto;
-            right: 45px;
             transform: translateY(-50%) rotate(0deg);
-        }
-        
-        .sidebar.expanded .expand-arrow:hover::after {
+            right: 45px;
             left: auto;
-            right: 50px;
         }
-        
+
+       .sidebar.expanded .expand-arrow::before {
+            content: '';
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 5px solid transparent;
+            border-left-color: rgba(0, 0, 0, 0.9); /* en lugar de border-right-color */
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+                
+        .sidebar.expanded .expand-arrow:hover::after {
+            opacity: 1;
+            visibility: visible;
+            right: 50px;
+            left: auto;
+        }
+
+       .sidebar.expanded .expand-arrow:hover::before {
+            opacity: 1;
+            visibility: visible;
+            right: 45px;
+            left: auto;
+        }
+                
         .expand-arrow:hover::after {
             opacity: 1;
             visibility: visible;
