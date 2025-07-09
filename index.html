@@ -424,8 +424,29 @@
         .new-chat-circle:hover .plus-icon {
             color: white;
         }
+
+        .sidebar.expanded .sidebar-option,
+        .sidebar.expanded .sidebar-login,
+        .sidebar.expanded .sidebar-new-chat {
+          justify-content: flex-start;
+          padding-left: 20px; /* desplaza todo el contenido a la izquierda */
+        }
         
-        /* Tooltip para nuevo chat */
+        .sidebar.expanded .sidebar-icon {
+          margin-right: 10px; /* espacio entre el icono y el texto */
+        }
+        
+        .sidebar.expanded .sidebar-text {
+          position: static;           /* sin posicionamiento absoluto */
+          transform: none;            /* sin desplazamiento */
+          opacity: 1;
+          visibility: visible;
+          pointer-events: auto;
+          display: inline-block;      /* asegura que se muestre en línea */
+        }
+       
+       
+       /* Tooltip para nuevo chat */
         .sidebar-new-chat::after {
             content: attr(data-tooltip);
             position: absolute;
