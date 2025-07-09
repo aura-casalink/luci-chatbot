@@ -431,9 +431,19 @@
           justify-content: flex-start;
           padding-left: 20px; /* desplaza todo el contenido a la izquierda */
         }
-        
-        .sidebar.expanded .sidebar-icon {
-          margin-right: 10px; /* espacio entre el icono y el texto */
+
+        .sidebar-option,
+        .sidebar-login,
+        .sidebar-new-chat {
+          justify-content: center;
+        }
+
+       .sidebar.expanded .sidebar-option .sidebar-icon,
+        .sidebar.expanded .sidebar-login .login-circle,
+        .sidebar.expanded .sidebar-new-chat .new-chat-circle {
+          margin-left: 0;
+          margin-right: 10px;
+          justify-content: flex-start;
         }
         
         .sidebar.expanded .sidebar-text {
