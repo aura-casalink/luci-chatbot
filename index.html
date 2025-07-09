@@ -1769,7 +1769,7 @@
         .property-slide-header {
             grid-area: header;
             margin-top: 25px;
-            margin-bottom: 5px; /* Reducir espacio después del título */
+            margin-bottom: -5px; /* Cambio: de 5px a -5px para reducir más el espacio */
         }
         
         .property-slide-title {
@@ -1783,9 +1783,9 @@
         
         .property-slide-location-area {
             grid-area: location;
-            margin-top: -5px; /* Acercar más al título */
+            margin-top: -10px; /* Cambio: de -5px a -10px para acercarlo más */
         }
-        
+                
         .property-slide-location {
             font-size: 14px;
             color: #888;
@@ -1816,6 +1816,15 @@
             font-size: 12px;
             margin-top: 2px;
             font-weight: 500;
+        }
+
+       .price-percentage {
+            color: #dc2626; /* Rojo para el porcentaje */
+            font-weight: 600;
+        }
+
+       .price-comparison-text {
+            color: #888; /* Gris para el resto del texto */
         }
         
         .price-comparison.above-average {
@@ -4730,7 +4739,10 @@
                 <div class="property-slide-price-area">
                     <div class="property-slide-price">${formatPrice(property.price)}</div>
                     <div class="property-slide-price-per-sqm">${property.pricePerSqm.toLocaleString('es-ES', { maximumFractionDigits: 2 })} €/m²</div>
-                    <div class="price-comparison ${priceComparisonClass}">${property.priceComparison}</div>
+                    <div class="price-comparison">
+                        <span class="price-percentage">${getPricePercentage(property.priceComparison)}</span>
+                        <span class="price-comparison-text">${getPriceComparisonText(property.priceComparison)}</span>
+                    </div>
                 </div>
                 
                 <div class="property-slide-specs-area">
@@ -4885,6 +4897,17 @@
             console.log(`Feedback para propiedad ${propertyId}: ${type}`);
             
             // No mostrar mensaje de confirmación, solo mantener la selección
+        }
+
+        function getPricePercentage(priceComparison) {
+            // Extraer solo el porcentaje (ej: "3%")
+            const match = priceComparison.match(/(\d+%)/);
+            return match ? match[1] : '';
+        }
+        
+        function getPriceComparisonText(priceComparison) {
+            // Extraer todo excepto el porcentaje
+            return priceComparison.replace(/(\d+%)\s*/, '');
         }
                 
     </script>
