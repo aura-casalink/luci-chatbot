@@ -1702,6 +1702,179 @@
             margin: 0;
             line-height: 1.2;
         }
+
+       /* =================== TARJETA DESLIZANTE DE PROPIEDAD =================== */
+        .property-slide-card {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 20;
+            transition: left 0.3s ease-in-out;
+            overflow-y: auto;
+            border-radius: 15px;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+        }
+        
+        .property-slide-card.active {
+            left: 0;
+        }
+        
+        .property-slide-content {
+            padding: 20px;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        
+        .property-slide-close {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            z-index: 21;
+            transition: background-color 0.2s;
+        }
+        
+        .property-slide-close:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: scale(1.1);
+        }
+        
+        .property-slide-title {
+            font-family: 'Graphik', sans-serif;
+            font-weight: bold;
+            font-size: 22px;
+            margin: 45px 0 8px 0;
+            color: #333;
+            text-align: left;
+        }
+        
+        .property-slide-location {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 12px;
+            text-align: left;
+        }
+        
+        .property-slide-price {
+            font-size: 24px;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 4px;
+            text-align: left;
+        }
+        
+        .property-slide-price-per-sqm {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        
+        .property-slide-specs {
+            margin-bottom: 20px;
+        }
+        
+        .property-slide-spec {
+            font-size: 13px;
+            color: #aaa;
+            margin-bottom: 3px;
+            line-height: 1.3;
+        }
+        
+        .property-slide-carousel {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            background: #f5f5f5;
+        }
+        
+        .property-slide-carousel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+            cursor: zoom-in;
+        }
+        
+        .property-slide-carousel img.active {
+            display: block;
+        }
+        
+        .slide-carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        
+        .slide-carousel-nav:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        
+        .slide-carousel-prev {
+            left: 10px;
+        }
+        
+        .slide-carousel-next {
+            right: 10px;
+        }
+        
+        .property-slide-description {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #666;
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+        
+        /* Indicador de posición del carrousel */
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .carousel-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ddd;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .carousel-dot.active {
+            background-color: #333;
+        }
                 
                
        /* =================== TOPBAR =================== */
@@ -4336,10 +4509,168 @@
 
         // Función para abrir detalle de propiedad (placeholder)
         function openPropertyDetail(propertyId) {
-            console.log('Abriendo detalle de propiedad:', propertyId);
-            // Aquí irá la lógica para mostrar la ficha de la propiedad
-            alert(`Abriendo propiedad ${propertyId} - Funcionalidad pendiente de implementar`);
+            // Crear datos de ejemplo (en producción vendrían de tu base de datos)
+            const propertyData = {
+                1: {
+                    title: "Propiedad en venta",
+                    location: "Trafalgar, Madrid",
+                    price: 795000,
+                    pricePerSqm: 8368.42,
+                    builtArea: 95,
+                    usefulArea: 89,
+                    bedrooms: 2,
+                    bathrooms: 2,
+                    images: [
+                        "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/e9/3a/4c/1340892243.webp",
+                        "https://img4.idealista.com/blur/WEB_DETAIL-XL-P/0/id.pro.es.image.master/c1/2d/8c/1340892242.webp",
+                        "https://img4.idealista.com/blur/WEB_DETAIL-XL-P/0/id.pro.es.image.master/a1/b2/c3/1340892245.webp"
+                    ],
+                    description: "Encantador piso exterior de 95 m² en Trafalgar, Chamberí, con distribución moderna y funcional. La cocina está integrada al salón, creando un espacio diáfano y luminoso, complementado por un pequeño cuarto de lavandería. Dispone de dos habitaciones con armarios empotrados y dos baños completos, asegurando comodidad y practicidad. La ubicación en Trafalgar brinda acceso a calles arboladas, arquitectura clásica, una variada oferta de restaurantes y tiendas, y excelentes conexiones de transporte público, fusionando la vida urbana con un ambiente residencial acogedor."
+                },
+                // Puedes añadir más propiedades aquí
+                2: {
+                    title: "Ático en venta",
+                    location: "Salamanca, Madrid", 
+                    price: 450000,
+                    pricePerSqm: 4736.84,
+                    builtArea: 95,
+                    usefulArea: 89,
+                    bedrooms: 3,
+                    bathrooms: 2,
+                    images: [
+                        "https://img4.idealista.com/blur/WEB_DETAIL_TOP-XL-P/0/id.pro.es.image.master/12/34/56/1340892244.webp"
+                    ],
+                    description: "Espectacular ático con terraza en el barrio de Salamanca. Completamente reformado con materiales de primera calidad."
+                }
+            };
+        
+            const property = propertyData[propertyId] || propertyData[1]; // Fallback a la primera propiedad
+        
+            // Obtener el contenedor del grid
+            const propertiesColumn = document.querySelector('.properties-column');
+            
+            // Crear la tarjeta deslizante
+            const slideCard = document.createElement('div');
+            slideCard.className = 'property-slide-card';
+            slideCard.id = 'propertySlideCard';
+            
+            slideCard.innerHTML = `
+                <div class="property-slide-content">
+                    <button class="property-slide-close" onclick="closePropertySlide()">×</button>
+                    
+                    <div class="property-slide-title">${property.title}</div>
+                    <div class="property-slide-location">${property.location}</div>
+                    
+                    <div class="property-slide-price">${formatPrice(property.price)}</div>
+                    <div class="property-slide-price-per-sqm">${property.pricePerSqm.toLocaleString('es-ES', { maximumFractionDigits: 2 })} €/m²</div>
+                    
+                    <div class="property-slide-specs">
+                        <div class="property-slide-spec">${property.builtArea} m² construidos, ${property.usefulArea} m² útiles</div>
+                        <div class="property-slide-spec">${property.bedrooms} habitaciones</div>
+                        <div class="property-slide-spec">${property.bathrooms} baños</div>
+                    </div>
+                    
+                    <div class="property-slide-carousel" id="slideCarousel">
+                        ${property.images.map((img, index) => 
+                            `<img src="${img}" alt="${property.title}" ${index === 0 ? 'class="active"' : ''} onclick="openImageZoom('${img}')">`
+                        ).join('')}
+                        ${property.images.length > 1 ? `
+                            <button class="slide-carousel-nav slide-carousel-prev" onclick="changeSlideImage(-1)">‹</button>
+                            <button class="slide-carousel-nav slide-carousel-next" onclick="changeSlideImage(1)">›</button>
+                        ` : ''}
+                    </div>
+                    
+                    ${property.images.length > 1 ? `
+                        <div class="carousel-indicators">
+                            ${property.images.map((_, index) => 
+                                `<div class="carousel-dot ${index === 0 ? 'active' : ''}" onclick="goToSlideImage(${index})"></div>`
+                            ).join('')}
+                        </div>
+                    ` : ''}
+                    
+                    <div class="property-slide-description">${property.description}</div>
+                </div>
+            `;
+            
+            // Añadir la tarjeta al contenedor de propiedades
+            propertiesColumn.appendChild(slideCard);
+            
+            // Activar la animación de deslizamiento
+            setTimeout(() => {
+                slideCard.classList.add('active');
+            }, 10);
+            
+            // Inicializar índice de imagen actual
+            window.currentSlideImageIndex = 0;
         }
+
+    function closePropertySlide() {
+    const slideCard = document.getElementById('propertySlideCard');
+    if (slideCard) {
+        slideCard.classList.remove('active');
+        setTimeout(() => {
+            slideCard.remove();
+        }, 300);
+    }
+}
+
+    function changeSlideImage(direction) {
+        const carousel = document.getElementById('slideCarousel');
+        const images = carousel.querySelectorAll('img');
+        const dots = document.querySelectorAll('.carousel-dot');
+        
+        // Remover clase active de imagen y dot actuales
+        images[window.currentSlideImageIndex].classList.remove('active');
+        if (dots.length > 0) {
+            dots[window.currentSlideImageIndex].classList.remove('active');
+        }
+        
+        // Calcular nuevo índice
+        window.currentSlideImageIndex += direction;
+        
+        if (window.currentSlideImageIndex >= images.length) {
+            window.currentSlideImageIndex = 0;
+        } else if (window.currentSlideImageIndex < 0) {
+            window.currentSlideImageIndex = images.length - 1;
+        }
+        
+        // Activar nueva imagen y dot
+        images[window.currentSlideImageIndex].classList.add('active');
+        if (dots.length > 0) {
+            dots[window.currentSlideImageIndex].classList.add('active');
+        }
+    }
+    
+    function goToSlideImage(index) {
+        const carousel = document.getElementById('slideCarousel');
+        const images = carousel.querySelectorAll('img');
+        const dots = document.querySelectorAll('.carousel-dot');
+        
+        // Remover clase active de imagen y dot actuales
+        images[window.currentSlideImageIndex].classList.remove('active');
+        if (dots.length > 0) {
+            dots[window.currentSlideImageIndex].classList.remove('active');
+        }
+        
+        // Establecer nuevo índice
+        window.currentSlideImageIndex = index;
+        
+        // Activar nueva imagen y dot
+        images[window.currentSlideImageIndex].classList.add('active');
+        if (dots.length > 0) {
+            dots[window.currentSlideImageIndex].classList.add('active');
+        }
+    }
+
+    // Cerrar tarjeta deslizante con tecla Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const slideCard = document.getElementById('propertySlideCard');
+            if (slideCard) {
+                closePropertySlide();
+            }
+        }
+    });
         
     </script>
 </body>
