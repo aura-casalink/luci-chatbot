@@ -1919,6 +1919,36 @@
             font-family: 'Graphik', sans-serif;
         }
        
+       /* =================== BOTÓN VER MÁS PROPIEDADES =================== */
+        .properties-header {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .view-more-btn {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Graphik', sans-serif;
+        }
+        
+        .view-more-btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-50%) scale(1.05);
+        }
+       
        @media (max-width: 768px) {
     
             /* =================== BIENVENIDA MÓVIL =================== */
@@ -4553,17 +4583,24 @@
             console.log('Estado de búsqueda activado en el grid');
         }
 
-        function stopGridSearch() {
+        function stopGridSearch(propertiesCount = null) {
             // Limpiar intervalo del título
             if (window.gridSearchInterval) {
                 clearInterval(window.gridSearchInterval);
                 window.gridSearchInterval = null;
             }
             
-            // Restaurar título
+            // Restaurar/actualizar título
             const propertiesHeader = document.querySelector('.properties-header h3');
             propertiesHeader.style.opacity = '1';
-            propertiesHeader.textContent = 'Nuestras Propiedades';
+            
+            if (propertiesCount !== null) {
+                // Mostrar número de propiedades encontradas
+                propertiesHeader.textContent = `✅ ${propertiesCount} propiedades encontradas`;
+            } else {
+                // Restaurar título original
+                propertiesHeader.textContent = 'Nuestras Propiedades';
+            }
             
             // Remover overlays
             const overlays = document.querySelectorAll('.search-overlay');
@@ -4584,27 +4621,27 @@
             console.log('Estado de búsqueda desactivado en el grid');
         }
 
-        // Función para testear el estado de búsqueda
-        window.testGridSearch = function() {
-            console.log('Iniciando test del grid search...');
-            startGridSearch();
-            
-            // Detener después de 10 segundos para ver el efecto
-            setTimeout(() => {
-                console.log('Deteniendo test del grid search...');
-                stopGridSearch();
-            }, 10000);
-        };
-
         function updateGridWithResults(properties) {
-            // Detener estado de búsqueda
-            stopGridSearch();
+            // Obtener número total de propiedades del mensaje
+            const totalProperties = properties.length;
+            
+            // Detener estado de búsqueda con el número de propiedades
+            stopGridSearch(totalProperties);
+            
+            // Añadir botón "Ver más propiedades" si hay más de 9
+            addViewMoreButton(totalProperties);
             
             const propertyCards = document.querySelectorAll('.property-card');
             
-            properties.forEach((property, index) => {
+            // Actualizar hasta 9 propiedades
+            const propertiesToShow = properties.slice(0, 9);
+            
+            propertiesToShow.forEach((property, index) => {
                 if (index < propertyCards.length) {
                     const card = propertyCards[index];
+                    
+                    // Restaurar opacidad y funcionalidad
+                    card.style.opacity = '1';
                     
                     // Actualizar imagen de fondo
                     const imageDiv = card.querySelector('.property-image');
@@ -4641,14 +4678,46 @@
             });
             
             // Si hay menos de 9 propiedades, atenuar las tarjetas sobrantes
-            for (let i = properties.length; i < propertyCards.length; i++) {
-                propertyCards[i].style.opacity = '0.5';
+            for (let i = propertiesToShow.length; i < propertyCards.length; i++) {
+                propertyCards[i].style.opacity = '0.3';
                 propertyCards[i].onclick = null;
+                
+                // Limpiar contenido de tarjetas vacías
+                const imageDiv = propertyCards[i].querySelector('.property-image');
+                const priceElement = propertyCards[i].querySelector('.property-price');
+                const locationElement = propertyCards[i].querySelector('.property-location');
+                const amenitiesContainer = propertyCards[i].querySelector('.amenities-icons');
+                
+                if (imageDiv) imageDiv.style.backgroundImage = '';
+                if (priceElement) priceElement.textContent = '';
+                if (locationElement) locationElement.textContent = '';
+                if (amenitiesContainer) amenitiesContainer.innerHTML = '';
             }
             
-            console.log(`Grid actualizado con ${properties.length} propiedades`);
+            console.log(`Grid actualizado con ${propertiesToShow.length} de ${totalProperties} propiedades`);
         }
 
+        function addViewMoreButton(totalProperties) {
+            // Remover botón existente si lo hay
+            const existingButton = document.getElementById('viewMorePropertiesBtn');
+            if (existingButton) {
+                existingButton.remove();
+            }
+            
+            // Solo añadir si hay más de 9 propiedades
+            if (totalProperties > 9) {
+                const propertiesHeader = document.querySelector('.properties-header');
+                
+                const viewMoreBtn = document.createElement('button');
+                viewMoreBtn.id = 'viewMorePropertiesBtn';
+                viewMoreBtn.className = 'view-more-btn';
+                viewMoreBtn.textContent = 'Ver más propiedades';
+                viewMoreBtn.onclick = showLoginPopup;
+                
+                propertiesHeader.appendChild(viewMoreBtn);
+            }
+        }
+        
         function updateCardAmenities(card, amenities) {
             const amenitiesContainer = card.querySelector('.amenities-icons');
             if (!amenitiesContainer) return;
