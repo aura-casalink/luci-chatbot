@@ -352,6 +352,19 @@
             z-index: 1000;
             pointer-events: none;
         }
+
+       /* Tooltip cuando sidebar está expandida */
+        .sidebar.expanded .expand-arrow::after {
+            content: "Esconder";
+            left: auto;
+            right: 45px;
+            transform: translateY(-50%);
+        }
+        
+        .sidebar.expanded .expand-arrow:hover::after {
+            left: auto;
+            right: 50px;
+        }
         
         .expand-arrow:hover::after {
             opacity: 1;
