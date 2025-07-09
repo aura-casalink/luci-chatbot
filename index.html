@@ -2968,6 +2968,60 @@
             }
             }
             
+        // Función para extraer el número de propiedades encontradas del mensaje del asistente
+        function extractPropertyCountFromMessage(message) {
+            if (!message || typeof message !== 'string') {
+                return 0;
+            }
+            
+            console.log('Analizando mensaje para extraer número de propiedades:', message);
+            
+            // Patrones para buscar números de propiedades en el mensaje
+            const patterns = [
+                /he encontrado (\d+(?:\.\d+)?(?:,\d+)*) propiedades/i,
+                /encontré (\d+(?:\.\d+)?(?:,\d+)*) propiedades/i,
+                /hay (\d+(?:\.\d+)?(?:,\d+)*) propiedades/i,
+                /(\d+(?:\.\d+)?(?:,\d+)*) propiedades encontradas/i,
+                /(\d+(?:\.\d+)?(?:,\d+)*) propiedades disponibles/i,
+                /(\d+(?:\.\d+)?(?:,\d+)*) resultados/i,
+                /(\d+(?:\.\d+)?(?:,\d+)*) opciones/i
+            ];
+            
+            for (const pattern of patterns) {
+                const match = message.match(pattern);
+                if (match && match[1]) {
+                    // Convertir el número extraído (puede tener puntos o comas)
+                    let numberStr = match[1];
+                    
+                    // Limpiar el número: remover puntos (separadores de miles) y convertir comas decimales
+                    numberStr = numberStr.replace(/\./g, '').replace(/,/g, '.');
+                    
+                    const number = parseInt(numberStr);
+                    
+                    if (!isNaN(number) && number > 0) {
+                        console.log(`Patrón coincidente: "${pattern}", número extraído: ${number}`);
+                        return number;
+                    }
+                }
+            }
+            
+            // Si no encuentra patrones específicos, buscar cualquier número grande (> 100)
+            const anyNumberMatch = message.match(/(\d+(?:\.\d+)*)/g);
+            if (anyNumberMatch) {
+                for (const numStr of anyNumberMatch) {
+                    const cleanNum = numStr.replace(/\./g, '');
+                    const num = parseInt(cleanNum);
+                    if (!isNaN(num) && num > 100) {
+                        console.log(`Número grande encontrado en el mensaje: ${num}`);
+                        return num;
+                    }
+                }
+            }
+            
+            console.log('No se encontró número de propiedades en el mensaje');
+            return 0;
+        }
+        
         // Función para manejar callbacks desde n8n
        function handleCallback(data) {
             console.log('handleCallback ejecutado con:', data);
@@ -2992,14 +3046,25 @@
                 currentTopic = data.topic;
             }
             
+            // Variable para almacenar el número total de propiedades encontradas
+            let totalPropertiesFound = 0;
+            
             // Siempre añadir el mensaje si existe
             if (data.message) {
                 addMessage(data.message, 'assistant');
+                
+                // EXTRAER EL NÚMERO DE PROPIEDADES DEL MENSAJE
+                totalPropertiesFound = extractPropertyCountFromMessage(data.message);
+                console.log('Número de propiedades extraído del mensaje:', totalPropertiesFound);
             }
-
-           // Si hay propiedades, actualizar el grid
+        
+            // Si hay propiedades, actualizar el grid
             if (data.properties && Array.isArray(data.properties) && data.properties.length > 0) {
-                updateGridWithResults(data.properties);
+                updateGridWithResults(data.properties, totalPropertiesFound);
+            } else if (totalPropertiesFound > 0) {
+                // Si hay un número mencionado en el mensaje pero no propiedades en el array,
+                // aún así mostrar el botón si es necesario
+                addViewMoreButton(totalPropertiesFound);
             }
             
             // Resetear estado de callback pendiente
@@ -4744,16 +4809,17 @@
             console.log('Estado de búsqueda desactivado en el grid');
         }
 
-        function updateGridWithResults(properties) {
+        function updateGridWithResults(properties, totalPropertiesFromMessage = null) {
             console.log('Actualizando grid con propiedades:', properties.length);
+            console.log('Total de propiedades mencionadas en mensaje:', totalPropertiesFromMessage);
             
-            // Obtener número total de propiedades del mensaje
-            const totalProperties = properties.length;
+            // Usar el número del mensaje si está disponible, sino usar el length del array
+            const totalProperties = totalPropertiesFromMessage || properties.length;
             
             // Detener estado de búsqueda con el número de propiedades
             stopGridSearch(totalProperties);
             
-            // Añadir botón "Ver más propiedades" si hay más de 9
+            // Añadir botón "Ver más propiedades" basándose en el número del mensaje
             addViewMoreButton(totalProperties);
             
             const propertyCards = document.querySelectorAll('.property-card');
@@ -4819,7 +4885,7 @@
                 if (amenitiesContainer) amenitiesContainer.innerHTML = '';
             }
             
-            console.log(`Grid actualizado con ${propertiesToShow.length} de ${totalProperties} propiedades`);
+            console.log(`Grid actualizado con ${propertiesToShow.length} de ${totalProperties} propiedades (${totalPropertiesFromMessage ? 'del mensaje' : 'del array'})`);
         }
 
         function addViewMoreButton(totalProperties) {
