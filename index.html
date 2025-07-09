@@ -1859,6 +1859,17 @@
                   console.log('Suscripción Realtime cancelada por navegación');
                 }
               });
+            
+            const expandArrow = document.querySelector('.expand-arrow');
+            const sidebar = document.querySelector('.sidebar');
+            const container = document.querySelector('.container');
+            
+            if (expandArrow && sidebar && container) {
+            expandArrow.addEventListener('click', () => {
+              sidebar.classList.toggle('expanded');
+              container.classList.toggle('sidebar-expanded');
+            });
+          }
         });
 
         window.debugRealtimeConnection = function() {
