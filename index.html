@@ -919,7 +919,7 @@
         .typing-placeholder {
             position: absolute;
             left: 20px;
-            top: 40%;
+            top: 20%;
             transform: translateY(-50%);
             color: #999;
             font-family: 'Graphik', sans-serif;
@@ -973,7 +973,7 @@
         
         /* Overlay durante la transición */
         .transition-overlay {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             right: 0;
@@ -982,6 +982,16 @@
             z-index: 9999;
             opacity: 0;
             transition: opacity 0.3s ease;
+        }
+
+       .chat-column {
+            flex: 0 0 50%; /* El chat ocupa el 50% */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background-color: white;
+            margin-right: 10px; /* Añadido: separación entre columnas */
+            position: relative; /* CAMBIO: asegurar que ya tenga position relative para contener el overlay */
         }
         
         .transition-overlay.active {
