@@ -914,6 +914,77 @@
             background-color: #6c757d;
             cursor: not-allowed;
         }
+       
+        /* Contenedor para el typing placeholder */
+        .typing-placeholder {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-family: 'Graphik', sans-serif;
+            font-size: 16px;
+            pointer-events: none;
+            z-index: 1;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        
+        .typing-placeholder.typing::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #333;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        /* Ocultar placeholder cuando hay texto */
+        .welcome-chat-input-container .chat-input:not(:placeholder-shown) ~ .typing-placeholder,
+        .welcome-chat-input-container .chat-input:focus ~ .typing-placeholder {
+            display: none;
+        }
+        
+        /* Estilos para la transición del bubble */
+        .message-bubble-transition {
+            position: fixed;
+            background-color: #edf2f4;
+            border-radius: 18px;
+            border-bottom-right-radius: 4px;
+            padding: 12px 18px;
+            font-family: 'Graphik', sans-serif;
+            font-size: 16px;
+            color: #333;
+            z-index: 10000;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            max-width: 70%;
+            word-wrap: break-word;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Overlay durante la transición */
+        .transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.9);
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .transition-overlay.active {
+            opacity: 1;
+        }
+        
+        /* Ajustar el input wrapper para posición relativa */
+        .welcome-chat-input-container .chat-input-wrapper {
+            position: relative;
+        }
 
        /* =================== SELECTOR DE IDIOMA =================== */
         .language-selector {
@@ -2423,9 +2494,10 @@
                             <textarea 
                                 class="chat-input" 
                                 id="welcomeChatInput" 
-                                placeholder="Escribe tu mensaje..."
+                                placeholder=""
                                 rows="1"
                             ></textarea>
+                            <div class="typing-placeholder" id="typingPlaceholder"></div>
                             <button class="send-button" id="welcomeSendButton" onclick="sendWelcomeMessage()">
                                 ➤
                             </button>
@@ -2434,7 +2506,6 @@
                             Luci se encuentra actualmente en <span class="beta-badge">BETA</span>, por lo que puede cometer errores. Considera verificar la información importante.
                         </div>
                     </div>
-                </div>
         
                 <!-- Pantalla de chat -->
                 <div class="chat-screen" id="chatScreen">
@@ -2724,6 +2795,11 @@
             spanish: {
                 welcomeTitle: 'Hola, soy Luci. ¿Qué vivienda buscas?',
                 welcomeSubtitle: 'Ey, estoy aquí para ayudarte a encontrar tu vivienda. Pregúntame lo que quieras relacionado con la compra de propiedades.',
+                typingOptions: [
+                    'Un piso en un barrio seguro de Valencia',
+                    '3 habitaciones cerca del metro',
+                    'Propiedades por menos de 350k€ en la Costa del Sol'
+                ],
                 newChat: 'Nuevo Chat',
                 expandSidebar: 'Expandir barra principal',
                 collapseSidebar: 'Recoger barra principal',
@@ -2735,6 +2811,11 @@
             english: {
                 welcomeTitle: 'Hello, I\'m Luci. What home are you looking for?',
                 welcomeSubtitle: 'Hey, I\'m here to help you find your home. Ask me anything related to buying properties.',
+                typingOptions: [
+                    'An apartment in a safe neighborhood in Valencia',
+                    '3 bedrooms near the metro',
+                    'Properties under 350k€ on the Costa del Sol'
+                ],
                 newChat: 'New Chat',
                 expandSidebar: 'Expand sidebar',
                 collapseSidebar: 'Collapse sidebar',
@@ -2746,6 +2827,11 @@
             french: {
                 welcomeTitle: 'Bonjour, je suis Luci. Quel logement cherchez-vous?',
                 welcomeSubtitle: 'Hé, je suis là pour vous aider à trouver votre logement. Demandez-moi tout ce qui concerne l\'achat de propriétés.',
+                typingOptions: [
+                    'Un appartement dans un quartier sûr de Valence',
+                    '3 chambres près du métro',
+                    'Propriétés à moins de 350k€ sur la Costa del Sol'
+                ],
                 newChat: 'Nouveau Chat',
                 expandSidebar: 'Développer la barre latérale',
                 collapseSidebar: 'Réduire la barre latérale',
@@ -2932,7 +3018,38 @@
             } catch (error) {
                 console.error('Error en DOMContentLoaded:', error);
             }
-        });
+
+            // Inicializar animación typing
+            setTimeout(() => {
+                startTypingAnimation();
+            }, 1000);
+            
+            // Event listeners para welcome input
+            document.getElementById('welcomeChatInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendWelcomeMessage();
+                }
+            });
+            
+            // Auto-resize textarea de welcome
+            document.getElementById('welcomeChatInput').addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            });
+            
+            // Pausar typing cuando el usuario está escribiendo
+            document.getElementById('welcomeChatInput').addEventListener('focus', () => {
+                stopTypingAnimation();
+            });
+            
+            document.getElementById('welcomeChatInput').addEventListener('blur', function() {
+                if (!this.value.trim()) {
+                    setTimeout(() => {
+                        resumeTypingAnimation();
+                    }, 500);
+                }
+            });
         
         function startRealtimeSubscription(sessionId) {
             // Limpiar suscripción anterior
@@ -3466,7 +3583,96 @@
                 if (element) {
                     element.textContent = sidebarTexts[currentLanguage][key];
                 }
-            });        
+            }); 
+             // Reiniciar animación typing si estamos en welcome screen
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            if (welcomeScreen && welcomeScreen.style.display !== 'none') {
+                setTimeout(() => {
+                    resumeTypingAnimation();
+                }, 100);
+            }
+        }
+        }
+        
+        // Variables para animación typing
+        let typingInterval = null;
+        let currentTypingIndex = 0;
+        let currentCharIndex = 0;
+        let isTyping = false;
+        let typingPaused = false;
+        
+        function startTypingAnimation() {
+            const typingPlaceholder = document.getElementById('typingPlaceholder');
+            if (!typingPlaceholder) return;
+            
+            const texts = translations[currentLanguage].typingOptions;
+            
+            function typeText() {
+                if (typingPaused) return;
+                
+                const currentText = texts[currentTypingIndex];
+                
+                if (currentCharIndex <= currentText.length) {
+                    const displayText = currentText.substring(0, currentCharIndex);
+                    typingPlaceholder.textContent = displayText;
+                    typingPlaceholder.classList.add('typing');
+                    currentCharIndex++;
+                    
+                    // Velocidad de typing variable para más naturalidad
+                    const delay = Math.random() * 50 + 30;
+                    setTimeout(typeText, delay);
+                } else {
+                    // Pausa al final del texto
+                    setTimeout(() => {
+                        if (!typingPaused) {
+                            // Borrar texto
+                            eraseText();
+                        }
+                    }, 2000);
+                }
+            }
+            
+            function eraseText() {
+                if (typingPaused) return;
+                
+                const currentText = texts[currentTypingIndex];
+                
+                if (currentCharIndex > 0) {
+                    const displayText = currentText.substring(0, currentCharIndex - 1);
+                    typingPlaceholder.textContent = displayText;
+                    currentCharIndex--;
+                    
+                    setTimeout(eraseText, 20);
+                } else {
+                    // Cambiar al siguiente texto
+                    currentTypingIndex = (currentTypingIndex + 1) % texts.length;
+                    typingPlaceholder.classList.remove('typing');
+                    
+                    setTimeout(() => {
+                        if (!typingPaused) {
+                            typeText();
+                        }
+                    }, 500);
+                }
+            }
+            
+            // Iniciar la animación
+            typeText();
+        }
+        
+        function stopTypingAnimation() {
+            typingPaused = true;
+            const typingPlaceholder = document.getElementById('typingPlaceholder');
+            if (typingPlaceholder) {
+                typingPlaceholder.classList.remove('typing');
+            }
+        }
+        
+        function resumeTypingAnimation() {
+            typingPaused = false;
+            currentCharIndex = 0;
+            currentTypingIndex = 0;
+            startTypingAnimation();
         }
         
         // Función para cargar conversaciones previas
@@ -3767,28 +3973,85 @@
             const message = input.value.trim();
             
             if (message && !isWaitingForResponse) {
+                // Detener animación typing
+                stopTypingAnimation();
+                
                 // Crear nueva sesión con topic fijo
                 currentSessionId = generateSessionId();
                 currentConversation = [];
-                currentTopic = 'Buscar propiedades para comprar'; // Topic fijo
+                currentTopic = 'Buscar propiedades para comprar';
                 
-                // Cambiar a pantalla de chat
+                // Crear bubble de transición
+                createMessageBubbleTransition(message, input);
+                
+                // Limpiar input
+                input.value = '';
+                input.style.height = 'auto';
+            }
+        }
+        
+        function createMessageBubbleTransition(message, originalInput) {
+            // Crear overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'transition-overlay';
+            document.body.appendChild(overlay);
+            
+            // Crear bubble de transición
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble-transition';
+            bubble.textContent = message;
+            
+            // Obtener posición del input original
+            const inputRect = originalInput.getBoundingClientRect();
+            
+            // Posicionar bubble en la posición del input
+            bubble.style.left = inputRect.left + 'px';
+            bubble.style.top = inputRect.top + 'px';
+            bubble.style.width = inputRect.width + 'px';
+            
+            document.body.appendChild(bubble);
+            
+            // Activar overlay
+            setTimeout(() => {
+                overlay.classList.add('active');
+            }, 50);
+            
+            // Cambiar a pantalla de chat (oculto)
+            setTimeout(() => {
                 showChatScreen();
                 
-                // Añadir mensaje del asistente primero
+                // Añadir mensaje del asistente (oculto)
                 const texts = translations[currentLanguage];
                 addMessage(texts.welcomeTitle, 'assistant');
                 
-                // Añadir mensaje del usuario
-                addMessage(message, 'user');
+                // Calcular posición final en el chat
+                const chatMessages = document.getElementById('chatMessages');
+                const chatRect = chatMessages.getBoundingClientRect();
                 
-                // Limpiar input de bienvenida
-                input.value = '';
-                input.style.height = 'auto';
+                // Posición final (lado derecho del chat)
+                const finalLeft = chatRect.right - (inputRect.width * 0.7);
+                const finalTop = chatRect.bottom - 80; // Ajustar según necesites
                 
-                // Enviar webhook con topic fijo
-                sendWebhook(message);
-            }
+                // Animar bubble a posición final
+                bubble.style.left = finalLeft + 'px';
+                bubble.style.top = finalTop + 'px';
+                bubble.style.width = 'auto';
+                bubble.style.maxWidth = '70%';
+                
+                // Después de la animación, añadir mensaje real y limpiar
+                setTimeout(() => {
+                    // Añadir mensaje del usuario al chat
+                    addMessage(message, 'user');
+                    
+                    // Quitar bubble y overlay
+                    bubble.remove();
+                    overlay.remove();
+                    
+                    // Enviar webhook
+                    sendWebhook(message);
+                }, 800);
+                
+            }, 300);
         }
         
         function updateSendButton() {
@@ -4216,6 +4479,13 @@
             document.getElementById('chatMessages').innerHTML = '';
         
             shownTimeoutPopups.clear();
+            
+            console.log('Nuevo chat iniciado');
+
+            // Reiniciar animación typing
+            setTimeout(() => {
+                resumeTypingAnimation();
+            }, 500);
             
             console.log('Nuevo chat iniciado');
         }
