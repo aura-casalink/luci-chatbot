@@ -1735,7 +1735,7 @@
             position: absolute;
             top: 15px;
             left: 15px;
-            background: rgba(0, 0, 0, 0.7);
+            background: none;
             border: none;
             color: white;
             font-size: 20px;
@@ -1748,11 +1748,11 @@
             justify-content: center;
             font-weight: bold;
             z-index: 21;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
         }
         
         .property-slide-close:hover {
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(211, 211, 211, 0.3);
             transform: scale(1.1);
         }
         
@@ -5121,7 +5121,9 @@
         
         slideCard.innerHTML = `
             <div class="property-slide-content">
-                <button class="property-slide-close" onclick="closePropertySlide()">×</button>
+                <button class="property-slide-close" onclick="closePropertySlide()">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2723/2723639.png" alt="Cerrar" style="width: 16px; height: 16px;">
+                </button>
                 
                 <div class="property-slide-header">
                     <div class="property-slide-title">${property.title}</div>
