@@ -1712,7 +1712,7 @@
             height: 100%;
             box-sizing: border-box;
             display: grid;
-            grid-template-columns: 1fr 600px;
+            grid-template-columns: 1fr 1fr;
             grid-template-rows: auto auto auto auto auto auto 1fr auto;
             gap: 15px;
             grid-template-areas: 
@@ -1724,6 +1724,11 @@
                 "carousel carousel"
                 "description description"
                 "feedback feedback";
+        }
+
+       .container.sidebar-expanded .property-slide-content {
+            grid-template-columns: 1fr 0.8fr; 
+            gap: 10px; 
         }
         
         .property-slide-close {
