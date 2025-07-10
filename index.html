@@ -2397,7 +2397,7 @@
                 display: flex !important;
             }
     
-           /* =================== PUNTO 1: TOPBAR MÓVIL MÁS ESTRECHO =================== */
+           /* =================== TOPBAR MÓVIL MÁS ESTRECHO =================== */
             .topbar {
                 position: fixed;
                 top: 0;
@@ -2443,6 +2443,156 @@
                 margin-top: 50px !important; /* Ajustar al nuevo alto del topbar */
                 height: calc(100vh - 50px) !important;
             } 
+           
+           /* =================== PUNTO 2: CARRUSEL DE PROPIEDADES MÓVIL =================== */
+
+        /* Quitar fondo de la columna de propiedades en móvil */
+        .properties-column {
+            background-color: transparent !important; /* Sin fondo */
+            border-radius: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: visible !important;
+            min-height: auto !important;
+            max-height: auto !important;
+        }
+        
+        /* Header de propiedades en móvil */
+        .properties-grid {
+            padding: 15px 0 !important; /* Solo padding vertical */
+            height: auto !important;
+            overflow: visible !important;
+        }
+        
+        .properties-header {
+            margin-bottom: 15px !important;
+            text-align: center;
+            padding: 0 15px !important; /* Padding horizontal solo en el header */
+        }
+        
+        .properties-header h3 {
+            margin: 0;
+            color: #333;
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 30px;
+        }
+        
+        /* Transformar grid en carrusel horizontal */
+        .grid-container {
+            display: flex !important; /* Cambiar de grid a flex */
+            grid-template-columns: none !important;
+            grid-template-rows: none !important;
+            gap: 15px !important;
+            width: 100% !important;
+            height: auto !important;
+            overflow-x: auto !important; /* Scroll horizontal */
+            overflow-y: visible !important;
+            padding: 0 15px !important; /* Padding horizontal */
+            box-sizing: border-box !important;
+            
+            /* Ocultar scrollbar pero mantener funcionalidad */
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE/Edge */
+        }
+        
+        .grid-container::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+        
+        /* Tarjetas de propiedades en carrusel */
+        .property-card {
+            flex: 0 0 calc(70vw - 22.5px) !important; /* 1.5 propiedades en pantalla */
+            min-width: calc(70vw - 22.5px) !important;
+            max-width: calc(70vw - 22.5px) !important;
+            height: 280px !important; /* Altura fija para carrusel */
+            background: white;
+            border-radius: 12px !important;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding: 0 !important;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important; /* Sombra para separar del fondo */
+            border: 1px solid #e9ecef !important;
+        }
+        
+        .property-card:hover {
+            transform: translateY(-3px) !important;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15) !important;
+        }
+        
+        /* Imagen de la propiedad en carrusel */
+        .property-card .property-image {
+            height: 65% !important; /* Más espacio para imagen */
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+            border-radius: 0 !important; /* Sin border-radius interno */
+            position: relative;
+        }
+        
+        /* Info de la propiedad en carrusel */
+        .property-card .property-info {
+            height: 35% !important;
+            padding: 12px !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+        
+        .property-card .property-price {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px !important; /* Más grande para móvil */
+            text-align: left;
+            margin: 0;
+        }
+        
+        .property-card .property-location {
+            color: #666;
+            font-size: 13px !important; /* Más grande para móvil */
+            text-align: left;
+            margin: 0;
+            line-height: 1.2;
+        }
+        
+        /* Iconos de amenities en carrusel */
+        .property-card .amenities-icons {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 5;
+        }
+        
+        .property-card .amenity-icon {
+            width: 24px !important; /* Ligeramente más grandes */
+            height: 24px !important;
+            background-color: #FFC900;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            padding: 4px;
+        }
+        
+        .property-card .amenity-icon img {
+            width: 14px !important;
+            height: 14px !important;
+            filter: brightness(0);
+        }
            
            /* =================== BIENVENIDA MÓVIL =================== */
             .welcome-screen {
