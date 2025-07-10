@@ -163,6 +163,16 @@
         .sidebar-option:hover {
             background-color: #f8f9fa;
         }
+
+       /* Hover para botón de login cuando sidebar expandida */
+        .sidebar.expanded .sidebar-login:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* Hover para botón de nuevo chat cuando sidebar expandida */
+        .sidebar.expanded .sidebar-new-chat:hover {
+            background-color: #f8f9fa;
+        }
         
         .sidebar-icon {
             width: 24px;
@@ -505,8 +515,8 @@
           align-items: center;
           justify-content: flex-start;
           padding-left: 75px;
-          padding-right: 20px;
-          width: 100%;
+          padding-right: 30px;
+          width: calc(100% - 10px);
         }
 
        .sidebar.expanded .sidebar-icons-container {
