@@ -6,7 +6,7 @@
     <title>Luci - Asistente Inmobiliario</title>
     <link href="https://fonts.googleapis.com/css2?family=Graphik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
    <style>
-        {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -21,17 +21,6 @@
         .container {
             display: flex;
             height: 100vh;
-        }
-
-        /* =================== ÁREA PRINCIPAL =================== */
-        .main-area {
-            flex: 1;
-            background-color: white;
-            display: flex;
-            flex-direction: row; /* CAMBIO CLAVE: row en lugar de column */
-            position: relative;
-            height: 100vh;
-            overflow: hidden;
         }
 
        /* =================== SIDEBAR =================== */
@@ -2067,7 +2056,7 @@
         }
         
         /* Ajustar el main-area para que no se superponga con el topbar */
-        
+        .main-area {
             flex: 1;
             background-color: white;
             display: flex;
@@ -2316,7 +2305,16 @@
         }
 
        /* =================== OCULTAR SECCIONES MÓVILES EN DESKTOP =================== */
-        .mobile-welcome-section {
+       /* Ajustar main-area para móvil */
+        .main-area {
+            flex-direction: column !important;
+            margin-top: 50px !important; /* Justo debajo del topbar */
+            height: calc(100vh - 50px) !important;
+            padding: 0 !important;
+        } 
+
+        /* Mostrar secciones móviles solo en móvil */ 
+       .mobile-welcome-section {
             display: none !important;
         }
         
