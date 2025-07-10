@@ -2057,9 +2057,15 @@
             white-space: nowrap;
         }
         
-        /* AÑADIR: Ocultar borde del sidebar cuando está expandido */
+        /* Ocultar bordes del sidebar cuando está expandido */
         .sidebar.expanded {
-            border-right: none; /* Eliminar borde cuando está expandida */
+            border-right: none !important;
+            border-left: none !important;
+        }
+        
+        /* También asegurar que la sub-sidebar no interfiera cuando la sidebar esté expandida */
+        .sidebar.expanded + .container .properties-sub-sidebar {
+            border-left: none !important;
         }
        
        @media (max-width: 768px) {
