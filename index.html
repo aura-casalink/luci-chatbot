@@ -2062,6 +2062,7 @@
         .properties-sub-sidebar.active .sub-sidebar-option {
             opacity: 1;
             transform: translateX(0);
+            transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.2s ease;
         }
         
         .properties-sub-sidebar.active .sub-sidebar-option:nth-child(1) {
@@ -2082,6 +2083,7 @@
             margin-left: 10px;
             margin-right: 10px;
             width: calc(100% - 20px);
+            transition: all 0.15s ease;
         }
         
         .sub-sidebar-option.active {
@@ -4389,19 +4391,34 @@
                 hidePropertiesSubSidebar();
             }
             
+            // Guardar el estado activo actual antes de expandir/contraer
+            const wasPropertiesActive = activeSidebarOption === 'propiedades';
+            
             sidebar.classList.toggle('expanded');
             container.classList.toggle('sidebar-expanded');
             
-            // Actualizar tooltip del botón - LÓGICA CORREGIDA
+            // Si propiedades estaba activo, mantenerlo después de expandir/contraer
+            if (wasPropertiesActive) {
+                // Pequeño delay para asegurar que la expansión se complete
+                setTimeout(() => {
+                    setActiveSidebarOption('propiedades');
+                }, 50);
+            }
+            
+            // Actualizar tooltip del botón
             const expandArrow = document.querySelector('.expand-arrow');
             if (sidebar.classList.contains('expanded')) {
-                expandArrow.setAttribute('data-tooltip', 'Expandir');
+                expandArrow.setAttribute('data-tooltip', 'Contraer');
             } else {
                 expandArrow.setAttribute('data-tooltip', 'Expandir');
             }
+            
+            console.log('Sidebar toggled. Propiedades activo:', wasPropertiesActive);
         }
         
         function setActiveSidebarOption(optionName) {
+            console.log('Estableciendo opción activa:', optionName);
+            
             // Actualizar variable global
             activeSidebarOption = optionName;
             
@@ -4411,9 +4428,14 @@
             });
             
             // Añadir clase active a la opción seleccionada
-            const selectedOption = document.querySelector(`[data-option="${optionName}"]`);
-            if (selectedOption) {
-                selectedOption.classList.add('active');
+            if (optionName) {
+                const selectedOption = document.querySelector(`[data-option="${optionName}"]`);
+                if (selectedOption) {
+                    selectedOption.classList.add('active');
+                    console.log('Opción marcada como activa:', optionName);
+                } else {
+                    console.warn('No se encontró la opción:', optionName);
+                }
             }
             
             // Actualizar iconos
