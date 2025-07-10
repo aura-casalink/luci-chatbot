@@ -2314,6 +2314,15 @@
             border-left: none !important;
             left: 250px;
         }
+
+       /* =================== OCULTAR SECCIONES MÓVILES EN DESKTOP =================== */
+        .mobile-welcome-section {
+            display: none !important;
+        }
+        
+        .mobile-input-area {
+            display: none !important;
+        }
        
        @media (max-width: 768px) {
            /* =================== MÓVIL SIN FUNCIONALIDAD DE EXPANDIR =================== */
@@ -2622,12 +2631,9 @@
         
         /* Textos de bienvenida móvil - nuevos estilos */
         .mobile-welcome-section {
-            display: none; /* Oculto por defecto, solo visible en móvil */
-            padding: 20px 15px 15px 15px;
-            text-align: center;
-            background-color: white;
+            display: block !important;
         }
-        
+                
         .mobile-welcome-title {
             font-family: 'Graphik', sans-serif;
             font-weight: bold;
@@ -2650,15 +2656,8 @@
         }
         
         /* Área de escritura móvil */
-        .mobile-input-area {
-            display: none; /* Oculto por defecto, solo visible en móvil */
-            background-color: #f8f9fa;
-            border-top-left-radius: 25px !important; /* Borde redondeado superior */
-            border-top-right-radius: 25px !important;
-            padding: 20px 15px 25px 15px; /* Más padding inferior para espacio */
-            margin-top: 0;
-            width: 100%;
-            box-sizing: border-box;
+       .mobile-input-area {
+            display: block !important;
         }
         
         .mobile-input-wrapper {
@@ -2777,11 +2776,6 @@
 
            
            /* =================== BIENVENIDA MÓVIL =================== */
-            .welcome-screen {
-                padding: 20px;
-                justify-content: flex-start;
-                padding-top: 100px; 
-            }
             
             .welcome-title {
                 font-size: 24px;
@@ -2799,13 +2793,6 @@
                 padding: 8px;
                 border-radius: 8px;
                 box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            }
-            
-            /* =================== CHAT MÓVIL =================== */
-            .chat-screen {
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
             }
             
             .chat-messages {
