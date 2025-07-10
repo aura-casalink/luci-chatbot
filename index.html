@@ -51,7 +51,16 @@
         }
 
        /* Eliminar borde cuando está expandida */
-        .sidebar.expanded {
+       .sidebar.expanded {
+            border-right: 1px solid #e9ecef;
+            width: 250px;
+        }
+
+       .sidebar:not(.expanded) {
+            border-right: 1px solid #e9ecef;
+        }
+        
+        .properties-sub-sidebar.active ~ .sidebar:not(.expanded) {
             border-right: none;
         }
        
@@ -1983,11 +1992,11 @@
         .properties-sub-sidebar {
             position: fixed;
             top: 0;
-            left: 80px; 
+            left: 80px;
             width: 0;
             height: 100vh;
             background-color: white;
-            border-right: 1px solid #e9ecef;
+            border-right: none; /* Sin borde cuando está cerrada */
             z-index: 1001;
             display: flex;
             flex-direction: column;
@@ -2012,6 +2021,23 @@
         
         .properties-sub-sidebar.active {
             width: 200px;
+            border-right: 1px solid #e9ecef; /* Borde solo cuando está activa */
+        }
+
+       .sidebar.expanded + .container .properties-sub-sidebar.active {
+            left: 250px;
+        }
+
+       /* Forzar que no se vea el borde de la sidebar contraída cuando está expandida */
+        .container.sidebar-expanded .sidebar:not(.expanded)::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -1px;
+            width: 1px;
+            height: 100%;
+            background-color: white;
+            z-index: 1002;
         }
         
         .sub-sidebar-option {
