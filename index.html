@@ -1977,22 +1977,23 @@
         .properties-sub-sidebar {
             position: fixed;
             top: 0;
-            left: 80px; /* Justo al lado de la sidebar principal */
+            left: 81px; /* CAMBIO: 81px en lugar de 80px para no tapar el borde */
             width: 0;
             height: 100vh;
             background-color: white;
             border-right: 1px solid #e9ecef;
-            z-index: 1001; /* CAMBIO: Mayor z-index para aparecer por encima del topbar */
+            border-left: 1px solid #e9ecef; /* AÑADIR: borde izquierdo para separar del sidebar */
+            z-index: 1001;
             display: flex;
             flex-direction: column;
             align-items: center;
             overflow: hidden;
             transition: width 0.3s ease;
-            padding-top: 100px; /* Espacio desde arriba para alinear con las opciones */
+            padding-top: 100px;
         }
         
         .properties-sub-sidebar.active {
-            width: 200px; /* Ancho cuando está expandida */
+            width: 200px;
         }
         
         .sub-sidebar-option {
@@ -2005,7 +2006,7 @@
             border-radius: 0;
             transition: background-color 0.2s ease;
             flex-shrink: 0;
-            padding: 0 30px; /* CAMBIO: De 20px a 30px para más margen a la izquierda */
+            padding: 0 30px;
             opacity: 0;
             transform: translateX(-20px);
             transition: all 0.3s ease;
@@ -2037,7 +2038,6 @@
             width: calc(100% - 20px);
         }
         
-        /* CAMBIO: Remover el fondo azul del botón activo */
         .sub-sidebar-option.active {
             /* Sin fondo especial, solo el cambio de icono */
         }
@@ -2057,6 +2057,10 @@
             white-space: nowrap;
         }
         
+        /* AÑADIR: Ocultar borde del sidebar cuando está expandido */
+        .sidebar.expanded {
+            border-right: none; /* Eliminar borde cuando está expandida */
+        }
        
        @media (max-width: 768px) {
     
@@ -4264,8 +4268,21 @@
                     console.log('Elemento clickeado:', this);
                     
                     if (optionName === 'propiedades') {
-                        console.log('Opción propiedades - mostrando sub-sidebar');
+                        console.log('Opción propiedades - gestionando sub-sidebar');
+                        
+                        // Si la sidebar está expandida, contraerla primero
+                        const sidebar = document.getElementById('sidebar');
+                        const container = document.querySelector('.container');
+                        
+                        if (sidebar.classList.contains('expanded')) {
+                            // Contraer sidebar principal
+                            sidebar.classList.remove('expanded');
+                            container.classList.remove('sidebar-expanded');
+                        }
+                        
+                        // Luego mostrar/ocultar sub-sidebar
                         togglePropertiesSubSidebar();
+                        
                     } else {
                         console.log('Opción NO propiedades - mostrando login popup');
                         
@@ -4286,12 +4303,6 @@
             
             // Inicializar sub-sidebar
             initPropertiesSubSidebar();
-            
-            // NO activar propiedades por defecto - quitar esta línea o comentarla
-            // setActiveSidebarOption('propiedades');
-            
-            // Inicializar iconos correctos
-            updateSidebarIcons();
         
             // Manejar expand arrow
             const expandArrow = document.querySelector('.expand-arrow');
@@ -4301,12 +4312,24 @@
             }
             
             console.log('=== SIDEBAR INICIALIZADA ===');
+
+            setTimeout(() => {
+                activeSidebarOption = null;
+                updateSidebarIcons();
+                updateSubSidebarIcons();
+            }, 100);
         }
         
         // Función para expandir/contraer sidebar
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const container = document.querySelector('.container');
+            
+            // Si la sub-sidebar está activa, ocultarla primero
+            const subSidebar = document.getElementById('propertiesSubSidebar');
+            if (subSidebar && subSidebar.classList.contains('active')) {
+                hidePropertiesSubSidebar();
+            }
             
             sidebar.classList.toggle('expanded');
             container.classList.toggle('sidebar-expanded');
