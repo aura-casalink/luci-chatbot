@@ -1812,12 +1812,12 @@
         .topbar {
             position: fixed;
             top: 0;
-            left: 80px; /* Empieza donde termina la sidebar */
+            left: 80px; 
             right: 0;
             height: 70px; 
             background-color: white;
             border-bottom: 1px solid #e9ecef;
-            z-index: 999;
+            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: flex-end;
@@ -1982,7 +1982,7 @@
             height: 100vh;
             background-color: white;
             border-right: 1px solid #e9ecef;
-            z-index: 998; /* Un nivel por debajo de la sidebar principal */
+            z-index: 1001; /* CAMBIO: Mayor z-index para aparecer por encima del topbar */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -2005,7 +2005,7 @@
             border-radius: 0;
             transition: background-color 0.2s ease;
             flex-shrink: 0;
-            padding: 0 20px;
+            padding: 0 30px; /* CAMBIO: De 20px a 30px para más margen a la izquierda */
             opacity: 0;
             transform: translateX(-20px);
             transition: all 0.3s ease;
@@ -2037,12 +2037,9 @@
             width: calc(100% - 20px);
         }
         
+        /* CAMBIO: Remover el fondo azul del botón activo */
         .sub-sidebar-option.active {
-            background-color: #f0f8ff;
-            border-radius: 8px;
-            margin-left: 10px;
-            margin-right: 10px;
-            width: calc(100% - 20px);
+            /* Sin fondo especial, solo el cambio de icono */
         }
         
         .sub-sidebar-icon {
@@ -2060,15 +2057,6 @@
             white-space: nowrap;
         }
         
-        /* Ajustar el contenedor principal cuando la sub-sidebar está activa */
-        .container.sub-sidebar-active {
-            margin-left: 280px; /* 80px sidebar + 200px sub-sidebar */
-            width: calc(100% - 280px);
-        }
-        
-        .container.sub-sidebar-active .topbar {
-            left: 280px;
-        }
        
        @media (max-width: 768px) {
     
@@ -5235,34 +5223,36 @@
         
         function showPropertiesSubSidebar() {
             const subSidebar = document.getElementById('propertiesSubSidebar');
-            const container = document.querySelector('.container');
             
             // Activar el icono de propiedades
             setActiveSidebarOption('propiedades');
             
-            // Mostrar sub-sidebar
+            // Mostrar sub-sidebar (SIN modificar el container)
             subSidebar.classList.add('active');
-            container.classList.add('sub-sidebar-active');
             
             console.log('Sub-sidebar de propiedades mostrada');
         }
         
         function hidePropertiesSubSidebar() {
             const subSidebar = document.getElementById('propertiesSubSidebar');
-            const container = document.querySelector('.container');
             
-            // Desactivar sub-sidebar
+            // Desactivar sub-sidebar (SIN modificar el container)
             subSidebar.classList.remove('active');
-            container.classList.remove('sub-sidebar-active');
             
             // Desactivar el icono de propiedades
             document.querySelectorAll('.sidebar-option').forEach(opt => {
                 opt.classList.remove('active');
             });
             
+            // Limpiar selección de sub-opciones
+            document.querySelectorAll('.sub-sidebar-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            
             // Resetear activeSidebarOption
             activeSidebarOption = null;
             updateSidebarIcons();
+            updateSubSidebarIcons(); // Resetear iconos de sub-sidebar
             
             console.log('Sub-sidebar de propiedades oculta');
         }
