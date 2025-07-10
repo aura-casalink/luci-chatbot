@@ -4030,7 +4030,8 @@
             // Crear overlay
             const overlay = document.createElement('div');
             overlay.className = 'transition-overlay';
-            document.body.appendChild(overlay);
+            const chatColumn = document.querySelector('.chat-column');
+            chatColumn.appendChild(overlay);
             
             // Obtener el wrapper del input original
             const originalWrapper = originalInput.closest('.chat-input-wrapper');
