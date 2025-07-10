@@ -2316,7 +2316,7 @@
         }
        
        @media (max-width: 768px) {
-           /* =================== PUNTO 1: MÓVIL SIN FUNCIONALIDAD DE EXPANDIR =================== */
+           /* =================== MÓVIL SIN FUNCIONALIDAD DE EXPANDIR =================== */
     
             /* Ocultar completamente el botón de expandir */
             .expand-arrow {
@@ -2397,7 +2397,54 @@
                 display: flex !important;
             }
     
-            /* =================== BIENVENIDA MÓVIL =================== */
+           /* =================== PUNTO 1: TOPBAR MÓVIL MÁS ESTRECHO =================== */
+            .topbar {
+                position: fixed;
+                top: 0;
+                left: 0 !important; /* Sin margen para sidebar en móvil */
+                right: 0;
+                height: 50px !important; /* Más estrecho: de 70px a 50px */
+                background-color: white;
+                border-bottom: 1px solid #e9ecef;
+                z-index: 999;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                padding-right: 15px !important; /* Menos padding */
+            }
+            
+            .language-selector-topbar {
+                display: flex;
+                gap: 6px; /* Menos espacio entre banderas */
+            }
+            
+            .flag-btn-small {
+                width: 20px !important; /* Más pequeñas: de 24px a 20px */
+                height: 15px !important; /* Más pequeñas: de 18px a 15px */
+                cursor: pointer;
+                border-radius: 2px;
+                transition: all 0.2s;
+                opacity: 0.6;
+                border: 1px solid transparent;
+            }
+            
+            .flag-btn-small:hover {
+                opacity: 1;
+                transform: scale(1.1);
+            }
+            
+            .flag-btn-small.active {
+                opacity: 1;
+                border: 1px solid #007bff;
+            }
+            
+            /* Ajustar el main-area para el topbar más estrecho */
+            .main-area {
+                margin-top: 50px !important; /* Ajustar al nuevo alto del topbar */
+                height: calc(100vh - 50px) !important;
+            } 
+           
+           /* =================== BIENVENIDA MÓVIL =================== */
             .welcome-screen {
                 padding: 20px;
                 justify-content: flex-start;
