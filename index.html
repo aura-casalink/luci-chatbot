@@ -47,8 +47,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: width 0.3s ease;
         }
-        
+
+       /* Eliminar borde cuando está expandida */
+        .sidebar.expanded {
+            border-right: none;
+        }
+       
         /* Logo AURA */
         .sidebar-logo {
             padding: 1px 0;
@@ -1817,7 +1823,7 @@
             height: 70px; 
             background-color: white;
             border-bottom: 1px solid #e9ecef;
-            z-index: 1000;
+            z-index: 999;
             display: flex;
             align-items: center;
             justify-content: flex-end;
@@ -1977,7 +1983,7 @@
         .properties-sub-sidebar {
             position: fixed;
             top: 0;
-            left: 81px; /* CAMBIO: 81px en lugar de 80px para no tapar el borde */
+            left: 80px; 
             width: 0;
             height: 100vh;
             background-color: white;
@@ -2078,6 +2084,7 @@
         /* También asegurar que la sub-sidebar no interfiera cuando la sidebar esté expandida */
         .sidebar.expanded + .container .properties-sub-sidebar {
             border-left: none !important;
+            left: 250px;
         }
        
        @media (max-width: 768px) {
