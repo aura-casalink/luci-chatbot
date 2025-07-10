@@ -934,6 +934,9 @@
             content: '|';
             animation: blink 1s infinite;
             color: #333;
+            position: relative;
+            top: -2px; /* Hacer el cursor un poco más alto */
+            font-weight: normal;
         }
         
         @keyframes blink {
@@ -941,9 +944,13 @@
             51%, 100% { opacity: 0; }
         }
         
-        /* Ocultar placeholder cuando hay texto */
-        .welcome-chat-input-container .chat-input:not(:placeholder-shown) ~ .typing-placeholder,
+        /* Mostrar placeholder cuando el input está vacío y no tiene foco */
         .welcome-chat-input-container .chat-input:focus ~ .typing-placeholder {
+            display: none;
+        }
+        
+        /* Ocultar placeholder cuando hay texto */
+        .welcome-chat-input-container .chat-input:not(:placeholder-shown) ~ .typing-placeholder {
             display: none;
         }
         
@@ -984,6 +991,48 @@
         /* Ajustar el input wrapper para posición relativa */
         .welcome-chat-input-container .chat-input-wrapper {
             position: relative;
+        }
+
+       /* Transición del input completo */
+        .input-transition {
+            position: fixed;
+            z-index: 10000;
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            padding: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .input-transition textarea {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            font-family: 'Graphik', sans-serif;
+            border-radius: 20px;
+            resize: none;
+            background: transparent;
+            width: 100%;
+        }
+        
+        .input-transition .send-button {
+            background-color: #edf2f4;
+            color: #333;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+            flex-shrink: 0;
         }
 
        /* =================== SELECTOR DE IDIOMA =================== */
@@ -2523,7 +2572,7 @@
                             <textarea 
                                 class="chat-input" 
                                 id="chatInput" 
-                                placeholder="Escribe tu mensaje..."
+                                placeholder=""
                                 rows="1"
                             ></textarea>
                             <button class="send-button" id="sendButton" onclick="sendMessage()">
@@ -2951,9 +3000,10 @@
                 });
                 
                 // Auto-resize textarea de welcome
-                document.getElementById('welcomeChatInput').addEventListener('input', function() {
-                    this.style.height = 'auto';
-                    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+                document.getElementById('welcomeChatInput').addEventListener('input', () => {
+                    if (document.getElementById('welcomeChatInput').value.length > 0) {
+                        stopTypingAnimation();
+                    }
                 });
                 
                 window.addEventListener('beforeunload', () => {
@@ -3027,6 +3077,10 @@
             
             // Pausar typing cuando el usuario está escribiendo
             document.getElementById('welcomeChatInput').addEventListener('focus', () => {
+                stopTypingAnimation();
+            });
+
+            document.getElementById('welcomeChatInput').addEventListener('click', () => {
                 stopTypingAnimation();
             });
             
@@ -3970,71 +4024,99 @@
                 currentConversation = [];
                 currentTopic = 'Buscar propiedades para comprar';
                 
-                // Crear bubble de transición
-                createMessageBubbleTransition(message, input);
-                
-                // Limpiar input
-                input.value = '';
-                input.style.height = 'auto';
+                // Crear transición del input
+                createInputTransition(message, input);
             }
         }
         
-        function createMessageBubbleTransition(message, originalInput) {
+        function createInputTransition(message, originalInput) {
             // Crear overlay
             const overlay = document.createElement('div');
             overlay.className = 'transition-overlay';
             document.body.appendChild(overlay);
             
-            // Crear bubble de transición
-            const bubble = document.createElement('div');
-            bubble.className = 'message-bubble-transition';
-            bubble.textContent = message;
+            // Obtener el wrapper del input original
+            const originalWrapper = originalInput.closest('.chat-input-wrapper');
+            const wrapperRect = originalWrapper.getBoundingClientRect();
             
-            // Obtener posición del input original
-            const inputRect = originalInput.getBoundingClientRect();
+            // Crear una copia del input wrapper para la transición
+            const transitionInput = document.createElement('div');
+            transitionInput.className = 'input-transition';
+            transitionInput.style.left = wrapperRect.left + 'px';
+            transitionInput.style.top = wrapperRect.top + 'px';
+            transitionInput.style.width = wrapperRect.width + 'px';
+            transitionInput.style.height = wrapperRect.height + 'px';
+            transitionInput.style.display = 'flex';
+            transitionInput.style.alignItems = 'flex-end';
             
-            // Posicionar bubble en la posición del input
-            bubble.style.left = inputRect.left + 'px';
-            bubble.style.top = inputRect.top + 'px';
-            bubble.style.width = inputRect.width + 'px';
+            // Crear textarea con el contenido
+            const textarea = document.createElement('textarea');
+            textarea.className = 'chat-input';
+            textarea.value = message;
+            textarea.readOnly = true;
+            textarea.rows = 1;
             
-            document.body.appendChild(bubble);
+            // Crear botón
+            const button = document.createElement('button');
+            button.className = 'send-button';
+            button.innerHTML = '➤';
+            
+            transitionInput.appendChild(textarea);
+            transitionInput.appendChild(button);
+            document.body.appendChild(transitionInput);
+            
+            // Ocultar el input original
+            originalWrapper.style.opacity = '0';
             
             // Activar overlay
             setTimeout(() => {
                 overlay.classList.add('active');
             }, 50);
             
-            // Cambiar a pantalla de chat (oculto)
+            // Cambiar a pantalla de chat (preparar destino)
             setTimeout(() => {
                 showChatScreen();
                 
-                // Añadir mensaje del asistente (oculto)
+                // Añadir mensaje del asistente (oculto por ahora)
                 const texts = translations[currentLanguage];
                 addMessage(texts.welcomeTitle, 'assistant');
                 
-                // Calcular posición final en el chat
-                const chatMessages = document.getElementById('chatMessages');
-                const chatRect = chatMessages.getBoundingClientRect();
+                // Obtener la posición final del input del chat
+                const chatInputContainer = document.querySelector('.chat-input-container');
+                const chatInputWrapper = chatInputContainer.querySelector('.chat-input-wrapper');
+                const finalRect = chatInputWrapper.getBoundingClientRect();
                 
-                // Posición final (lado derecho del chat)
-                const finalLeft = chatRect.right - (inputRect.width * 0.7);
-                const finalTop = chatRect.bottom - 80; // Ajustar según necesites
+                // Ocultar temporalmente el input del chat
+                chatInputWrapper.style.opacity = '0';
                 
-                // Animar bubble a posición final
-                bubble.style.left = finalLeft + 'px';
-                bubble.style.top = finalTop + 'px';
-                bubble.style.width = 'auto';
-                bubble.style.maxWidth = '70%';
+                // Animar el input a su posición final
+                transitionInput.style.left = finalRect.left + 'px';
+                transitionInput.style.top = finalRect.top + 'px';
+                transitionInput.style.width = finalRect.width + 'px';
+                transitionInput.style.height = finalRect.height + 'px';
                 
-                // Después de la animación, añadir mensaje real y limpiar
+                // Después de la animación
                 setTimeout(() => {
                     // Añadir mensaje del usuario al chat
                     addMessage(message, 'user');
                     
-                    // Quitar bubble y overlay
-                    bubble.remove();
+                    // Mostrar el input del chat real
+                    chatInputWrapper.style.opacity = '1';
+                    
+                    // Limpiar input del chat
+                    const chatInput = document.getElementById('chatInput');
+                    if (chatInput) {
+                        chatInput.value = '';
+                        chatInput.style.height = 'auto';
+                    }
+                    
+                    // Quitar elementos de transición
+                    transitionInput.remove();
                     overlay.remove();
+                    
+                    // Restaurar input original (por si vuelven a bienvenida)
+                    originalWrapper.style.opacity = '1';
+                    originalInput.value = '';
                     
                     // Enviar webhook
                     sendWebhook(message);
