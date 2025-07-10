@@ -2446,7 +2446,7 @@
                 padding: 0 !important;
             } 
            
-           /* =================== PUNTO 2: CARRUSEL DE PROPIEDADES MÓVIL =================== */
+           /* =================== CARRUSEL DE PROPIEDADES MÓVIL =================== */
 
         /* Quitar fondo de la columna de propiedades en móvil */
         .properties-column {
@@ -2608,6 +2608,173 @@
             height: 14px !important;
             filter: brightness(0);
         }
+        /* =================== TEXTOS BIENVENIDA Y ÁREA ESCRITURA MÓVIL =================== */
+        /* Chat debajo del carrusel en móvil */
+        .chat-column {
+            flex: 1 !important;
+            order: 2 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            background-color: white !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+        
+        /* Textos de bienvenida móvil - nuevos estilos */
+        .mobile-welcome-section {
+            display: none; /* Oculto por defecto, solo visible en móvil */
+            padding: 20px 15px 15px 15px;
+            text-align: center;
+            background-color: white;
+        }
+        
+        .mobile-welcome-title {
+            font-family: 'Graphik', sans-serif;
+            font-weight: bold;
+            font-size: 22px !important; /* Más pequeño que desktop */
+            color: black;
+            margin-bottom: 15px !important; /* Menos margen que desktop */
+            text-align: center;
+            line-height: 1.3;
+        }
+        
+        .mobile-welcome-subtitle {
+            font-family: 'Graphik', sans-serif;
+            font-weight: normal;
+            font-size: 16px !important; /* Más pequeño que desktop */
+            color: #666;
+            margin-bottom: 20px !important; /* Menos margen que desktop */
+            text-align: center;
+            line-height: 1.4;
+            padding: 0 10px; /* Padding lateral para que no toque los bordes */
+        }
+        
+        /* Área de escritura móvil */
+        .mobile-input-area {
+            display: none; /* Oculto por defecto, solo visible en móvil */
+            background-color: #f8f9fa;
+            border-top-left-radius: 25px !important; /* Borde redondeado superior */
+            border-top-right-radius: 25px !important;
+            padding: 20px 15px 25px 15px; /* Más padding inferior para espacio */
+            margin-top: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .mobile-input-wrapper {
+            display: flex;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            padding: 5px;
+            align-items: flex-end;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            position: relative;
+        }
+        
+        .mobile-chat-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 15px 20px;
+            font-size: 16px !important; /* Tamaño móvil adecuado */
+            font-family: 'Graphik', sans-serif;
+            border-radius: 20px;
+            resize: none;
+            max-height: 120px;
+            min-height: 50px !important; /* Altura mínima para móvil */
+            width: 100%;
+            background: transparent;
+        }
+        
+        .mobile-send-button {
+            background-color: #edf2f4;
+            color: #333;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+            flex-shrink: 0;
+            font-size: 16px;
+        }
+        
+        .mobile-send-button:hover {
+            background-color: #d1d9db;
+        }
+        
+        .mobile-send-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        /* Disclaimer móvil */
+        .mobile-disclaimer {
+            text-align: center;
+            font-size: 11px !important; /* Más pequeño para móvil */
+            color: #888;
+            margin-top: 15px;
+            font-family: 'Graphik', sans-serif;
+            padding: 0 10px;
+        }
+        
+        /* Placeholder typing para móvil */
+        .mobile-typing-placeholder {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-family: 'Graphik', sans-serif;
+            font-size: 16px;
+            pointer-events: none;
+            z-index: 1;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        
+        .mobile-typing-placeholder.typing::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #333;
+            position: relative;
+            top: -2px;
+            font-weight: normal;
+        }
+        
+        /* Mostrar secciones móviles solo en móvil */
+        .mobile-welcome-section {
+            display: block !important;
+        }
+        
+        .mobile-input-area {
+            display: block !important;
+        }
+        
+        /* Ocultar el welcome-screen original en móvil cuando hay conversación */
+        .welcome-screen {
+            display: none !important;
+        }
+        
+        /* Ocultar el chat-screen original en móvil */
+        .chat-screen {
+            display: none !important;
+        }
+        
+        /* Asegurar que el chat-column ocupe el espacio restante correctamente */
+        .chat-column {
+            min-height: 0; /* Permitir que se encoja */
+            overflow: hidden;
+        }
+
+
            
            /* =================== BIENVENIDA MÓVIL =================== */
             .welcome-screen {
@@ -2887,6 +3054,29 @@
                         <div class="disclaimer">
                             Luci se encuentra actualmente en <span class="beta-badge">BETA</span>, por lo que puede cometer errores. Considera verificar la información importante.
                         </div>
+                    </div>
+                </div>
+                <!-- Secciones móviles -->
+                <div class="mobile-welcome-section">
+                    <h1 class="mobile-welcome-title">Hola, soy Luci. ¿Qué vivienda buscas?</h1>
+                    <p class="mobile-welcome-subtitle">Ey, estoy aquí para ayudarte a encontrar tu vivienda. Pregúntame lo que quieras relacionado con la compra de propiedades.</p>
+                </div>
+                
+                <div class="mobile-input-area">
+                    <div class="mobile-input-wrapper">
+                        <textarea 
+                            class="mobile-chat-input" 
+                            id="mobileChatInput" 
+                            placeholder=""
+                            rows="1"
+                        ></textarea>
+                        <div class="mobile-typing-placeholder" id="mobileTypingPlaceholder"></div>
+                        <button class="mobile-send-button" id="mobileSendButton">
+                            ➤
+                        </button>
+                    </div>
+                    <div class="mobile-disclaimer">
+                        Luci se encuentra actualmente en <span class="beta-badge">BETA</span>, por lo que puede cometer errores. Considera verificar la información importante.
                     </div>
                 </div>
             </div>
