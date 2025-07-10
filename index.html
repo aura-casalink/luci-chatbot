@@ -1973,6 +1973,103 @@
             box-shadow: 0 2px 8px rgba(255, 201, 0, 0.3);
         }
        
+       /* =================== SUB-SIDEBAR PROPIEDADES =================== */
+        .properties-sub-sidebar {
+            position: fixed;
+            top: 0;
+            left: 80px; /* Justo al lado de la sidebar principal */
+            width: 0;
+            height: 100vh;
+            background-color: white;
+            border-right: 1px solid #e9ecef;
+            z-index: 998; /* Un nivel por debajo de la sidebar principal */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            transition: width 0.3s ease;
+            padding-top: 100px; /* Espacio desde arriba para alinear con las opciones */
+        }
+        
+        .properties-sub-sidebar.active {
+            width: 200px; /* Ancho cuando está expandida */
+        }
+        
+        .sub-sidebar-option {
+            width: 100%;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            cursor: pointer;
+            border-radius: 0;
+            transition: background-color 0.2s ease;
+            flex-shrink: 0;
+            padding: 0 20px;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+        
+        .properties-sub-sidebar.active .sub-sidebar-option {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .properties-sub-sidebar.active .sub-sidebar-option:nth-child(1) {
+            transition-delay: 0.1s;
+        }
+        
+        .properties-sub-sidebar.active .sub-sidebar-option:nth-child(2) {
+            transition-delay: 0.2s;
+        }
+        
+        .properties-sub-sidebar.active .sub-sidebar-option:nth-child(3) {
+            transition-delay: 0.3s;
+        }
+        
+        .sub-sidebar-option:hover {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin-left: 10px;
+            margin-right: 10px;
+            width: calc(100% - 20px);
+        }
+        
+        .sub-sidebar-option.active {
+            background-color: #f0f8ff;
+            border-radius: 8px;
+            margin-left: 10px;
+            margin-right: 10px;
+            width: calc(100% - 20px);
+        }
+        
+        .sub-sidebar-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        
+        .sub-sidebar-text {
+            font-family: 'Graphik', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            white-space: nowrap;
+        }
+        
+        /* Ajustar el contenedor principal cuando la sub-sidebar está activa */
+        .container.sub-sidebar-active {
+            margin-left: 280px; /* 80px sidebar + 200px sub-sidebar */
+            width: calc(100% - 280px);
+        }
+        
+        .container.sub-sidebar-active .topbar {
+            left: 280px;
+        }
+       
        @media (max-width: 768px) {
     
             /* =================== BIENVENIDA MÓVIL =================== */
@@ -2167,6 +2264,22 @@
                     <span class="sidebar-text">Inicia Sesión</span>
                 </div>
             </div>
+        </div>
+    </div>
+    
+    <!-- Sub-sidebar de propiedades -->
+    <div class="properties-sub-sidebar" id="propertiesSubSidebar">
+        <div class="sub-sidebar-option" data-sub-option="buscar">
+            <img src="https://cdn-icons-png.flaticon.com/512/9479/9479251.png" alt="Buscar" class="sub-sidebar-icon">
+            <span class="sub-sidebar-text">Buscar</span>
+        </div>
+        <div class="sub-sidebar-option" data-sub-option="favoritos">
+            <img src="https://cdn-icons-png.flaticon.com/512/1077/1077035.png" alt="Favoritos" class="sub-sidebar-icon">
+            <span class="sub-sidebar-text">Favoritos</span>
+        </div>
+        <div class="sub-sidebar-option" data-sub-option="ofertas">
+            <img src="https://cdn-icons-png.flaticon.com/512/9018/9018942.png" alt="Ofertas" class="sub-sidebar-icon">
+            <span class="sub-sidebar-text">Ofertas</span>
         </div>
     </div>
     
@@ -2456,7 +2569,7 @@
         let currentConversationTitle = null;
         let currentLoginMethod = 'whatsapp';
         // Variables para sidebar
-        let activeSidebarOption = 'propiedades';
+        let activeSidebarOption = null;
         
         // URLs de iconos activos e inactivos
         const iconStates = {
@@ -4163,8 +4276,8 @@
                     console.log('Elemento clickeado:', this);
                     
                     if (optionName === 'propiedades') {
-                        console.log('Opción propiedades - activando');
-                        setActiveSidebarOption('propiedades');
+                        console.log('Opción propiedades - mostrando sub-sidebar');
+                        togglePropertiesSubSidebar();
                     } else {
                         console.log('Opción NO propiedades - mostrando login popup');
                         
@@ -4182,6 +4295,12 @@
                 
                 console.log(`Event listener añadido a: ${optionName}`);
             });
+            
+            // Inicializar sub-sidebar
+            initPropertiesSubSidebar();
+            
+            // NO activar propiedades por defecto - quitar esta línea o comentarla
+            // setActiveSidebarOption('propiedades');
             
             // Inicializar iconos correctos
             updateSidebarIcons();
@@ -5070,6 +5189,132 @@
             console.log('Probando con', mockProperties.length, 'propiedades');
             updateGridWithResults(mockProperties);
         };
+
+        // =================== FUNCIONES SUB-SIDEBAR PROPIEDADES ===================
+        function initPropertiesSubSidebar() {
+            console.log('Inicializando sub-sidebar de propiedades');
+            
+            const subOptions = document.querySelectorAll('.sub-sidebar-option');
+            
+            subOptions.forEach(option => {
+                const subOptionName = option.dataset.subOption;
+                
+                option.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    console.log('Sub-opción clickeada:', subOptionName);
+                    
+                    if (subOptionName === 'buscar') {
+                        // Solo contraer la sub-sidebar
+                        hidePropertiesSubSidebar();
+                        setActiveSubSidebarOption('buscar');
+                    } else {
+                        // Mostrar popup de login para favoritos y ofertas
+                        if (typeof showLoginPopup === 'function') {
+                            showLoginPopup();
+                        } else {
+                            console.error('Función showLoginPopup no existe!');
+                        }
+                    }
+                });
+            });
+        }
+        
+        function togglePropertiesSubSidebar() {
+            const subSidebar = document.getElementById('propertiesSubSidebar');
+            const container = document.querySelector('.container');
+            const isActive = subSidebar.classList.contains('active');
+            
+            if (isActive) {
+                hidePropertiesSubSidebar();
+            } else {
+                showPropertiesSubSidebar();
+            }
+        }
+        
+        function showPropertiesSubSidebar() {
+            const subSidebar = document.getElementById('propertiesSubSidebar');
+            const container = document.querySelector('.container');
+            
+            // Activar el icono de propiedades
+            setActiveSidebarOption('propiedades');
+            
+            // Mostrar sub-sidebar
+            subSidebar.classList.add('active');
+            container.classList.add('sub-sidebar-active');
+            
+            console.log('Sub-sidebar de propiedades mostrada');
+        }
+        
+        function hidePropertiesSubSidebar() {
+            const subSidebar = document.getElementById('propertiesSubSidebar');
+            const container = document.querySelector('.container');
+            
+            // Desactivar sub-sidebar
+            subSidebar.classList.remove('active');
+            container.classList.remove('sub-sidebar-active');
+            
+            // Desactivar el icono de propiedades
+            document.querySelectorAll('.sidebar-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            
+            // Resetear activeSidebarOption
+            activeSidebarOption = null;
+            updateSidebarIcons();
+            
+            console.log('Sub-sidebar de propiedades oculta');
+        }
+        
+        function setActiveSubSidebarOption(optionName) {
+            // Remover clase active de todas las sub-opciones
+            document.querySelectorAll('.sub-sidebar-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            
+            // Añadir clase active a la opción seleccionada
+            const selectedSubOption = document.querySelector(`[data-sub-option="${optionName}"]`);
+            if (selectedSubOption) {
+                selectedSubOption.classList.add('active');
+            }
+            
+            // Actualizar iconos de sub-sidebar
+            updateSubSidebarIcons(optionName);
+        }
+        
+        function updateSubSidebarIcons(activeOption = null) {
+            const subOptions = document.querySelectorAll('.sub-sidebar-option');
+            
+            subOptions.forEach(option => {
+                const optionName = option.dataset.subOption;
+                const icon = option.querySelector('.sub-sidebar-icon');
+                
+                if (icon) {
+                    let iconSrc = '';
+                    
+                    switch(optionName) {
+                        case 'buscar':
+                            iconSrc = activeOption === 'buscar' ? 
+                                'https://cdn-icons-png.flaticon.com/512/9479/9479330.png' :
+                                'https://cdn-icons-png.flaticon.com/512/9479/9479251.png';
+                            break;
+                        case 'favoritos':
+                            iconSrc = activeOption === 'favoritos' ? 
+                                'https://cdn-icons-png.flaticon.com/512/1077/1077086.png' :
+                                'https://cdn-icons-png.flaticon.com/512/1077/1077035.png';
+                            break;
+                        case 'ofertas':
+                            iconSrc = activeOption === 'ofertas' ? 
+                                'https://cdn-icons-png.flaticon.com/512/9018/9018946.png' :
+                                'https://cdn-icons-png.flaticon.com/512/9018/9018942.png';
+                            break;
+                    }
+                    
+                    icon.src = iconSrc;
+                }
+            });
+        }
                 
     </script>
 </body>
