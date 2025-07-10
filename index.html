@@ -2083,7 +2083,7 @@
             margin-left: 10px;
             margin-right: 10px;
             width: calc(100% - 20px);
-            transition: all 0.15s ease;
+            transition: all 0.1s ease;
         }
         
         .sub-sidebar-option.active {
@@ -4330,6 +4330,9 @@
                             container.classList.remove('sidebar-expanded');
                         }
                         
+                        // Activar propiedades ANTES de mostrar sub-sidebar
+                        setActiveSidebarOption('propiedades');
+                        
                         // Luego mostrar/ocultar sub-sidebar
                         togglePropertiesSubSidebar();
                         
@@ -4381,28 +4384,33 @@
         }
         
         // Función para expandir/contraer sidebar
-        function toggleSidebar() {
+       function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const container = document.querySelector('.container');
+            
+            // Guardar el estado activo ANTES de cualquier cambio
+            const currentActiveOption = activeSidebarOption;
+            console.log('Estado activo antes de toggle:', currentActiveOption);
             
             // Si la sub-sidebar está activa, ocultarla primero
             const subSidebar = document.getElementById('propertiesSubSidebar');
             if (subSidebar && subSidebar.classList.contains('active')) {
                 hidePropertiesSubSidebar();
+                // Restaurar el estado activo después de ocultar sub-sidebar
+                if (currentActiveOption) {
+                    activeSidebarOption = currentActiveOption;
+                }
             }
-            
-            // Guardar el estado activo actual antes de expandir/contraer
-            const wasPropertiesActive = activeSidebarOption === 'propiedades';
             
             sidebar.classList.toggle('expanded');
             container.classList.toggle('sidebar-expanded');
             
-            // Si propiedades estaba activo, mantenerlo después de expandir/contraer
-            if (wasPropertiesActive) {
-                // Pequeño delay para asegurar que la expansión se complete
+            // Restaurar el estado activo después de expandir/contraer
+            if (currentActiveOption) {
                 setTimeout(() => {
-                    setActiveSidebarOption('propiedades');
-                }, 50);
+                    console.log('Restaurando estado activo:', currentActiveOption);
+                    setActiveSidebarOption(currentActiveOption);
+                }, 100); // Aumentar el delay un poco
             }
             
             // Actualizar tooltip del botón
@@ -4412,8 +4420,6 @@
             } else {
                 expandArrow.setAttribute('data-tooltip', 'Expandir');
             }
-            
-            console.log('Sidebar toggled. Propiedades activo:', wasPropertiesActive);
         }
         
         function setActiveSidebarOption(optionName) {
@@ -5297,8 +5303,8 @@
                     console.log('Sub-opción clickeada:', subOptionName);
                     
                     if (subOptionName === 'buscar') {
-                        // Solo contraer la sub-sidebar
-                        setActiveSubSidebarOption('buscar');
+                        hidePropertiesSubSidebar();
+                        return;
                     } else {
                         // Mostrar popup de login para favoritos y ofertas
                         if (typeof showLoginPopup === 'function') {
@@ -5346,25 +5352,19 @@
         function hidePropertiesSubSidebar() {
             const subSidebar = document.getElementById('propertiesSubSidebar');
             
-            // Desactivar sub-sidebar (SIN modificar el container)
+            // Desactivar sub-sidebar
             subSidebar.classList.remove('active');
             
-            // Desactivar el icono de propiedades
-            document.querySelectorAll('.sidebar-option').forEach(opt => {
-                opt.classList.remove('active');
-            });
-            
-            // Limpiar selección de sub-opciones
+            // CAMBIO: NO desactivar el icono de propiedades automáticamente
+            // Solo limpiar las sub-opciones
             document.querySelectorAll('.sub-sidebar-option').forEach(opt => {
                 opt.classList.remove('active');
             });
             
-            // Resetear activeSidebarOption
-            activeSidebarOption = null;
-            updateSidebarIcons();
-            updateSubSidebarIcons(); // Resetear iconos de sub-sidebar
+            // Resetear iconos de sub-sidebar
+            updateSubSidebarIcons(null);
             
-            console.log('Sub-sidebar de propiedades oculta');
+            console.log('Sub-sidebar de propiedades oculta, manteniendo estado principal');
         }
         
         function setActiveSubSidebarOption(optionName) {
