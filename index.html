@@ -1996,6 +1996,8 @@
             height: 100vh;
             background-color: white;
             border-right: none;
+            border-top-right-radius: 15px; 
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
             z-index: 1001;
             display: flex;
             flex-direction: column;
@@ -2254,7 +2256,7 @@
         <!-- Opciones del menú -->
         <div class="sidebar-options">
             <div class="sidebar-icons-container">
-                <div class="sidebar-option active" data-option="propiedades" data-tooltip="Propiedades">
+                <div class="sidebar-option" data-option="propiedades" data-tooltip="Propiedades">
                     <img src="https://cdn-icons-png.flaticon.com/512/9664/9664027.png" alt="Propiedades" class="sidebar-icon">
                     <span class="sidebar-text">Propiedades</span>
                 </div>
@@ -4360,9 +4362,19 @@
             console.log('=== SIDEBAR INICIALIZADA ===');
 
             setTimeout(() => {
+                // Asegurar que no hay opción activa al inicio
                 activeSidebarOption = null;
+                
+                // Remover cualquier clase active del HTML
+                document.querySelectorAll('.sidebar-option').forEach(opt => {
+                    opt.classList.remove('active');
+                });
+                
+                // Actualizar iconos a estado inactivo
                 updateSidebarIcons();
-                updateSubSidebarIcons();
+                updateSubSidebarIcons(null);
+                
+                console.log('Sidebar inicializada con estado limpio');
             }, 100);
         }
         
@@ -5264,7 +5276,6 @@
                     
                     if (subOptionName === 'buscar') {
                         // Solo contraer la sub-sidebar
-                        hidePropertiesSubSidebar();
                         setActiveSubSidebarOption('buscar');
                     } else {
                         // Mostrar popup de login para favoritos y ofertas
@@ -5290,16 +5301,24 @@
             }
         }
         
-        function showPropertiesSubSidebar() {
+       function showPropertiesSubSidebar() {
             const subSidebar = document.getElementById('propertiesSubSidebar');
             
             // Activar el icono de propiedades
             setActiveSidebarOption('propiedades');
             
-            // Mostrar sub-sidebar (SIN modificar el container)
+            // Limpiar todas las selecciones de sub-opciones
+            document.querySelectorAll('.sub-sidebar-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            
+            // Resetear iconos de sub-sidebar a estado inactivo
+            updateSubSidebarIcons(null);
+            
+            // Mostrar sub-sidebar
             subSidebar.classList.add('active');
             
-            console.log('Sub-sidebar de propiedades mostrada');
+            console.log('Sub-sidebar de propiedades mostrada con iconos limpios');
         }
         
         function hidePropertiesSubSidebar() {
@@ -5332,14 +5351,18 @@
                 opt.classList.remove('active');
             });
             
-            // Añadir clase active a la opción seleccionada
-            const selectedSubOption = document.querySelector(`[data-sub-option="${optionName}"]`);
-            if (selectedSubOption) {
-                selectedSubOption.classList.add('active');
+            // Solo añadir clase active si se especifica una opción
+            if (optionName) {
+                const selectedSubOption = document.querySelector(`[data-sub-option="${optionName}"]`);
+                if (selectedSubOption) {
+                    selectedSubOption.classList.add('active');
+                }
+                // Actualizar iconos de sub-sidebar
+                updateSubSidebarIcons(optionName);
+            } else {
+                // Si no hay opción activa, resetear todos los iconos
+                updateSubSidebarIcons(null);
             }
-            
-            // Actualizar iconos de sub-sidebar
-            updateSubSidebarIcons(optionName);
         }
         
         function updateSubSidebarIcons(activeOption = null) {
