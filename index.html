@@ -1932,7 +1932,7 @@
             right: 0;
             top: 50%;
             transform: translateY(-50%);
-            background-color: #007bff;
+            background-color: #FFC900;
             color: white;
             border: none;
             padding: 6px 12px;
@@ -1945,8 +1945,10 @@
         }
         
         .view-more-btn:hover {
-            background-color: #0056b3;
+            background-color: #FFC900;
+            color: black;
             transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 2px 8px rgba(255, 201, 0, 0.3);
         }
        
        @media (max-width: 768px) {
@@ -4724,8 +4726,8 @@
             propertiesHeader.style.opacity = '1';
             
             if (propertiesCount !== null) {
-                // Mostrar número de propiedades encontradas
-                propertiesHeader.textContent = `✅ ${propertiesCount} propiedades encontradas`;
+                // Mostrar número de propiedades encontradas con el nuevo icono
+                propertiesHeader.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/3355/3355672.png" alt="Encontradas" style="width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;"> ${propertiesCount} propiedades encontradas`;
             } else {
                 // Restaurar título original
                 propertiesHeader.textContent = 'Nuestras Propiedades';
@@ -4848,7 +4850,7 @@
                     const viewMoreBtn = document.createElement('button');
                     viewMoreBtn.id = 'viewMorePropertiesBtn';
                     viewMoreBtn.className = 'view-more-btn';
-                    viewMoreBtn.textContent = `Ver las ${totalProperties} propiedades`;
+                    viewMoreBtn.textContent = 'Ver más propiedades'; // CAMBIO: texto fijo
                     viewMoreBtn.onclick = function() {
                         console.log('Botón ver más clicked');
                         showLoginPopup();
