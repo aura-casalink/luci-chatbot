@@ -2316,6 +2316,86 @@
         }
        
        @media (max-width: 768px) {
+           /* =================== PUNTO 1: MÓVIL SIN FUNCIONALIDAD DE EXPANDIR =================== */
+    
+            /* Ocultar completamente el botón de expandir */
+            .expand-arrow {
+                display: none !important;
+            }
+            
+            /* Deshabilitar hover del logo que mostraría el expand arrow */
+            .sidebar-logo:hover .aura-logo {
+                opacity: 1 !important; /* Mantener opacidad normal */
+            }
+            
+            /* Asegurar que no se pueda expandir la sidebar */
+            .sidebar {
+                width: 80px !important; /* Ancho fijo */
+                transition: none !important; /* Sin transiciones */
+            }
+            
+            .sidebar.expanded {
+                width: 80px !important; /* Forzar ancho fijo incluso si tiene clase expanded */
+            }
+            
+            /* Container siempre con margen fijo para sidebar */
+            .container,
+            .container.sidebar-expanded {
+                margin-left: 80px !important;
+                width: calc(100% - 80px) !important;
+                transition: none !important;
+            }
+            
+            /* Ocultar todos los textos de la sidebar en móvil */
+            .sidebar-text {
+                display: none !important;
+            }
+            
+            /* Asegurar que las opciones de sidebar mantengan su layout original */
+            .sidebar-option,
+            .sidebar-login,
+            .sidebar-new-chat {
+                justify-content: center !important;
+                padding-left: 0 !important;
+                width: 60px !important;
+                flex-direction: column !important;
+            }
+            
+            /* Iconos centrados sin margen */
+            .sidebar-option .sidebar-icon,
+            .sidebar-login .login-circle,
+            .sidebar-new-chat .new-chat-circle {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+            
+            /* Deshabilitar tooltips en móvil ya que no son necesarios */
+            .sidebar-option::after,
+            .sidebar-option::before,
+            .sidebar-login::after,
+            .sidebar-login::before,
+            .sidebar-new-chat::after,
+            .sidebar-new-chat::before {
+                display: none !important;
+            }
+            
+            /* Logo AURA centrado sin funcionalidad de expandir */
+            .sidebar-logo {
+                cursor: default !important; /* Sin cursor pointer */
+                justify-content: center !important;
+                padding-left: 0 !important;
+            }
+            
+            /* Ocultar texto "AURA" expandido en móvil */
+            .sidebar.expanded .sidebar-logo::after {
+                display: none !important;
+            }
+            
+            /* Asegurar que el logo "A" siempre se muestre en móvil */
+            .sidebar.expanded .aura-logo,
+            .aura-logo {
+                display: flex !important;
+            }
     
             /* =================== BIENVENIDA MÓVIL =================== */
             .welcome-screen {
@@ -2958,7 +3038,8 @@
                 await initializeApp();
                 updateTexts();
                 supabaseClient = supabase;
-                initSidebar(); // Mover esto ANTES de checkExistingSession
+                initSidebar();
+                handleResizeToMobile();
                 
                 if (supabase) {
                     await checkExistingSession();
@@ -4775,8 +4856,19 @@
             }, 100);
         }
         
+        // Función para detectar si estamos en móvil
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+        
         // Función para expandir/contraer sidebar
-       function toggleSidebar() {
+        function toggleSidebar() {
+            // Si estamos en móvil, no hacer nada
+            if (isMobile()) {
+                console.log('Toggle sidebar deshabilitado en móvil');
+                return;
+            }
+            
             const sidebar = document.getElementById('sidebar');
             const container = document.querySelector('.container');
             
@@ -4802,17 +4894,42 @@
                 setTimeout(() => {
                     console.log('Restaurando estado activo:', currentActiveOption);
                     setActiveSidebarOption(currentActiveOption);
-                }, 100); // Aumentar el delay un poco
+                }, 100);
             }
             
             // Actualizar tooltip del botón
             const expandArrow = document.querySelector('.expand-arrow');
-            if (sidebar.classList.contains('expanded')) {
-                expandArrow.setAttribute('data-tooltip', 'Contraer');
-            } else {
-                expandArrow.setAttribute('data-tooltip', 'Expandir');
+            if (expandArrow) {
+                if (sidebar.classList.contains('expanded')) {
+                    expandArrow.setAttribute('data-tooltip', 'Contraer');
+                } else {
+                    expandArrow.setAttribute('data-tooltip', 'Expandir');
+                }
             }
         }
+        
+        // Función para limpiar estados de expansión al cambiar a móvil
+        function handleResizeToMobile() {
+            if (isMobile()) {
+                const sidebar = document.getElementById('sidebar');
+                const container = document.querySelector('.container');
+                
+                // Remover clases de expansión si existen
+                if (sidebar) {
+                    sidebar.classList.remove('expanded');
+                }
+                if (container) {
+                    container.classList.remove('sidebar-expanded');
+                }
+                
+                console.log('Estados de expansión limpiados para móvil');
+            }
+        }
+        
+        // Event listener para cambios de tamaño de ventana
+        window.addEventListener('resize', handleResizeToMobile);
+   
+        
         
         function setActiveSidebarOption(optionName) {
             console.log('Estableciendo opción activa:', optionName);
