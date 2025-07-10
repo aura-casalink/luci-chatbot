@@ -2067,7 +2067,7 @@
         }
         
         /* Ajustar el main-area para que no se superponga con el topbar */
-        .main-area {
+        
             flex: 1;
             background-color: white;
             display: flex;
@@ -2440,34 +2440,45 @@
             
             /* Ajustar el main-area para el topbar más estrecho */
             .main-area {
-                margin-top: 50px !important; /* Ajustar al nuevo alto del topbar */
+                flex-direction: column !important;
+                margin-top: 50px !important; /* Justo debajo del topbar */
                 height: calc(100vh - 50px) !important;
+                padding: 0 !important;
             } 
            
            /* =================== PUNTO 2: CARRUSEL DE PROPIEDADES MÓVIL =================== */
 
         /* Quitar fondo de la columna de propiedades en móvil */
         .properties-column {
-            background-color: transparent !important; /* Sin fondo */
+            flex: 0 0 auto !important; /* No expandir, tamaño automático */
+            order: 1 !important; /* Aparecer primero */
+            background-color: transparent !important;
             border-radius: 0 !important;
             margin: 0 !important;
             padding: 0 !important;
-            overflow: visible !important;
-            min-height: auto !important;
-            max-height: auto !important;
+            border: none !important; /* Quitar todos los bordes */
+            box-shadow: none !important; /* Quitar sombras */
+            position: relative !important;
+            top: 0 !important;
+            width: 100% !important;
         }
-        
+                
         /* Header de propiedades en móvil */
         .properties-grid {
-            padding: 15px 0 !important; /* Solo padding vertical */
+            padding: 15px 0 !important;
             height: auto !important;
+            margin: 0 !important;
+            border: none !important;
+            background: transparent !important;
             overflow: visible !important;
         }
         
         .properties-header {
-            margin-bottom: 15px !important;
+            margin-bottom: 10px !important;
             text-align: center;
-            padding: 0 15px !important; /* Padding horizontal solo en el header */
+            padding: 0 15px !important;
+            border: none !important;
+            background: transparent !important;
         }
         
         .properties-header h3 {
@@ -2480,7 +2491,7 @@
         
         /* Transformar grid en carrusel horizontal */
         .grid-container {
-            display: flex !important; /* Cambiar de grid a flex */
+            display: flex !important; 
             grid-template-columns: none !important;
             grid-template-rows: none !important;
             gap: 15px !important;
@@ -2488,8 +2499,12 @@
             height: auto !important;
             overflow-x: auto !important; /* Scroll horizontal */
             overflow-y: visible !important;
-            padding: 0 15px !important; /* Padding horizontal */
+            padding: 0 15px !important; 
+            margin: 0 !important;
             box-sizing: border-box !important;
+            border: none !important;
+            box-shadow: none !important;
+            background: transparent !important;
             
             /* Ocultar scrollbar pero mantener funcionalidad */
             -webkit-overflow-scrolling: touch;
@@ -2693,7 +2708,11 @@
             }
             
             .chat-column {
-                flex: 1;
+                flex: 1 !important; /* Ocupar el resto del espacio */
+                order: 2 !important; /* Aparecer segundo */
+                margin: 0 !important;
+                padding: 0 !important;
+                background-color: white !important;
             }
             
             .properties-column {
@@ -2704,10 +2723,6 @@
             .grid-container {
                 grid-template-columns: repeat(3, 1fr);
                 gap: 10px;
-            }
-            
-            .properties-grid {
-                padding: 15px;
             }
         }
             
