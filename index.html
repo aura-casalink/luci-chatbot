@@ -846,6 +846,75 @@
             margin-bottom: 0;
         }
 
+       /* Añadir después de las reglas existentes de welcome-screen */
+        .welcome-subtitle {
+            font-family: 'Graphik', sans-serif;
+            font-weight: normal;
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 40px;
+            text-align: center;
+            line-height: 1.4;
+            max-width: 600px;
+        }
+        
+        .welcome-chat-input-container {
+            width: 100%;
+            max-width: 600px;
+            padding: 0 20px;
+        }
+        
+        .welcome-chat-input-container .chat-input-wrapper {
+            display: flex;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            padding: 5px;
+            align-items: flex-end;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+        
+        .welcome-chat-input-container .chat-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            font-family: 'Graphik', sans-serif;
+            border-radius: 20px;
+            resize: none;
+            max-height: 120px;
+            min-height: 80px;
+            width: 100%;
+        }
+        
+        .welcome-chat-input-container .send-button {
+            background-color: #edf2f4;
+            color: #333;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+            flex-shrink: 0;
+        }
+        
+        .welcome-chat-input-container .send-button:hover {
+            background-color: #d1d9db;
+        }
+        
+        .welcome-chat-input-container .send-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
        /* =================== SELECTOR DE IDIOMA =================== */
         .language-selector {
             position: absolute;
@@ -2346,20 +2415,24 @@
                         <img src="https://flagcdn.com/w40/gb.png" alt="English" class="flag-btn" onclick="changeLanguage('english')" data-lang="english">
                         <img src="https://flagcdn.com/w40/fr.png" alt="Français" class="flag-btn" onclick="changeLanguage('french')" data-lang="french">
                     </div>
-                    <h1 class="welcome-title">Hola, soy Luci. ¿Con qué te puedo ayudar?</h1>
-                    <div class="buttons-container">
-                        <button class="option-button primary" onclick="selectOption('buy_properties')">
-                            Buscar propiedades para comprar
-                        </button>
-                        <button class="option-button" onclick="showNotAvailablePopup()">
-                            Buscar propiedades para alquilar
-                        </button>
-                        <button class="option-button" onclick="showNotAvailablePopup()">
-                            Gestión de alquiler
-                        </button>
-                        <button class="option-button" onclick="showNotAvailablePopup()">
-                            Gestión de financiación
-                        </button>
+                    <h1 class="welcome-title">Hola, soy Luci. ¿Qué vivienda buscas?</h1>
+                    <p class="welcome-subtitle">Ey, estoy aquí para ayudarte a encontrar tu vivienda. Pregúntame lo que quieras relacionado con la compra de propiedades.</p>
+                    
+                    <div class="welcome-chat-input-container">
+                        <div class="chat-input-wrapper">
+                            <textarea 
+                                class="chat-input" 
+                                id="welcomeChatInput" 
+                                placeholder="Escribe tu mensaje..."
+                                rows="1"
+                            ></textarea>
+                            <button class="send-button" id="welcomeSendButton" onclick="sendWelcomeMessage()">
+                                ➤
+                            </button>
+                        </div>
+                        <div class="disclaimer">
+                            Luci se encuentra actualmente en <span class="beta-badge">BETA</span>, por lo que puede cometer errores. Considera verificar la información importante.
+                        </div>
                     </div>
                 </div>
         
@@ -2649,7 +2722,8 @@
         let currentLanguage = 'spanish';
         const translations = {
             spanish: {
-                welcomeTitle: 'Hola, soy Luci. ¿Con qué te puedo ayudar?',
+                welcomeTitle: 'Hola, soy Luci. ¿Qué vivienda buscas?',
+                welcomeSubtitle: 'Ey, estoy aquí para ayudarte a encontrar tu vivienda. Pregúntame lo que quieras relacionado con la compra de propiedades.',
                 newChat: 'Nuevo Chat',
                 expandSidebar: 'Expandir barra principal',
                 collapseSidebar: 'Recoger barra principal',
@@ -2657,10 +2731,10 @@
                 hideConversations: 'Ocultar conversaciones',
                 inputPlaceholder: 'Escribe tu mensaje...',
                 disclaimer: 'Luci se encuentra actualmente en <span class="beta-badge">BETA</span>, por lo que puede cometer errores. Considera verificar la información importante.',
-
             },
             english: {
-                welcomeTitle: 'Hello, I\'m Luci. How can I help you?',
+                welcomeTitle: 'Hello, I\'m Luci. What home are you looking for?',
+                welcomeSubtitle: 'Hey, I\'m here to help you find your home. Ask me anything related to buying properties.',
                 newChat: 'New Chat',
                 expandSidebar: 'Expand sidebar',
                 collapseSidebar: 'Collapse sidebar',
@@ -2670,7 +2744,8 @@
                 disclaimer: 'Luci is currently in <span class="beta-badge">BETA</span>, so it may make mistakes. Consider verifying important information.',
             },
             french: {
-                welcomeTitle: 'Bonjour, je suis Luci. Comment puis-je vous aider?',
+                welcomeTitle: 'Bonjour, je suis Luci. Quel logement cherchez-vous?',
+                welcomeSubtitle: 'Hé, je suis là pour vous aider à trouver votre logement. Demandez-moi tout ce qui concerne l\'achat de propriétés.',
                 newChat: 'Nouveau Chat',
                 expandSidebar: 'Développer la barre latérale',
                 collapseSidebar: 'Réduire la barre latérale',
@@ -2778,6 +2853,20 @@
                       sendCallbackManually(texto);
                       document.getElementById('chatInput').value = '';
                     }
+                });
+
+                // Event listeners para welcome input
+                document.getElementById('welcomeChatInput').addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendWelcomeMessage();
+                    }
+                });
+                
+                // Auto-resize textarea de welcome
+                document.getElementById('welcomeChatInput').addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
                 });
                 
                 window.addEventListener('beforeunload', () => {
@@ -3318,24 +3407,8 @@
             const welcomeTitle = document.querySelector('.welcome-title');
             if (welcomeTitle) welcomeTitle.textContent = texts.welcomeTitle;
             
-            // Actualizar botones de opciones
-            const optionButtons = document.querySelectorAll('.option-button');
-            const optionKeys = ['buy_properties', 'rent_properties', 'rental_management', 'financing_management'];
-    
-            optionButtons.forEach((button, index) => {
-                if (optionKeys[index]) {
-                    // Solo actualizar el texto del botón principal
-                    if (button.classList.contains('primary')) {
-                        button.textContent = getOptionText(optionKeys[index]);
-                    } else if (index === 1) {
-                        button.textContent = getOptionText('rent_properties');
-                    } else if (index === 2) {
-                        button.textContent = getOptionText('rental_management');
-                    } else if (index === 3) {
-                        button.textContent = getOptionText('financing_management');
-                    }
-                }
-            });
+            const welcomeSubtitle = document.querySelector('.welcome-subtitle');
+            if (welcomeSubtitle) welcomeSubtitle.textContent = texts.welcomeSubtitle;
             
             // Actualizar nuevo chat
             const newChatBtn = document.querySelector('.sidebar-new-chat');
@@ -3343,14 +3416,19 @@
                 newChatBtn.setAttribute('data-tooltip', texts.newChat);
             }
             
-            // Actualizar placeholder del input
+            // Actualizar placeholder de los inputs
             const chatInput = document.getElementById('chatInput');
             if (chatInput) chatInput.placeholder = texts.inputPlaceholder;
             
+            const welcomeChatInput = document.getElementById('welcomeChatInput');
+            if (welcomeChatInput) welcomeChatInput.placeholder = texts.inputPlaceholder;
+            
             // Actualizar disclaimer
-            const disclaimer = document.querySelector('.disclaimer');
-            if (disclaimer) disclaimer.innerHTML = texts.disclaimer;
-
+            const disclaimers = document.querySelectorAll('.disclaimer');
+            disclaimers.forEach(disclaimer => {
+                disclaimer.innerHTML = texts.disclaimer;
+            });
+        
             // Actualizar textos de la sidebar
             const sidebarTexts = {
                 spanish: {
@@ -3389,45 +3467,6 @@
                     element.textContent = sidebarTexts[currentLanguage][key];
                 }
             });        
-        }
-        
-
-        function getOptionText(optionKey) {
-            const optionMap = {
-                'buy_properties': {
-                    spanish: 'Buscar propiedades para comprar',
-                    english: 'Search properties to buy',
-                    french: 'Rechercher des propriétés à acheter'
-                },
-                'rent_properties': {
-                    spanish: 'Buscar propiedades para alquilar',
-                    english: 'Search properties to rent',
-                    french: 'Rechercher des propriétés à louer'
-                },
-                'rental_management': {
-                    spanish: 'Gestión de alquiler',
-                    english: 'Rental management',
-                    french: 'Gestion locative'
-                },
-                'financing_management': {
-                    spanish: 'Gestión de financiación',
-                    english: 'Financing management',
-                    french: 'Gestion du financement'
-                }
-            };
-            
-            return optionMap[optionKey] ? optionMap[optionKey][currentLanguage] : optionKey;
-        }
-
-        function getTopicInSpanish(optionKey) {
-            const topicMap = {
-                'buy_properties': 'Buscar propiedades para comprar',
-                'rent_properties': 'Buscar propiedades para alquilar', 
-                'rental_management': 'Gestión de alquiler',
-                'financing_management': 'Gestión de financiación'
-            };
-            
-            return topicMap[optionKey] || optionKey;
         }
         
         // Función para cargar conversaciones previas
@@ -3546,34 +3585,6 @@
             } catch (error) {
                 console.error('Error al guardar conversación:', error);
             }
-        }
-
-        
-        function selectOption(optionKey) {
-            // Crear nueva sesión
-            currentSessionId = generateSessionId();
-            currentConversation = [];
-            currentTopic = getTopicInSpanish(optionKey);
-
-            // Fade out de la pantalla de bienvenida
-            const welcomeScreen = document.getElementById('welcomeScreen');
-            welcomeScreen.classList.add('fade-out');
-            
-            setTimeout(() => {
-                showChatScreen();
-                
-                // Añadir mensaje del asistente primero
-                const texts = translations[currentLanguage];
-                addMessage(texts.welcomeTitle, 'assistant');
-                
-                // Añadir mensaje del usuario
-                const optionText = getOptionText(optionKey);
-                addMessage(optionText, 'user');
-                
-                // Enviar webhook
-                sendWebhook(optionKey);
-            }, 300);
-
         }
 
         function addMessage(text, sender, save = true) {
@@ -3751,6 +3762,35 @@
             }
         }
 
+        function sendWelcomeMessage() {
+            const input = document.getElementById('welcomeChatInput');
+            const message = input.value.trim();
+            
+            if (message && !isWaitingForResponse) {
+                // Crear nueva sesión con topic fijo
+                currentSessionId = generateSessionId();
+                currentConversation = [];
+                currentTopic = 'Buscar propiedades para comprar'; // Topic fijo
+                
+                // Cambiar a pantalla de chat
+                showChatScreen();
+                
+                // Añadir mensaje del asistente primero
+                const texts = translations[currentLanguage];
+                addMessage(texts.welcomeTitle, 'assistant');
+                
+                // Añadir mensaje del usuario
+                addMessage(message, 'user');
+                
+                // Limpiar input de bienvenida
+                input.value = '';
+                input.style.height = 'auto';
+                
+                // Enviar webhook con topic fijo
+                sendWebhook(message);
+            }
+        }
+        
         function updateSendButton() {
             const sendButton = document.getElementById('sendButton');
             sendButton.disabled = isWaitingForResponse;
