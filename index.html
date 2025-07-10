@@ -1982,7 +1982,6 @@
             height: 100vh;
             background-color: white;
             border-right: 1px solid #e9ecef;
-            border-left: 1px solid #e9ecef; /* AÑADIR: borde izquierdo para separar del sidebar */
             z-index: 1001;
             display: flex;
             flex-direction: column;
@@ -1990,6 +1989,19 @@
             overflow: hidden;
             transition: width 0.3s ease;
             padding-top: 100px;
+        }
+
+       /* Ajustar sub-sidebar cuando la sidebar principal está expandida */
+        .sidebar.expanded ~ .container .properties-sub-sidebar,
+        .sidebar.expanded + * .properties-sub-sidebar {
+            left: 251px; /* Mover la sub-sidebar para que esté después de la sidebar expandida */
+            border-left: none; /* Quitar el borde izquierdo cuando esté reposicionada */
+        }
+        
+        /* Alternativa más directa si la anterior no funciona */
+        .container.sidebar-expanded .properties-sub-sidebar {
+            left: 251px;
+            border-left: none;
         }
         
         .properties-sub-sidebar.active {
