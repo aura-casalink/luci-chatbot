@@ -510,16 +510,20 @@
         .sidebar.expanded .sidebar-option,
         .sidebar.expanded .sidebar-login,
         .sidebar.expanded .sidebar-new-chat {
+          position: relative; /* MANTENER: propiedad original */
+          width: calc(100% - 20px); /* CAMBIO: solo el ancho */
+          height: 60px; /* MANTENER: altura original */
+          margin-bottom: 10px; /* MANTENER: margen original */
+          margin-right: 10px; /* AÑADIR: para el hover más pequeño */
           display: flex;
-          flex-direction: row;
           align-items: center;
-          justify-content: flex-start;
-          padding-left: 65px;
-          padding-right: 30px;
-          width: calc(100% - 65px);
-          margin-right: 45px;
-          height: 60px;
-          margin-bottom: 10px; 
+          justify-content: flex-start; /* CAMBIO: de center a flex-start */
+          cursor: pointer;
+          border-radius: 12px; /* MANTENER: radio original */
+          transition: background-color 0.2s ease; /* MANTENER: transición original */
+          flex-shrink: 0; /* MANTENER: propiedad original */
+          padding-left: 20px; /* CAMBIO: menos padding que antes */
+          padding-right: 20px; /* AÑADIR: padding derecho */
         }
 
        /* Hover específico para sidebar expandida - área más pequeña */
