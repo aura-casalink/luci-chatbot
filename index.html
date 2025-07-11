@@ -3576,6 +3576,13 @@
                     }, 500);
                 }
             });
+            // Manejar display móvil inicial
+            handleMobileDisplay();
+            
+            // Event listener para cambios de orientación en móvil
+            window.addEventListener('orientationchange', function() {
+                setTimeout(handleMobileDisplay, 100);
+            });
         });
         
         function startRealtimeSubscription(sessionId) {
@@ -4115,6 +4122,42 @@
                 setTimeout(() => {
                     resumeTypingAnimation();
                 }, 100);
+            }
+        }
+
+        // Función para detectar móvil y manejar visibilidad correcta
+        function handleMobileDisplay() {
+            const isMobileDevice = window.innerWidth <= 768;
+            
+            if (isMobileDevice) {
+                // En móvil, siempre mostrar las secciones móviles
+                const mobileWelcomeSection = document.querySelector('.mobile-welcome-section');
+                const mobileInputArea = document.querySelector('.mobile-input-area');
+                const welcomeScreen = document.getElementById('welcomeScreen');
+                const chatScreen = document.getElementById('chatScreen');
+                
+                // Ocultar versiones desktop
+                if (welcomeScreen) welcomeScreen.style.display = 'none';
+                if (chatScreen) chatScreen.style.display = 'none';
+                
+                // Mostrar versiones móviles
+                if (mobileWelcomeSection) {
+                    mobileWelcomeSection.style.display = 'block';
+                    mobileWelcomeSection.style.visibility = 'visible';
+                }
+                if (mobileInputArea) {
+                    mobileInputArea.style.display = 'block';
+                    mobileInputArea.style.visibility = 'visible';
+                }
+                
+                console.log('Modo móvil activado - secciones móviles mostradas');
+            } else {
+                // En desktop, ocultar secciones móviles
+                const mobileWelcomeSection = document.querySelector('.mobile-welcome-section');
+                const mobileInputArea = document.querySelector('.mobile-input-area');
+                
+                if (mobileWelcomeSection) mobileWelcomeSection.style.display = 'none';
+                if (mobileInputArea) mobileInputArea.style.display = 'none';
             }
         }
         
@@ -5315,11 +5358,10 @@
                 
                 console.log('Estados de expansión limpiados para móvil');
             }
+            
+            // AÑADIR: Manejar visibilidad móvil
+            handleMobileDisplay();
         }
-        
-        // Event listener para cambios de tamaño de ventana
-        window.addEventListener('resize', handleResizeToMobile);
-   
         
         
         function setActiveSidebarOption(optionName) {
