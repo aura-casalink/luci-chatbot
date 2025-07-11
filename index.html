@@ -3633,13 +3633,16 @@
                     }
                 };
                 
-                document.getElementById('sendButton').addEventListener('click', () => {
-                    const texto = document.getElementById('chatInput').value.trim();
-                    if (texto) {
-                      sendCallbackManually(texto);
-                      document.getElementById('chatInput').value = '';
+                const sendButton = document.getElementById('sendButton');
+                    if (sendButton) {
+                        // Remover el onclick del HTML
+                        sendButton.removeAttribute('onclick');
+                        
+                        // Añadir el event listener correcto
+                        sendButton.addEventListener('click', function() {
+                            sendMessage(); // Usar la función sendMessage original
+                        });
                     }
-                });
 
                 // Event listeners para welcome input
                 document.getElementById('welcomeChatInput').addEventListener('keypress', function(e) {
