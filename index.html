@@ -3688,50 +3688,38 @@
             const mobileChatInput = document.getElementById('mobileChatInput');
             const mobileSendButton = document.getElementById('mobileSendButton');
             
+            console.log('=== VERIFICANDO ELEMENTOS MÓVILES ===');
+            console.log('Mobile input encontrado:', mobileChatInput);
+            console.log('Mobile button encontrado:', mobileSendButton);
+            
             if (mobileChatInput) {
                 // Event listener para Enter
                 mobileChatInput.addEventListener('keypress', function(e) {
+                    console.log('Tecla presionada en mobile input:', e.key);
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
+                        console.log('Enter detectado, enviando mensaje móvil...');
                         sendMobileMessage();
                     }
                 });
                 
-                // MEJORADO: Pausar typing cuando el usuario interactúa
-                mobileChatInput.addEventListener('focus', () => {
-                    console.log('Mobile input focused - stopping typing');
-                    stopTypingAnimation();
-                });
-            
-                mobileChatInput.addEventListener('click', () => {
-                    console.log('Mobile input clicked - stopping typing');
-                    stopTypingAnimation();
-                });
-                
-                // MEJORADO: Pausar inmediatamente cuando empieza a escribir
+                // Otros event listeners...
                 mobileChatInput.addEventListener('input', () => {
                     stopTypingAnimation();
-                    // Auto-resize textarea móvil
                     mobileChatInput.style.height = 'auto';
                     mobileChatInput.style.height = Math.min(mobileChatInput.scrollHeight, 120) + 'px';
                 });
-                
-                // MEJORADO: Solo reanudar si el campo está completamente vacío
-                mobileChatInput.addEventListener('blur', function() {
-                    if (!this.value.trim()) {
-                        setTimeout(() => {
-                            // Verificar de nuevo que esté vacío antes de reanudar
-                            if (!this.value.trim() && document.activeElement !== this) {
-                                console.log('Mobile input blurred and empty - resuming typing');
-                                resumeTypingAnimation();
-                            }
-                        }, 500);
-                    }
-                });
+            } else {
+                console.error('Mobile chat input NO encontrado!');
             }
             
             if (mobileSendButton) {
-                mobileSendButton.addEventListener('click', sendMobileMessage);
+                mobileSendButton.addEventListener('click', function() {
+                    console.log('Botón móvil clickeado');
+                    sendMobileMessage();
+                });
+            } else {
+                console.error('Mobile send button NO encontrado!');
             }
         });
         
@@ -4833,10 +4821,18 @@
         }
 
         function sendMobileMessage() {
+            console.log('=== sendMobileMessage ejecutada ===');
+            
             const input = document.getElementById('mobileChatInput');
             const message = input.value.trim();
             
+            console.log('Input encontrado:', input);
+            console.log('Mensaje:', message);
+            console.log('isWaitingForResponse:', isWaitingForResponse);
+            
             if (message && !isWaitingForResponse) {
+                console.log('Condiciones cumplidas, procesando mensaje...');
+                
                 // Detener animación typing móvil
                 stopTypingAnimation();
                 
@@ -4845,8 +4841,13 @@
                 currentConversation = [];
                 currentTopic = 'Buscar propiedades para comprar';
                 
+                console.log('Llamando a createMobileInputTransition...');
                 // En móvil, cambiar directamente al chat sin transición
                 createMobileInputTransition(message, input);
+            } else {
+                console.log('Condiciones NO cumplidas');
+                if (!message) console.log('- No hay mensaje');
+                if (isWaitingForResponse) console.log('- Esperando respuesta');
             }
         }
         
