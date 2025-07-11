@@ -2756,6 +2756,7 @@
         
             /* =================== ÁREA DE CHAT MÓVIL =================== */
             .mobile-chat-area {
+                display: none !important;
                 flex: 1 !important;
                 background-color: white !important;
                 width: 100% !important;
@@ -2763,6 +2764,13 @@
                 box-sizing: border-box !important;
                 overflow-y: auto !important;
                 max-height: 60vh !important;
+                opacity: 0;
+                transition: opacity 0.3s ease-in;
+            }
+
+           .mobile-chat-area.fade-in {
+                display: block !important;
+                opacity: 1;
             }
             
             .mobile-chat-messages {
@@ -2825,6 +2833,12 @@
                 width: 100% !important;
                 flex-shrink: 0 !important;
                 box-sizing: border-box !important;
+                transition: opacity 0.3s ease-out;
+            }
+
+           .mobile-welcome-section.fade-out {
+                opacity: 0;
+                display: none !important;
             }
             
             .mobile-welcome-title {
