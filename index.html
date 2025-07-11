@@ -6742,6 +6742,20 @@
                 }
             });
         }
+
+        // Función para cambiar a vista de chat en móvil
+        function switchToMobileChatView() {
+            const mobileWelcome = document.querySelector('.mobile-welcome-section');
+            const mobileChatArea = document.querySelector('.mobile-chat-area');
+            
+            if (mobileWelcome && mobileChatArea) {
+                // Ocultar sección de bienvenida
+                mobileWelcome.classList.add('fade-out');
+                
+                // Mostrar área de chat
+                mobileChatArea.classList.add('fade-in');
+            }
+        }
                 
     </script>
 </body>
