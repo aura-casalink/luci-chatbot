@@ -2029,16 +2029,16 @@
         .topbar {
             position: fixed;
             top: 0;
-            left: 80px; 
+            left: 0 !important;
             right: 0;
-            height: 70px; 
+            height: 50px !important;
             background-color: white;
             border-bottom: 1px solid #e9ecef;
             z-index: 999;
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            padding-right: 20px;
+            padding-right: 15px !important;
         }
         
         .language-selector-topbar {
@@ -2604,8 +2604,8 @@
             .main-area {
                 flex-direction: column !important;
                 margin-top: 50px !important;
-                margin-bottom: 70px !important; /* Espacio para la sidebar inferior */
-                height: calc(100vh - 120px) !important; /* 50px topbar + 70px sidebar */
+                margin-bottom: 80px !important; /* Espacio para la sidebar inferior */
+                height: calc(100vh - 130px) !important; /* 50px topbar + 70px sidebar */
                 padding: 0 !important;
                 overflow-y: auto !important;
             }
