@@ -2994,11 +2994,61 @@
                 padding: 0 !important;
             }
             
-            .property-slide-card.active {
+            /* =================== SOLUCIÓN DEFINITIVA Z-INDEX MÓVIL =================== */
+            /* Cuando hay una tarjeta activa, forzar que todo lo demás tenga z-index bajo */
+            body.property-card-open .topbar {
+                z-index: 1 !important;
+            }
+            
+            body.property-card-open .sidebar {
+                z-index: 1 !important;
+            }
+            
+            body.property-card-open .mobile-input-area {
+                z-index: 1 !important;
+            }
+            
+            body.property-card-open .mobile-input-wrapper {
+                z-index: 1 !important;
+            }
+            
+            body.property-card-open .properties-sub-sidebar {
+                z-index: 1 !important;
+            }
+            
+            /* Forzar que SOLO la tarjeta de propiedad tenga z-index alto */
+            body.property-card-open .property-slide-card {
+                z-index: 99999 !important;
+                position: fixed !important;
+                top: 0 !important;
                 left: 0 !important;
-                width: 100vw !important; 
+                width: 100vw !important;
                 height: 100vh !important;
-                z-index: 9999 !important;
+                background: white !important;
+            }
+            
+            body.property-card-open .property-slide-close {
+                z-index: 100000 !important;
+                background: rgba(0, 0, 0, 0.7) !important;
+            }
+            
+            /* Reglas alternativas sin depender de clase body */
+            .property-slide-card.active {
+                z-index: 99999 !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                background: white !important;
+                transform: none !important;
+            }
+            
+            /* Ocultar completamente otros elementos cuando tarjeta esté activa */
+            .property-slide-card.active ~ * .topbar,
+            .property-slide-card.active ~ * .sidebar,
+            .property-slide-card.active ~ * .mobile-input-area {
+                visibility: hidden !important;
             }
             
             /* Ajustar contenido para móvil */
