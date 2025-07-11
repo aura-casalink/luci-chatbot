@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Luci - Asistente Inmobiliario</title>
     <link href="https://fonts.googleapis.com/css2?family=Graphik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
    <style>
@@ -3847,6 +3847,17 @@
                         sendMobileMessage();
                     }
                 });
+
+                 // Event listener para detectar cuando se pierde el foco
+                mobileChatInput.addEventListener('blur', function() {
+                    setTimeout(() => {
+                        resetMobileViewport();
+                    }, 100);
+                });
+
+                mobileChatInput.addEventListener('focus', function() {
+                    console.log('Input focused, may zoom');
+                });
                 
                 // Otros event listeners...
                 mobileChatInput.addEventListener('input', () => {
@@ -5026,6 +5037,55 @@
                 if (!message) console.log('- No hay mensaje');
                 if (isWaitingForResponse) console.log('- Esperando respuesta');
             }
+             setTimeout(() => {
+                resetMobileViewport();
+                scrollToBottom();
+            }, 100);
+        }
+
+        function resetMobileViewport() {
+            // Forzar que el input pierda el foco
+            const mobileInput = document.getElementById('mobileChatInput');
+            if (mobileInput) {
+                mobileInput.blur();
+            }
+            
+            // Resetear zoom programáticamente
+            const viewport = document.querySelector('meta[name=viewport]');
+            if (viewport) {
+                viewport.setAttribute('content', 
+                    'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+                );
+                
+                // Forzar repaint
+                setTimeout(() => {
+                    viewport.setAttribute('content', 
+                        'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'
+                    );
+                }, 50);
+            }
+        }
+        
+        function scrollToBottom() {
+            // Scroll suave al final del chat
+            const mobileChatArea = document.querySelector('.mobile-chat-area');
+            if (mobileChatArea) {
+                setTimeout(() => {
+                    mobileChatArea.scrollTo({
+                        top: mobileChatArea.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }, 200);
+            }
+            
+            // También resetear scroll del body
+            setTimeout(() => {
+                window.scrollTo({
+                    top: 0,
+                    left: 0,
+                    behavior: 'smooth'
+                });
+            }, 300);
         }
         
         function createMobileInputTransition(message, originalInput) {
