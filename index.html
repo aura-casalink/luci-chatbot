@@ -4858,45 +4858,28 @@
             // Detener animación typing
             stopTypingAnimation();
             
-            // Desvanecer título y subtítulo con animación suave
+            // Ocultar título y subtítulo inmediatamente (sin animación)
             if (mobileWelcomeSection) {
-                mobileWelcomeSection.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
-                mobileWelcomeSection.style.opacity = '0';
-                mobileWelcomeSection.style.transform = 'translateY(-10px)';
-                
-                // Ocultar completamente después de la animación
-                setTimeout(() => {
-                    mobileWelcomeSection.style.display = 'none';
-                }, 300);
+                mobileWelcomeSection.style.display = 'none';
             }
             
-            // Mostrar área de chat móvil después de un breve delay
-            setTimeout(() => {
-                if (mobileChatArea) {
-                    mobileChatArea.style.display = 'block';
-                    mobileChatArea.style.opacity = '0';
-                    mobileChatArea.style.transform = 'translateY(10px)';
-                    mobileChatArea.style.transition = 'opacity 0.3s ease-in, transform 0.3s ease-in';
-                    
-                    // Animar la aparición
-                    setTimeout(() => {
-                        mobileChatArea.style.opacity = '1';
-                        mobileChatArea.style.transform = 'translateY(0)';
-                    }, 50);
-                }
-                
-                // Añadir mensajes al chat móvil
-                const texts = translations[currentLanguage];
-                addMobileMessage(texts.welcomeTitle, 'assistant');
-                addMobileMessage(message, 'user');
-                
-                // Limpiar input móvil
-                originalInput.value = '';
-                
-                // Enviar webhook
-                sendWebhook(message);
-                
-            }, 150);
+            // Mostrar área de chat móvil inmediatamente
+            if (mobileChatArea) {
+                mobileChatArea.style.display = 'block';
+                mobileChatArea.style.opacity = '1';
+                mobileChatArea.style.transform = 'translateY(0)';
+            }
+            
+            // Añadir mensajes directamente al chat móvil
+            const texts = translations[currentLanguage];
+            addMobileMessage(texts.welcomeTitle, 'assistant');
+            addMobileMessage(message, 'user');
+            
+            // Limpiar input móvil
+            originalInput.value = '';
+            
+            // Enviar webhook
+            sendWebhook(message);
         }
         
         function createInputTransition(message, originalInput) {
