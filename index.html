@@ -2459,7 +2459,7 @@
 
         /* Quitar fondo de la columna de propiedades en móvil */
         .properties-column {
-            flex: 0 0 auto !important; /* No expandir, tamaño automático */
+            flex: 0 0 200px !important; /* No expandir, tamaño automático */
             order: 1 !important; /* Aparecer primero */
             background-color: transparent !important;
             border-radius: 0 !important;
@@ -2470,6 +2470,8 @@
             position: relative !important;
             top: 0 !important;
             width: 100% !important;
+            max-height: 200px !important;
+            overflow: hidden !important;
         }
                 
         /* Header de propiedades en móvil */
@@ -2862,8 +2864,9 @@
             }
             
             .properties-column {
-                flex: 0 0 30vh; /* En móvil, el mosaico ocupará 30% de la altura */
+                flex: 0 0 200px !important; 
                 border-top: 1px solid #ddd;
+                max-height: 200px !important;
             }
             
             .grid-container {
