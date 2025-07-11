@@ -4812,7 +4812,17 @@
         }
 
         function showLoading() {
-            const messagesContainer = document.getElementById('chatMessages');
+            // Detectar si estamos en vista móvil para usar el contenedor correcto
+            const isMobile = window.innerWidth <= 768;
+            const messagesContainer = isMobile ? 
+                document.getElementById('mobileChatMessages') : 
+                document.getElementById('chatMessages');
+            
+            if (!messagesContainer) {
+                console.error('Contenedor de mensajes no encontrado para loading');
+                return;
+            }
+            
             const loadingDiv = document.createElement('div');
             loadingDiv.className = 'loading-message';
             loadingDiv.id = 'loadingMessage';
@@ -4820,7 +4830,7 @@
             messagesContainer.appendChild(loadingDiv);
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
-
+        
         function hideLoading() {
             const loadingMessage = document.getElementById('loadingMessage');
             if (loadingMessage) {
