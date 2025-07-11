@@ -2439,21 +2439,21 @@
             }
             
             .sidebar-icons-container::before {
-                content: 'Otros servicios';
-                position: absolute;
-                right: 10px;
-                bottom: 8px;
-                font-size: 8px !important;
-                font-weight: 500 !important;
-                color: #333 !important;
-                text-align: center !important;
-                line-height: 1.1 !important;
-                max-width: 55px !important;
-                overflow: hidden !important;
-                text-overflow: ellipsis !important;
-                white-space: nowrap !important;
-                pointer-events: none;
-            }
+            content: 'Otros servicios';
+            position: absolute;
+            right: 7px;
+            bottom: 12px;
+            font-size: 8px !important;
+            font-weight: 500 !important;
+            color: #333 !important;
+            text-align: center !important;
+            line-height: 1.1 !important;
+            max-width: 55px !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;
+            pointer-events: none;
+        }
             
             /* Opciones individuales - columna (icono arriba, texto abajo) */
             .sidebar-option,
@@ -2522,6 +2522,21 @@
                 max-width: 55px !important;
                 overflow: hidden !important;
                 text-overflow: ellipsis !important;
+            }
+
+           /* Cambiar texto de login solo en móvil */
+            .sidebar-login .sidebar-text {
+                font-size: 0 !important;
+            }
+            
+            .sidebar-login .sidebar-text::after {
+                content: 'Login';
+                font-size: 8px !important;
+                font-weight: 500 !important;
+                color: #333 !important;
+                text-align: center !important;
+                line-height: 1.1 !important;
+                white-space: nowrap !important;
             }
             
             /* Ajustar indicador activo para móvil */
