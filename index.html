@@ -7104,6 +7104,50 @@
         }
 
         function showWelcomePopup() {
+            // Obtener el método de login seleccionado y el valor ingresado
+            const loginMethod = currentLoginMethod || 'whatsapp'; // Por defecto whatsapp
+            const signUpMethod = loginMethod === 'whatsapp' ? 'Phone' : 'Email';
+            
+            // Obtener el valor del input correspondiente
+            let phoneOrEmail = '';
+            if (loginMethod === 'whatsapp') {
+                phoneOrEmail = document.getElementById('phoneInput').value;
+            } else {
+                phoneOrEmail = document.getElementById('emailInput').value;
+            }
+            
+            // Validar que se haya ingresado algo
+            if (!phoneOrEmail.trim()) {
+                alert('Por favor, ingresa tu ' + (loginMethod === 'whatsapp' ? 'teléfono' : 'email'));
+                return;
+            }
+            
+            // Preparar datos para el webhook
+            const webhookData = {
+                touched_button: "Iniciar Sesión",
+                sign_up_method: signUpMethod,
+                phone_or_email: phoneOrEmail.trim(),
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent
+            };
+            
+            // Enviar webhook a n8n
+            fetch('https://luci-aura.app.n8n.cloud/webhook/dcaa95fa-d5bb-4792-bc2e-f815d8b36ab0', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                mode: 'no-cors',
+                body: JSON.stringify(webhookData)
+            })
+            .then(() => {
+                console.log('Webhook de inicio de sesión enviado:', webhookData);
+            })
+            .catch(error => {
+                console.error('Error enviando webhook de inicio de sesión:', error);
+                // Continuar aunque falle el webhook
+            });
+            
             // Cerrar el popup de login
             document.getElementById('loginPopup').style.display = 'none';
             
