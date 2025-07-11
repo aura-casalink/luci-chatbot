@@ -4747,35 +4747,37 @@
         }
         
         function createMobileInputTransition(message, originalInput) {
-            // Para móvil, hacer una transición más simple
+            // Para móvil, hacer una transición directa sin animaciones complejas
             const mobileWelcomeSection = document.querySelector('.mobile-welcome-section');
             const mobileInputArea = document.querySelector('.mobile-input-area');
+            const chatScreen = document.getElementById('chatScreen');
             
-            // Ocultar temporalmente las secciones móviles
-            mobileWelcomeSection.style.opacity = '0';
-            mobileInputArea.style.opacity = '0';
+            // Ocultar completamente las secciones móviles (no solo opacidad)
+            if (mobileWelcomeSection) {
+                mobileWelcomeSection.style.display = 'none';
+            }
+            if (mobileInputArea) {
+                mobileInputArea.style.display = 'none';
+            }
             
-            setTimeout(() => {
-                // Cambiar a pantalla de chat
-                showChatScreen();
-                
-                // Añadir mensaje del asistente
-                const texts = translations[currentLanguage];
-                addMessage(texts.welcomeTitle, 'assistant');
-                
-                // Añadir mensaje del usuario
-                addMessage(message, 'user');
-                
-                // Limpiar input móvil
-                originalInput.value = '';
-                
-                // Restaurar opacidad de secciones móviles (para futuro uso)
-                mobileWelcomeSection.style.opacity = '1';
-                mobileInputArea.style.opacity = '1';
-                
-                // Enviar webhook
-                sendWebhook(message);
-            }, 300);
+            // Mostrar el chat screen
+            if (chatScreen) {
+                chatScreen.style.display = 'flex';
+                chatScreen.classList.add('fade-in');
+            }
+            
+            // Añadir mensaje del asistente
+            const texts = translations[currentLanguage];
+            addMessage(texts.welcomeTitle, 'assistant');
+            
+            // Añadir mensaje del usuario
+            addMessage(message, 'user');
+            
+            // Limpiar input móvil
+            originalInput.value = '';
+            
+            // Enviar webhook
+            sendWebhook(message);
         }
         
         function createInputTransition(message, originalInput) {
