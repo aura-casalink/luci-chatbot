@@ -6439,7 +6439,13 @@
         
         // Inicializar índice de imagen actual
         window.currentSlideImageIndex = 0;
+
+        if (window.innerWidth <= 768) {
+        document.body.classList.add('property-card-open');
+        document.body.style.overflow = 'hidden';
+        window.scrollTo(0, 0);
     }
+}
         
     function closePropertySlide() {
     const slideCard = document.getElementById('propertySlideCard');
@@ -6448,6 +6454,11 @@
         setTimeout(() => {
             slideCard.remove();
         }, 300);
+        // Para móvil: quitar clase del body y restaurar scroll
+        if (window.innerWidth <= 768) {
+            document.body.classList.remove('property-card-open');
+            document.body.style.overflow = 'auto';
+        }
     }
 }
 
@@ -6884,6 +6895,13 @@
             }, 10);
             
             window.currentSlideImageIndex = 0;
+            
+            // Para móvil: añadir clase al body y prevenir scroll
+            if (window.innerWidth <= 768) {
+                document.body.classList.add('property-card-open');
+                document.body.style.overflow = 'hidden';
+                window.scrollTo(0, 0);
+            }
         }
 
         function getPriceComparisonClass(priceComparison) {
