@@ -4104,40 +4104,74 @@
             }, 6000);
         }
         
-        function handleRealtimeCallback(payload, sessionId) {
+       function handleRealtimeCallback(payload, sessionId) {
             const row = payload.new;
-            console.log('Procesando callback:', row);
+            console.log('Callback recibido para session:', sessionId, row);
             
-            if (row.session_id !== sessionId) {
-                console.log('Callback ignorado - session_id no coincide');
-                return;
-            }
-            
-            const messageObj = row.payload;
-            const id = row.id;
-            
-            const result = handleCallback({ type: 'callback', ...messageObj });
-            console.log('HandleCallback result:', result);
-            markProcessed(id);
-            
-            // Limpiar suscripción después de procesar
-            if (realtimeChannel) {
-                supabase.removeChannel(realtimeChannel);
-                realtimeChannel = null;
-                console.log('Suscripción cerrada después de procesar callback');
-            }
-            
-            // Limpiar polling Y su timeout si existen
-            if (window.currentPollingInterval) {
-                clearInterval(window.currentPollingInterval);
-                window.currentPollingInterval = null;
-                console.log('Polling interval limpiado después de procesar callback');
-            }
-            
-            if (window.pollingTimeout) {
-                clearTimeout(window.pollingTimeout);
-                window.pollingTimeout = null;
-                console.log('Polling timeout limpiado después de procesar callback');
+            if (row && row.payload) {
+                try {
+                    const callbackData = row.payload;
+                    console.log('Datos del callback:', callbackData);
+                    
+                    // Quitar mensaje de carga
+                    hideLoading();
+                    
+                    // Si hay propiedades en la respuesta
+                    if (callbackData.properties && callbackData.properties.length > 0) {
+                        console.log(`${callbackData.properties.length} propiedades encontradas`);
+                        
+                        // Actualizar grid/carrusel (funciona tanto en desktop como móvil)
+                        updateGridWithResults(callbackData.properties, callbackData.properties.length);
+                        
+                        // Mostrar mensaje del callback si existe
+                        if (callbackData.message) {
+                            // Detectar si estamos en móvil para usar la función correcta
+                            if (window.innerWidth <= 768) {
+                                addMobileMessage(callbackData.message, 'assistant', true);
+                            } else {
+                                addMessage(callbackData.message, 'assistant', true);
+                            }
+                        }
+                        
+                        // Marcar como procesado
+                        markCallbackAsProcessed(row.id);
+                        
+                    } else if (callbackData.type === 'no_properties_found') {
+                        console.log('No se encontraron propiedades');
+                        
+                        const noResultsMessage = callbackData.message || 'No se encontraron propiedades con esos criterios. ¿Podrías ampliar tu búsqueda?';
+                        
+                        // Detectar si estamos en móvil para usar la función correcta
+                        if (window.innerWidth <= 768) {
+                            addMobileMessage(noResultsMessage, 'assistant', true);
+                        } else {
+                            addMessage(noResultsMessage, 'assistant', true);
+                        }
+                        
+                        // Marcar como procesado
+                        markCallbackAsProcessed(row.id);
+                        
+                    } else if (callbackData.message) {
+                        console.log('Mensaje de callback:', callbackData.message);
+                        
+                        // Para cualquier otro mensaje del callback
+                        const isMobile = window.innerWidth <= 768;
+                        if (isMobile) {
+                            addMobileMessage(callbackData.message, 'assistant', true);
+                        } else {
+                            addMessage(callbackData.message, 'assistant', true);
+                        }
+                        
+                        // Marcar como procesado si no es mensaje de progreso
+                        if (!callbackData.message.includes('Buscando') && !callbackData.message.includes('Analizando')) {
+                            markCallbackAsProcessed(row.id);
+                        }
+                    }
+                    
+                } catch (error) {
+                    console.error('Error procesando callback:', error);
+                    hideLoading();
+                }
             }
         }
         
