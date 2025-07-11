@@ -4988,14 +4988,27 @@
                 // Detener animación typing móvil
                 stopTypingAnimation();
                 
-                // Crear nueva sesión con topic fijo
-                currentSessionId = generateSessionId();
-                currentConversation = [];
-                currentTopic = 'Buscar propiedades para comprar';
+                // Verificar si es el primer mensaje de la sesión
+                const isFirstMessage = !currentSessionId || currentConversation.length === 0;
                 
-                console.log('Llamando a createMobileInputTransition...');
-                // En móvil, cambiar directamente al chat sin transición
-                createMobileInputTransition(message, input);
+                if (isFirstMessage) {
+                    // Solo crear nueva sesión en el primer mensaje
+                    currentSessionId = generateSessionId();
+                    currentConversation = [];
+                    currentTopic = 'Buscar propiedades para comprar';
+                    
+                    console.log('Primer mensaje - creando nueva sesión');
+                    console.log('Llamando a createMobileInputTransition...');
+                    // En móvil, cambiar directamente al chat con transición
+                    createMobileInputTransition(message, input);
+                } else {
+                    // Mensajes subsiguientes - añadir directamente sin reiniciar
+                    console.log('Mensaje subsiguiente - añadiendo sin transición');
+                    addMobileMessage(message, 'user');
+                    input.value = '';
+                    scrollToLastMessage();
+                    sendWebhook(message);
+                }
             } else {
                 console.log('Condiciones NO cumplidas');
                 if (!message) console.log('- No hay mensaje');
