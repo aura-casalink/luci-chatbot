@@ -2985,7 +2985,7 @@
                 width: 100vw !important;
                 height: 100vh !important;
                 background: white !important;
-                z-index: 9999 !important; /* Mayor z-index para estar por encima de todo */
+                z-index: 2000 !important; /* Mayor z-index para estar por encima de todo */
                 transition: left 0.3s ease-in-out !important;
                 overflow-y: auto !important;
                 border-radius: 0 !important; /* Sin bordes redondeados en móvil */
@@ -3083,7 +3083,7 @@
                 align-items: center !important;
                 justify-content: center !important;
                 font-weight: bold !important;
-                z-index: 10000 !important;
+                z-index: 2001 !important;
                 border: none !important;
             }
             
@@ -4181,27 +4181,6 @@
             }
             }
             
-        function showPropertiesResults(properties, totalProperties = null) {
-            console.log('Mostrando propiedades - detectando dispositivo...');
-            
-            // Detectar si estamos en móvil
-            if (isMobileView() && document.querySelector('.mobile-chat-area')?.style.display !== 'none') {
-                console.log('Dispositivo móvil detectado - creando mensaje con propiedades');
-                
-                // En móvil, mostrar las propiedades como mensaje en el chat
-                const propertyMessage = createMobilePropertyMessage(properties, totalProperties);
-                addMobileMessage(propertyMessage, 'assistant', false); // false = no guardar en historial
-                
-                // Scroll al final del chat móvil
-                setTimeout(() => scrollToLastMessage(), 100);
-                
-            } else {
-                console.log('Dispositivo desktop detectado - usando grid');
-                
-                // En desktop, usar el grid normal
-                updateGridWithResults(properties, totalProperties);
-            }
-        }   
         
         function handleCallback(data) {
             console.log('handleCallback ejecutado con:', data);
@@ -4231,12 +4210,11 @@
                 addMessage(data.message, 'assistant');
             }
         
-            // Si hay propiedades, mostrarlas según el dispositivo
+            // Si hay propiedades, actualizar el grid
             if (data.properties && Array.isArray(data.properties) && data.properties.length > 0) {
                 console.log('Propiedades en array:', data.properties.length);
                 console.log('Total propiedades del callback:', data.total_properties);
-                showPropertiesResults(data.properties, data.total_properties);
-            }
+                updateGridWithResults(data.properties, data.total_properties);
             } else if (data.total_properties && data.total_properties > 0) {
                 // Si no hay propiedades en el array pero sí un total, mostrar solo el botón
                 console.log('Solo total sin propiedades:', data.total_properties);
