@@ -6564,7 +6564,8 @@
                 } else {
                     propertiesHeader.style.opacity = '0';
                     setTimeout(() => {
-                        propertiesHeader.textContent = '';
+                        // En lugar de texto vacío, usar un espacio no-rompible para mantener la altura
+                        propertiesHeader.innerHTML = '&nbsp;';
                         propertiesHeader.style.opacity = '1';
                     }, 300);
                 }
