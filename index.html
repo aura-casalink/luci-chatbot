@@ -4621,10 +4621,14 @@
         }
 
         function addMobileMessage(text, sender, save = true) {
+            console.log('=== addMobileMessage ejecutada ===');
+            console.log('Texto:', text, 'Sender:', sender);
+            
             const mobileChatMessages = document.getElementById('mobileChatMessages');
+            console.log('Mobile chat messages container:', mobileChatMessages);
             
             if (!mobileChatMessages) {
-                console.error('Mobile chat messages container not found');
+                console.error('ERROR: Mobile chat messages container not found');
                 return;
             }
             
@@ -4640,6 +4644,8 @@
             messageDiv.className = `message ${sender}`;
             messageDiv.textContent = text;
             mobileChatMessages.appendChild(messageDiv);
+            
+            console.log('Mensaje añadido al DOM');
             
             // Scroll al final
             mobileChatMessages.scrollTop = mobileChatMessages.scrollHeight;
@@ -4657,6 +4663,8 @@
                     setTimeout(() => loadPreviousConversations(), 1000);
                 }
             }
+            
+            console.log('addMobileMessage completada');
         }
 
         function showLoading() {
@@ -4852,16 +4860,27 @@
         }
         
         function createMobileInputTransition(message, originalInput) {
+            console.log('=== DENTRO DE createMobileInputTransition ===');
+            console.log('Mensaje recibido:', message);
+            
             const mobileWelcomeSection = document.querySelector('.mobile-welcome-section');
             const mobileInputArea = document.querySelector('.mobile-input-area');
             const mobileChatArea = document.querySelector('.mobile-chat-area');
             
+            console.log('Mobile welcome section:', mobileWelcomeSection);
+            console.log('Mobile input area:', mobileInputArea);
+            console.log('Mobile chat area:', mobileChatArea);
+            
             // Detener animación typing
             stopTypingAnimation();
+            console.log('Typing animation detenida');
             
             // Ocultar título y subtítulo inmediatamente (sin animación)
             if (mobileWelcomeSection) {
                 mobileWelcomeSection.style.display = 'none';
+                console.log('Welcome section ocultada');
+            } else {
+                console.log('ERROR: Welcome section NO encontrada');
             }
             
             // Mostrar área de chat móvil inmediatamente
@@ -4869,17 +4888,34 @@
                 mobileChatArea.style.display = 'block';
                 mobileChatArea.style.opacity = '1';
                 mobileChatArea.style.transform = 'translateY(0)';
+                console.log('Chat area mostrada');
+            } else {
+                console.log('ERROR: Mobile chat area NO encontrada');
             }
             
             // Añadir mensajes directamente al chat móvil
-            const texts = translations[currentLanguage];
-            addMobileMessage(texts.welcomeTitle, 'assistant');
-            addMobileMessage(message, 'user');
+            try {
+                const texts = translations[currentLanguage];
+                console.log('Textos de traducción:', texts);
+                
+                console.log('Añadiendo mensaje del asistente...');
+                addMobileMessage(texts.welcomeTitle, 'assistant');
+                console.log('Mensaje del asistente añadido');
+                
+                console.log('Añadiendo mensaje del usuario...');
+                addMobileMessage(message, 'user');
+                console.log('Mensaje del usuario añadido');
+                
+            } catch (error) {
+                console.log('ERROR al añadir mensajes:', error);
+            }
             
             // Limpiar input móvil
             originalInput.value = '';
+            console.log('Input limpiado');
             
             // Enviar webhook
+            console.log('Enviando webhook...');
             sendWebhook(message);
         }
         
