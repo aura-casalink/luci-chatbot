@@ -2324,6 +2324,10 @@
             display: none;
         }
        
+       .mobile-chat-area {
+            display: none;
+        }
+       
        @media (max-width: 768px) {
             /* =================== SIDEBAR MÓVIL - HORIZONTAL ABAJO =================== */
             .sidebar {
@@ -2764,8 +2768,6 @@
                 box-sizing: border-box !important;
                 overflow-y: auto !important;
                 max-height: 60vh !important;
-                opacity: 0;
-                transition: opacity 0.3s ease-in;
             }
 
            .mobile-chat-area.fade-in {
@@ -3158,6 +3160,11 @@
                 <div class="mobile-welcome-section">
                     <h1 class="mobile-welcome-title">Hola, soy Luci. ¿Qué vivienda buscas?</h1>
                     <p class="mobile-welcome-subtitle">Ey, estoy aquí para ayudarte a encontrar tu vivienda. Pregúntame lo que quieras relacionado con la compra de propiedades.</p>
+                </div>
+                <div class="mobile-chat-area">
+                    <div class="mobile-chat-messages" id="mobileChatMessages">
+                        <!-- Los mensajes aparecerán aquí -->
+                    </div>
                 </div>
                 
                 <div class="mobile-input-area">
