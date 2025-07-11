@@ -3618,6 +3618,52 @@
             window.addEventListener('orientationchange', function() {
                 setTimeout(handleMobileDisplay, 100);
             });
+            // Event listeners móviles - añadir después de los existentes
+            const mobileChatInput = document.getElementById('mobileChatInput');
+            const mobileSendButton = document.getElementById('mobileSendButton');
+            
+            if (mobileChatInput) {
+                // Event listener para Enter
+                mobileChatInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMobileMessage();
+                    }
+                });
+                
+                // Pausar typing cuando el usuario está escribiendo
+                mobileChatInput.addEventListener('focus', () => {
+                    stopTypingAnimation();
+                });
+            
+                mobileChatInput.addEventListener('click', () => {
+                    stopTypingAnimation();
+                });
+                
+                mobileChatInput.addEventListener('input', () => {
+                    if (mobileChatInput.value.length > 0) {
+                        stopTypingAnimation();
+                    }
+                });
+                
+                mobileChatInput.addEventListener('blur', function() {
+                    if (!this.value.trim()) {
+                        setTimeout(() => {
+                            resumeTypingAnimation();
+                        }, 500);
+                    }
+                });
+                
+                // Auto-resize textarea móvil
+                mobileChatInput.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+                });
+            }
+            
+            if (mobileSendButton) {
+                mobileSendButton.addEventListener('click', sendMobileMessage);
+            }
         });
         
         function startRealtimeSubscription(sessionId) {
@@ -4185,6 +4231,13 @@
                     mobileInputArea.style.visibility = 'visible';
                 }
                 
+                // Iniciar animación typing para móvil si estamos en welcome
+                setTimeout(() => {
+                    if (mobileWelcomeSection && mobileWelcomeSection.style.display !== 'none') {
+                        resumeTypingAnimation();
+                    }
+                }, 1000);
+                
                 console.log('Modo móvil activado - secciones móviles mostradas');
             } else {
                 // En desktop, ocultar secciones móviles
@@ -4203,23 +4256,49 @@
         let currentCharIndex = 0;
         let isTyping = false;
         let typingPaused = false;
+        // Variables para animación typing 
+        let mobileTypingInterval = null;
+        let mobileCurrentTypingIndex = 0;
+        let mobileCurrentCharIndex = 0;
+        let mobileIsTyping = false;
+        let mobileTypingPaused = false;
+
+        function isMobileView() {
+            return window.innerWidth <= 768;
+        }
+
+        function getTypingPlaceholder() {
+            if (isMobileView()) {
+                return document.getElementById('mobileTypingPlaceholder');
+            } else {
+                return document.getElementById('typingPlaceholder');
+            }
+        }
         
         function startTypingAnimation() {
-            const typingPlaceholder = document.getElementById('typingPlaceholder');
+            const typingPlaceholder = getTypingPlaceholder();
             if (!typingPlaceholder) return;
             
             const texts = translations[currentLanguage].typingOptions;
             
             function typeText() {
-                if (typingPaused) return;
+                const currentPaused = isMobileView() ? mobileTypingPaused : typingPaused;
+                if (currentPaused) return;
                 
-                const currentText = texts[currentTypingIndex];
+                const currentIndex = isMobileView() ? mobileCurrentTypingIndex : currentTypingIndex;
+                const currentCharIdx = isMobileView() ? mobileCurrentCharIndex : currentCharIndex;
+                const currentText = texts[currentIndex];
                 
-                if (currentCharIndex <= currentText.length) {
-                    const displayText = currentText.substring(0, currentCharIndex);
+                if (currentCharIdx <= currentText.length) {
+                    const displayText = currentText.substring(0, currentCharIdx);
                     typingPlaceholder.textContent = displayText;
                     typingPlaceholder.classList.add('typing');
-                    currentCharIndex++;
+                    
+                    if (isMobileView()) {
+                        mobileCurrentCharIndex++;
+                    } else {
+                        currentCharIndex++;
+                    }
                     
                     // Velocidad de typing variable para más naturalidad
                     const delay = Math.random() * 50 + 30;
@@ -4227,7 +4306,8 @@
                 } else {
                     // Pausa al final del texto
                     setTimeout(() => {
-                        if (!typingPaused) {
+                        const stillPaused = isMobileView() ? mobileTypingPaused : typingPaused;
+                        if (!stillPaused) {
                             // Borrar texto
                             eraseText();
                         }
@@ -4236,23 +4316,37 @@
             }
             
             function eraseText() {
-                if (typingPaused) return;
+                const currentPaused = isMobileView() ? mobileTypingPaused : typingPaused;
+                if (currentPaused) return;
                 
-                const currentText = texts[currentTypingIndex];
+                const currentIndex = isMobileView() ? mobileCurrentTypingIndex : currentTypingIndex;
+                const currentCharIdx = isMobileView() ? mobileCurrentCharIndex : currentCharIndex;
+                const currentText = texts[currentIndex];
                 
-                if (currentCharIndex > 0) {
-                    const displayText = currentText.substring(0, currentCharIndex - 1);
+                if (currentCharIdx > 0) {
+                    const displayText = currentText.substring(0, currentCharIdx - 1);
                     typingPlaceholder.textContent = displayText;
-                    currentCharIndex--;
+                    
+                    if (isMobileView()) {
+                        mobileCurrentCharIndex--;
+                    } else {
+                        currentCharIndex--;
+                    }
                     
                     setTimeout(eraseText, 20);
                 } else {
                     // Cambiar al siguiente texto
-                    currentTypingIndex = (currentTypingIndex + 1) % texts.length;
+                    if (isMobileView()) {
+                        mobileCurrentTypingIndex = (mobileCurrentTypingIndex + 1) % texts.length;
+                    } else {
+                        currentTypingIndex = (currentTypingIndex + 1) % texts.length;
+                    }
+                    
                     typingPlaceholder.classList.remove('typing');
                     
                     setTimeout(() => {
-                        if (!typingPaused) {
+                        const stillPaused = isMobileView() ? mobileTypingPaused : typingPaused;
+                        if (!stillPaused) {
                             typeText();
                         }
                     }, 500);
@@ -4264,17 +4358,28 @@
         }
         
         function stopTypingAnimation() {
-            typingPaused = true;
-            const typingPlaceholder = document.getElementById('typingPlaceholder');
+            if (isMobileView()) {
+                mobileTypingPaused = true;
+            } else {
+                typingPaused = true;
+            }
+            
+            const typingPlaceholder = getTypingPlaceholder();
             if (typingPlaceholder) {
                 typingPlaceholder.classList.remove('typing');
             }
         }
         
         function resumeTypingAnimation() {
-            typingPaused = false;
-            currentCharIndex = 0;
-            currentTypingIndex = 0;
+            if (isMobileView()) {
+                mobileTypingPaused = false;
+                mobileCurrentCharIndex = 0;
+                mobileCurrentTypingIndex = 0;
+            } else {
+                typingPaused = false;
+                currentCharIndex = 0;
+                currentTypingIndex = 0;
+            }
             startTypingAnimation();
         }
         
@@ -4587,6 +4692,56 @@
                 // Crear transición del input
                 createInputTransition(message, input);
             }
+        }
+
+        function sendMobileMessage() {
+            const input = document.getElementById('mobileChatInput');
+            const message = input.value.trim();
+            
+            if (message && !isWaitingForResponse) {
+                // Detener animación typing móvil
+                stopTypingAnimation();
+                
+                // Crear nueva sesión con topic fijo
+                currentSessionId = generateSessionId();
+                currentConversation = [];
+                currentTopic = 'Buscar propiedades para comprar';
+                
+                // En móvil, cambiar directamente al chat sin transición
+                createMobileInputTransition(message, input);
+            }
+        }
+        
+        function createMobileInputTransition(message, originalInput) {
+            // Para móvil, hacer una transición más simple
+            const mobileWelcomeSection = document.querySelector('.mobile-welcome-section');
+            const mobileInputArea = document.querySelector('.mobile-input-area');
+            
+            // Ocultar temporalmente las secciones móviles
+            mobileWelcomeSection.style.opacity = '0';
+            mobileInputArea.style.opacity = '0';
+            
+            setTimeout(() => {
+                // Cambiar a pantalla de chat
+                showChatScreen();
+                
+                // Añadir mensaje del asistente
+                const texts = translations[currentLanguage];
+                addMessage(texts.welcomeTitle, 'assistant');
+                
+                // Añadir mensaje del usuario
+                addMessage(message, 'user');
+                
+                // Limpiar input móvil
+                originalInput.value = '';
+                
+                // Restaurar opacidad de secciones móviles (para futuro uso)
+                mobileWelcomeSection.style.opacity = '1';
+                mobileInputArea.style.opacity = '1';
+                
+                // Enviar webhook
+                sendWebhook(message);
+            }, 300);
         }
         
         function createInputTransition(message, originalInput) {
