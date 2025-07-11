@@ -2324,10 +2324,6 @@
             display: none;
         }
        
-       .sidebar-otros-servicios {
-            display: none !important;
-        }
-       
        @media (max-width: 768px) {
             /* =================== SIDEBAR MÓVIL - HORIZONTAL ABAJO =================== */
             .sidebar {
@@ -2351,38 +2347,22 @@
                 box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1) !important;
             }
             
-            /* Ocultar elementos no deseados en móvil */
-            .sidebar-logo,
-            .expand-arrow,
-            .sidebar-option[data-option="tasaciones"],
-            .sidebar-option[data-option="auditorias"],
-            .sidebar-option[data-option="suministros"],
-            .sidebar-new-chat {
+            .sidebar.expanded {
+                width: 100% !important;
+                height: 80px !important;
+            }
+            
+            /* Ocultar logo en móvil */
+            .sidebar-logo {
                 display: none !important;
             }
             
-            /* Mostrar "Otros Servicios" en móvil */
-            .sidebar-otros-servicios {
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: center !important;
-                justify-content: center !important;
-                width: auto !important;
-                height: 70px !important;
-                margin: 0 !important;
-                padding: 6px 4px !important;
-                cursor: pointer;
-                border-radius: 8px !important;
-                transition: background-color 0.2s ease;
-                flex-shrink: 0 !important;
-                min-width: 55px !important;
+            /* Ocultar expand arrow en móvil */
+            .expand-arrow {
+                display: none !important;
             }
             
-            .sidebar-otros-servicios:hover {
-                background-color: #f8f9fa !important;
-            }
-            
-            /* Contenedor de iconos - distribución móvil */
+            /* Contenedor de opciones - horizontal */
             .sidebar-options {
                 flex: 1 !important;
                 display: flex !important;
@@ -2407,6 +2387,18 @@
                 flex: 1 !important;
             }
             
+            /* OCULTAR elementos que no queremos en móvil */
+            .sidebar-option[data-option="tasaciones"],
+            .sidebar-option[data-option="auditorias"],
+            .sidebar-option[data-option="suministros"] {
+                display: none !important;
+            }
+            
+            /* OCULTAR nuevo chat en móvil */
+            .sidebar-new-chat {
+                display: none !important;
+            }
+            
             .sidebar-bottom-buttons {
                 display: flex !important;
                 flex-direction: row !important;
@@ -2417,7 +2409,53 @@
                 padding: 0 !important;
             }
             
-            /* Estilos para todas las opciones en móvil */
+            /* Crear elemento "Otros servicios" solo para móvil */
+            .sidebar-icons-container::after {
+                content: '';
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: auto !important;
+                height: 70px !important;
+                padding: 8px 6px !important;
+                cursor: pointer;
+                border-radius: 8px !important;
+                transition: background-color 0.2s ease;
+                min-width: 50px !important;
+                background-image: url('https://cdn-icons-png.flaticon.com/512/10348/10348852.png');
+                background-size: 22px 22px;
+                background-repeat: no-repeat;
+                background-position: center 12px;
+            }
+            
+            .sidebar-icons-container::after:hover {
+                background-color: #f8f9fa !important;
+            }
+            
+            /* Añadir texto "Otros servicios" */
+            .sidebar-icons-container {
+                position: relative;
+            }
+            
+            .sidebar-icons-container::before {
+            content: 'Otros servicios';
+            position: absolute;
+            right: 7px;
+            bottom: 12px;
+            font-size: 8px !important;
+            font-weight: 500 !important;
+            color: #333 !important;
+            text-align: center !important;
+            line-height: 1.1 !important;
+            max-width: 55px !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;
+            pointer-events: none;
+        }
+            
+            /* Opciones individuales - columna (icono arriba, texto abajo) */
             .sidebar-option,
             .sidebar-login {
                 position: relative !important;
@@ -2485,8 +2523,8 @@
                 overflow: hidden !important;
                 text-overflow: ellipsis !important;
             }
-        
-            /* Cambiar texto de login a "Login" solo en móvil */
+
+           /* Cambiar texto de login solo en móvil */
             .sidebar-login .sidebar-text {
                 font-size: 0 !important;
             }
@@ -2501,7 +2539,7 @@
                 white-space: nowrap !important;
             }
             
-            /* Indicador activo para móvil */
+            /* Ajustar indicador activo para móvil */
             .sidebar-option.active::before {
                 content: '';
                 position: absolute;
@@ -2522,7 +2560,11 @@
             .sidebar-login::after {
                 display: none !important;
             }
-        }
+        
+            /* Ocultar sub-sidebar en móvil */
+            .properties-sub-sidebar {
+                display: none !important;
+            }
         
             /* =================== TOPBAR MÓVIL =================== */
             .topbar {
@@ -2957,10 +2999,6 @@
                 <div class="sidebar-option" data-option="suministros" data-tooltip="Gestión Suministros">
                     <img src="https://cdn-icons-png.flaticon.com/512/566/566359.png" alt="Gestión Suministros" class="sidebar-icon">
                     <span class="sidebar-text">Gestión Suministros</span>
-                </div>
-                <div class="sidebar-option sidebar-otros-servicios" data-option="otros-servicios" data-tooltip="Otros Servicios">
-                    <img src="https://cdn-icons-png.flaticon.com/512/10348/10348852.png" alt="Otros Servicios" class="sidebar-icon">
-                    <span class="sidebar-text">Otros Servicios</span>
                 </div>
             </div>
             
@@ -5283,24 +5321,7 @@
                         return false;
                     }
                 });
-                const otrosServiciosOption = document.querySelector('.sidebar-otros-servicios');
-                if (otrosServiciosOption) {
-                    otrosServiciosOption.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        console.log('Otros Servicios clickeado');
-                        
-                        // Mostrar popup de login
-                        if (typeof showLoginPopup === 'function') {
-                            showLoginPopup();
-                        } else {
-                            console.error('Función showLoginPopup no existe!');
-                        }
-                    });
-                    
-                    console.log('Event listener añadido a Otros Servicios');
-                }  
+                
                 console.log(`Event listener añadido a: ${optionName}`);
             });
             
