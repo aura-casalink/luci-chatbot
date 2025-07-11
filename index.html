@@ -1686,7 +1686,7 @@
             top: 0; 
             left: 100%;
             width: calc(50% - 40px);
-            height: 100vh;
+            height: 100dvh;
             background: white;
             z-index: 1005;
             transition: left 0.3s ease-in-out;
@@ -2997,15 +2997,15 @@
             /* =================== SOLUCIÓN DEFINITIVA Z-INDEX MÓVIL =================== */
             /* Cuando hay una tarjeta activa, forzar que todo lo demás tenga z-index bajo */
             body.property-card-open .topbar {
-                z-index: 1 !important;
+                display: none !important;
             }
             
             body.property-card-open .sidebar {
-                z-index: 1 !important;
+                display: none !important;
             }
             
             body.property-card-open .mobile-input-area {
-                z-index: 1 !important;
+                display: none !important;
             }
             
             body.property-card-open .mobile-input-wrapper {
