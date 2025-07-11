@@ -2767,12 +2767,16 @@
                 padding: 0 15px !important;
                 box-sizing: border-box !important;
                 overflow-y: auto !important;
-                max-height: 60vh !important;
+                max-height: calc(100vh - 210px) !important; 
+                padding-bottom: 20px !important;
+                opacity: 0;
+                transform: translateY(20px);
+                transition: opacity 0.4s ease-in, transform 0.4s ease-in;
             }
 
            .mobile-chat-area.fade-in {
-                display: block !important;
                 opacity: 1;
+                transform: translateY(0);
             }
             
             .mobile-chat-messages {
@@ -2825,8 +2829,9 @@
             .chat-input-container {
                 display: none !important;
             }
-        
-            /* =================== SECCIÓN DE BIENVENIDA MÓVIL =================== */
+            
+           
+           /* =================== SECCIÓN DE BIENVENIDA MÓVIL =================== */
             .mobile-welcome-section {
                 display: block !important;
                 padding: 20px !important;
@@ -2835,12 +2840,14 @@
                 width: 100% !important;
                 flex-shrink: 0 !important;
                 box-sizing: border-box !important;
-                transition: opacity 0.3s ease-out;
+                opacity: 1;
+                transform: translateY(0);
+                transition: opacity 0.4s ease-out, transform 0.4s ease-out;
             }
 
            .mobile-welcome-section.fade-out {
                 opacity: 0;
-                display: none !important;
+                transform: translateY(-20px);
             }
             
             .mobile-welcome-title {
@@ -2866,66 +2873,69 @@
         
             /* =================== ÁREA DE INPUT MÓVIL =================== */
             .mobile-input-area {
-                display: block !important;
-                padding: 0 20px 20px 20px !important;
-                background-color: white !important;
+                position: fixed !important;
+                bottom: 80px !important; /* Justo encima de la sidebar (80px de altura) */
+                left: 0 !important;
+                right: 0 !important;
                 width: 100% !important;
-                flex-shrink: 0 !important;
+                padding: 15px 20px !important;
+                background-color: white !important;
+                border-top: 1px solid #e9ecef !important;
+                box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1) !important;
+                z-index: 999 !important;
                 box-sizing: border-box !important;
             }
             
             .mobile-input-wrapper {
                 display: flex;
                 background-color: white;
-                border: 1px solid #ddd;
+                border: 2px solid #ddd;
                 border-radius: 25px;
-                padding: 5px;
+                padding: 8px;
                 align-items: flex-end;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
                 width: 100%;
                 position: relative;
+                max-width: none;
             }
             
             .mobile-chat-input {
                 flex: 1;
                 border: none;
                 outline: none;
-                padding: 15px 20px;
+                padding: 12px 20px;
                 font-size: 16px !important;
                 font-family: 'Graphik', sans-serif;
                 border-radius: 20px;
                 resize: none;
-                max-height: 120px;
-                min-height: 50px !important;
+                max-height: 100px;
+                min-height: 45px !important;
                 width: 100%;
                 background: transparent;
             }
             
             .mobile-send-button {
-                background-color: #edf2f4;
-                color: #333;
+                background-color: #007bff;
+                color: white;
                 border: none;
                 border-radius: 50%;
-                width: 40px;
-                height: 40px;
-                margin-right: 5px;
-                margin-bottom: 5px;
+                width: 45px;
+                height: 45px;
+                margin-right: 3px;
+                margin-bottom: 3px;
                 cursor: pointer;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                transition: background-color 0.2s;
+                transition: all 0.2s;
                 flex-shrink: 0;
-                font-size: 16px;
+                font-size: 18px;
+                box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
             }
             
             .mobile-send-button:hover {
-                background-color: #d1d9db;
-            }
-            
-            .mobile-send-button:disabled {
-                background-color: #6c757d;
-                cursor: not-allowed;
+                background-color: #0056b3;
+                transform: scale(1.05);
             }
             
             .mobile-typing-placeholder {
@@ -4665,6 +4675,7 @@
             messageDiv.className = `message ${sender}`;
             messageDiv.textContent = text;
             mobileChatMessages.appendChild(messageDiv);
+            setTimeout(() => scrollToLastMessage(), 100);
             
             console.log('Mensaje añadido al DOM');
             
@@ -4881,63 +4892,61 @@
         }
         
         function createMobileInputTransition(message, originalInput) {
-            console.log('=== DENTRO DE createMobileInputTransition ===');
-            console.log('Mensaje recibido:', message);
+            console.log('=== TRANSICIÓN MÓVIL INICIADA ===');
             
             const mobileWelcomeSection = document.querySelector('.mobile-welcome-section');
             const mobileInputArea = document.querySelector('.mobile-input-area');
             const mobileChatArea = document.querySelector('.mobile-chat-area');
             
-            console.log('Mobile welcome section:', mobileWelcomeSection);
-            console.log('Mobile input area:', mobileInputArea);
-            console.log('Mobile chat area:', mobileChatArea);
-            
-            // Detener animación typing
-            stopTypingAnimation();
-            console.log('Typing animation detenida');
-            
-            // Ocultar título y subtítulo inmediatamente (sin animación)
+            // 1. Desvanecer welcome section
             if (mobileWelcomeSection) {
-                mobileWelcomeSection.style.setProperty('display', 'none', 'important');
-                console.log('Welcome section ocultada');
-            } else {
-                console.log('ERROR: Welcome section NO encontrada');
+                mobileWelcomeSection.classList.add('fade-out');
+                console.log('Welcome section desvaneciendo...');
+                
+                // Ocultar completamente después de la transición
+                setTimeout(() => {
+                    mobileWelcomeSection.style.setProperty('display', 'none', 'important');
+                }, 400);
             }
             
-            // Mostrar área de chat móvil inmediatamente
+            // 2. Mostrar chat area con transición
             if (mobileChatArea) {
                 mobileChatArea.style.setProperty('display', 'block', 'important');
-                mobileChatArea.style.setProperty('opacity', '1', 'important');
-                mobileChatArea.style.setProperty('transform', 'translateY(0)', 'important');
-                console.log('Chat area mostrada');
-            } else {
-                console.log('ERROR: Mobile chat area NO encontrada');
+                
+                // Forzar reflow y activar transición
+                setTimeout(() => {
+                    mobileChatArea.classList.add('fade-in');
+                    console.log('Chat area apareciendo...');
+                }, 100);
             }
             
-            // Añadir mensajes directamente al chat móvil
-            try {
+            // 3. Añadir mensajes
+            setTimeout(() => {
                 const texts = translations[currentLanguage];
-                console.log('Textos de traducción:', texts);
-                
-                console.log('Añadiendo mensaje del asistente...');
                 addMobileMessage(texts.welcomeTitle, 'assistant');
-                console.log('Mensaje del asistente añadido');
-                
-                console.log('Añadiendo mensaje del usuario...');
                 addMobileMessage(message, 'user');
-                console.log('Mensaje del usuario añadido');
                 
-            } catch (error) {
-                console.log('ERROR al añadir mensajes:', error);
+                // 4. Scroll automático a la última respuesta
+                scrollToLastMessage();
+                
+                // Limpiar input
+                originalInput.value = '';
+                
+                // Enviar webhook
+                sendWebhook(message);
+            }, 200);
+        }
+
+        function scrollToLastMessage() {
+            const mobileChatArea = document.querySelector('.mobile-chat-area');
+            if (mobileChatArea) {
+                setTimeout(() => {
+                    mobileChatArea.scrollTo({
+                        top: mobileChatArea.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }, 100);
             }
-            
-            // Limpiar input móvil
-            originalInput.value = '';
-            console.log('Input limpiado');
-            
-            // Enviar webhook
-            console.log('Enviando webhook...');
-            sendWebhook(message);
         }
         
         function createInputTransition(message, originalInput) {
