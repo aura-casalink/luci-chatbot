@@ -2325,200 +2325,74 @@
         }
        
        @media (max-width: 768px) {
-        /* =================== SIDEBAR MÓVIL HORIZONTAL =================== */
-        .sidebar {
-            position: fixed !important;
-            top: auto !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            width: 100% !important;
-            height: 80px !important;
-            background-color: white !important;
-            border-top: 1px solid #e9ecef !important;
-            border-right: none !important;
-            border-radius: 0 !important;
-            z-index: 1000 !important;
-            display: flex !important;
-            flex-direction: row !important;
-            align-items: center !important;
-            justify-content: space-around !important;
-            padding: 0 10px !important;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1) !important;
-            transition: none !important;
-        }
-        
-        /* Ocultar logo en móvil */
-        .sidebar-logo {
-            display: none !important;
-        }
-        
-        /* Contenedor principal de opciones */
-        .sidebar-options {
-            width: 100% !important;
-            height: 100% !important;
-            display: flex !important;
-            flex-direction: row !important;
-            align-items: center !important;
-            justify-content: space-around !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            min-height: auto !important;
-            max-height: none !important;
-        }
-        
-        /* Ocultar contenedores originales de desktop */
-        .sidebar-icons-container,
-        .sidebar-bottom-buttons {
-            display: none !important;
-        }
-        
-        /* Crear nuevo contenedor para móvil */
-        .sidebar-mobile-container {
-            width: 100% !important;
-            height: 100% !important;
-            display: flex !important;
-            flex-direction: row !important;
-            align-items: center !important;
-            justify-content: space-around !important;
-            padding: 0 !important;
-        }
-        
-        /* Opciones de sidebar móvil */
-        .sidebar-option {
-            position: relative !important;
-            width: auto !important;
-            height: 100% !important;
-            margin: 0 !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            justify-content: center !important;
-            cursor: pointer !important;
-            border-radius: 0 !important;
-            transition: none !important;
-            flex: 1 !important;
-            max-width: 60px !important;
-            padding: 8px 4px !important;
-        }
-        
-        .sidebar-option:hover {
-            background-color: transparent !important;
-        }
-        
-        /* NO mostrar barra de selección en móvil */
-        .sidebar-option.active::before {
-            display: none !important;
-        }
-        
-        /* Iconos de sidebar móvil */
-        .sidebar-icon {
-            width: 24px !important;
-            height: 24px !important;
-            margin: 0 0 4px 0 !important;
-            transition: none !important;
-        }
-        
-        /* Texto de las opciones - siempre visible en móvil */
-        .sidebar-text {
-            position: static !important;
-            transform: none !important;
-            opacity: 1 !important;
-            visibility: visible !important;
-            pointer-events: auto !important;
-            display: block !important;
-            font-size: 10px !important;
-            font-weight: 500 !important;
-            color: #888 !important;
-            text-align: center !important;
-            line-height: 1.2 !important;
-            margin: 0 !important;
-            white-space: nowrap !important;
-            overflow: hidden !important;
-            text-overflow: ellipsis !important;
-            max-width: 50px !important;
-        }
-        
-        /* Texto activo */
-        .sidebar-option.active .sidebar-text {
-            color: #333 !important;
-            font-weight: 600 !important;
-        }
-        
-        /* Botón de login móvil */
-        .sidebar-login {
-            position: relative !important;
-            width: auto !important;
-            height: 100% !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            justify-content: center !important;
-            cursor: pointer !important;
-            flex: 1 !important;
-            max-width: 60px !important;
-            padding: 8px 4px !important;
-            margin: 0 !important;
-        }
-        
-        .login-circle {
-            width: 24px !important;
-            height: 24px !important;
-            background-color: #FFC900 !important;
-            border-radius: 50% !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            margin: 0 0 4px 0 !important;
-            transition: none !important;
-        }
-        
-        .login-icon {
-            width: 12px !important;
-            height: 12px !important;
-        }
-        
-        /* Ocultar botón nuevo chat en móvil */
-        .sidebar-new-chat {
-            display: none !important;
-        }
-        
-        /* Ocultar tooltips en móvil */
-        .sidebar-option::after,
-        .sidebar-option::before,
-        .sidebar-login::after,
-        .sidebar-login::before {
-            display: none !important;
-        }
-        
-        /* Ocultar sub-sidebar en móvil */
-        .properties-sub-sidebar {
-            display: none !important;
-        }
-        
-        /* Ajustar contenedor principal */
-        .container,
-        .container.sidebar-active,
-        .container.sidebar-expanded {
-            margin-left: 0 !important;
-            margin-bottom: 80px !important; /* Espacio para la sidebar inferior */
-            width: 100% !important;
-            transition: none !important;
-        }
-        
-        /* Ajustar main-area */
-        .main-area {
-            margin-top: 50px !important;
-            margin-bottom: 0 !important;
-            height: calc(100vh - 130px) !important; /* 50px topbar + 80px sidebar */
-            padding: 0 !important;
-        }
-        
-        /* Ocultar topbar cuando esté activa la sidebar */
-        .topbar {
-            z-index: 998 !important; /* Menor que sidebar */
-        }
-    }
+            /* =================== SIDEBAR MÓVIL - SIN EXPANDIR =================== */
+            .expand-arrow {
+                display: none !important;
+            }
+            
+            .sidebar-logo:hover .aura-logo {
+                opacity: 1 !important;
+            }
+            
+            .sidebar {
+                width: 80px !important;
+                transition: none !important;
+            }
+            
+            .sidebar.expanded {
+                width: 80px !important;
+            }
+            
+            .container,
+            .container.sidebar-expanded {
+                margin-left: 80px !important;
+                width: calc(100% - 80px) !important;
+                transition: none !important;
+            }
+            
+            .sidebar-text {
+                display: none !important;
+            }
+            
+            .sidebar-option,
+            .sidebar-login,
+            .sidebar-new-chat {
+                justify-content: center !important;
+                padding-left: 0 !important;
+                width: 60px !important;
+                flex-direction: column !important;
+            }
+            
+            .sidebar-option .sidebar-icon,
+            .sidebar-login .login-circle,
+            .sidebar-new-chat .new-chat-circle {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+            
+            .sidebar-option::after,
+            .sidebar-option::before,
+            .sidebar-login::after,
+            .sidebar-login::before,
+            .sidebar-new-chat::after,
+            .sidebar-new-chat::before {
+                display: none !important;
+            }
+            
+            .sidebar-logo {
+                cursor: default !important;
+                justify-content: center !important;
+                padding-left: 0 !important;
+            }
+            
+            .sidebar.expanded .sidebar-logo::after {
+                display: none !important;
+            }
+            
+            .sidebar.expanded .aura-logo,
+            .aura-logo {
+                display: flex !important;
+            }
         
             /* =================== TOPBAR MÓVIL =================== */
             .topbar {
@@ -3592,12 +3466,6 @@
             window.addEventListener('orientationchange', function() {
                 setTimeout(handleMobileDisplay, 100);
             });
-
-            // Event listener para cambios de tamaño de ventana
-            window.addEventListener('resize', function() {
-                handleMobileDisplay();
-                handleResizeToMobile();
-            });
         });
         
         function startRealtimeSubscription(sessionId) {
@@ -4164,11 +4032,6 @@
                     mobileInputArea.style.display = 'block';
                     mobileInputArea.style.visibility = 'visible';
                 }
-        setTimeout(() => {
-            initMobileSidebar();
-        }, 100);
-        
-        console.log('Modo móvil activado - secciones móviles mostradas');
                 
                 console.log('Modo móvil activado - secciones móviles mostradas');
             } else {
@@ -5381,154 +5244,6 @@
             
             // AÑADIR: Manejar visibilidad móvil
             handleMobileDisplay();
-        }
-
-        // Función específica para inicializar sidebar móvil
-        function initMobileSidebar() {
-            if (!isMobile()) return;
-            
-            console.log('Inicializando sidebar móvil horizontal');
-            
-            // Crear contenedor móvil si no existe
-            const sidebarOptions = document.querySelector('.sidebar-options');
-            if (sidebarOptions && !document.querySelector('.sidebar-mobile-container')) {
-                // Limpiar contenido existente
-                sidebarOptions.innerHTML = '';
-                
-                // Crear nuevo contenedor móvil
-                const mobileContainer = document.createElement('div');
-                mobileContainer.className = 'sidebar-mobile-container';
-                
-                // Definir opciones móviles
-                const mobileOptions = [
-                    { 
-                        key: 'propiedades', 
-                        text: 'Propiedades', 
-                        icon: 'https://cdn-icons-png.flaticon.com/512/9643/9643115.png',
-                        activeIcon: 'https://cdn-icons-png.flaticon.com/512/9664/9664027.png'
-                    },
-                    { 
-                        key: 'financiacion', 
-                        text: 'Financiación', 
-                        icon: 'https://cdn-icons-png.flaticon.com/512/2769/2769362.png',
-                        activeIcon: 'https://cdn-icons-png.flaticon.com/512/2769/2769402.png'
-                    },
-                    { 
-                        key: 'reformas', 
-                        text: 'Reformas', 
-                        icon: 'https://cdn-icons-png.flaticon.com/512/2963/2963833.png',
-                        activeIcon: 'https://cdn-icons-png.flaticon.com/512/2963/2963823.png'
-                    },
-                    { 
-                        key: 'mudanzas', 
-                        text: 'Mudanzas', 
-                        icon: 'https://cdn-icons-png.flaticon.com/512/2787/2787413.png',
-                        activeIcon: 'https://cdn-icons-png.flaticon.com/512/2787/2787368.png'
-                    },
-                    { 
-                        key: 'otros', 
-                        text: 'Otros', 
-                        icon: 'https://cdn-icons-png.flaticon.com/512/10348/10348852.png',
-                        activeIcon: 'https://cdn-icons-png.flaticon.com/512/14120/14120322.png'
-                    }
-                ];
-                
-                // Crear opciones
-                mobileOptions.forEach(option => {
-                    const optionDiv = document.createElement('div');
-                    optionDiv.className = 'sidebar-option';
-                    optionDiv.dataset.option = option.key;
-                    
-                    optionDiv.innerHTML = `
-                        <img src="${option.icon}" alt="${option.text}" class="sidebar-icon">
-                        <span class="sidebar-text">${option.text}</span>
-                    `;
-                    
-                    // Event listener
-                    optionDiv.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        
-                        if (option.key === 'propiedades') {
-                            setActiveMobileSidebarOption('propiedades');
-                        } else {
-                            showLoginPopup();
-                        }
-                    });
-                    
-                    mobileContainer.appendChild(optionDiv);
-                });
-                
-                // Crear botón de login
-                const loginDiv = document.createElement('div');
-                loginDiv.className = 'sidebar-login';
-                loginDiv.innerHTML = `
-                    <div class="login-circle">
-                        <img src="https://cdn-icons-png.flaticon.com/512/17468/17468741.png" alt="Login" class="login-icon">
-                    </div>
-                    <span class="sidebar-text">Login</span>
-                `;
-                
-                loginDiv.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    showLoginPopup();
-                });
-                
-                mobileContainer.appendChild(loginDiv);
-                sidebarOptions.appendChild(mobileContainer);
-                
-                console.log('Sidebar móvil creada exitosamente');
-            }
-        }
-        
-        // Función para establecer opción activa en móvil
-        function setActiveMobileSidebarOption(optionName) {
-            if (!isMobile()) return;
-            
-            console.log('Estableciendo opción móvil activa:', optionName);
-            
-            const mobileOptions = document.querySelectorAll('.sidebar-mobile-container .sidebar-option');
-            
-            mobileOptions.forEach(option => {
-                const key = option.dataset.option;
-                const icon = option.querySelector('.sidebar-icon');
-                const text = option.querySelector('.sidebar-text');
-                
-                option.classList.remove('active');
-                
-                // Actualizar iconos según estado
-                switch(key) {
-                    case 'propiedades':
-                        if (key === optionName) {
-                            option.classList.add('active');
-                            icon.src = 'https://cdn-icons-png.flaticon.com/512/9664/9664027.png';
-                        } else {
-                            icon.src = 'https://cdn-icons-png.flaticon.com/512/9643/9643115.png';
-                        }
-                        break;
-                    case 'financiacion':
-                        icon.src = key === optionName ? 
-                            'https://cdn-icons-png.flaticon.com/512/2769/2769402.png' :
-                            'https://cdn-icons-png.flaticon.com/512/2769/2769362.png';
-                        break;
-                    case 'reformas':
-                        icon.src = key === optionName ? 
-                            'https://cdn-icons-png.flaticon.com/512/2963/2963823.png' :
-                            'https://cdn-icons-png.flaticon.com/512/2963/2963833.png';
-                        break;
-                    case 'mudanzas':
-                        icon.src = key === optionName ? 
-                            'https://cdn-icons-png.flaticon.com/512/2787/2787368.png' :
-                            'https://cdn-icons-png.flaticon.com/512/2787/2787413.png';
-                        break;
-                    case 'otros':
-                        icon.src = key === optionName ? 
-                            'https://cdn-icons-png.flaticon.com/512/14120/14120322.png' :
-                            'https://cdn-icons-png.flaticon.com/512/10348/10348852.png';
-                        break;
-                }
-            });
         }
         
         
