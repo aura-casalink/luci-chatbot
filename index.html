@@ -2327,6 +2327,14 @@
        .mobile-chat-area {
             display: none;
         }
+
+       .send-button:hover {
+            background-color: #d1d9db !important;
+        }
+        
+        .send-button img {
+            transition: all 0.2s ease;
+        }
        
        @media (max-width: 768px) {
             /* =================== SIDEBAR MÓVIL - HORIZONTAL ABAJO =================== */
@@ -3128,7 +3136,7 @@
                             ></textarea>
                             <div class="typing-placeholder" id="typingPlaceholder"></div>
                             <button class="send-button" id="welcomeSendButton" onclick="sendWelcomeMessage()">
-                                ➤
+                                <img src="https://cdn-icons-png.flaticon.com/512/9376/9376354.png" alt="Send" width="18" height="18">
                             </button>
                         </div>
                         <div class="disclaimer">
@@ -3156,7 +3164,7 @@
                                 rows="1"
                             ></textarea>
                             <button class="send-button" id="sendButton" onclick="sendMessage()">
-                                ➤
+                                <img src="https://cdn-icons-png.flaticon.com/512/9376/9376354.png" alt="Send" width="18" height="18">
                             </button>
                         </div>
                         <div class="disclaimer">
@@ -3420,6 +3428,33 @@
         let currentLoginMethod = 'whatsapp';
         // Variables para sidebar
         let activeSidebarOption = null;
+        
+        // Función para cambiar iconos de botones según el estado del input
+        function updateSendButtonIcon(inputId, buttonId) {
+            const input = document.getElementById(inputId);
+            const button = document.getElementById(buttonId);
+            const img = button.querySelector('img');
+            
+            if (!input || !button || !img) return;
+            
+            const isEmpty = input.value.trim() === '';
+            
+            if (isEmpty) {
+                img.src = 'https://cdn-icons-png.flaticon.com/512/9376/9376354.png';
+            } else {
+                img.src = 'https://cdn-icons-png.flaticon.com/512/9290/9290348.png';
+            }
+        }
+        
+        // Función para resetear iconos después del envío
+        function resetSendButtonIcon(buttonId) {
+            const button = document.getElementById(buttonId);
+            const img = button.querySelector('img');
+            
+            if (button && img) {
+                img.src = 'https://cdn-icons-png.flaticon.com/512/9376/9376354.png';
+            }
+        }
         
         // URLs de iconos activos e inactivos
         const iconStates = {
@@ -3706,6 +3741,22 @@
                     }, 500);
                 }
             });
+
+             // Listener para input de bienvenida
+            const welcomeInput = document.getElementById('welcomeChatInput');
+            if (welcomeInput) {
+                welcomeInput.addEventListener('input', function() {
+                    updateSendButtonIcon('welcomeChatInput', 'welcomeSendButton');
+                });
+            }
+            
+            // Listener para input de chat
+            const chatInput = document.getElementById('chatInput');
+            if (chatInput) {
+                chatInput.addEventListener('input', function() {
+                    updateSendButtonIcon('chatInput', 'sendButton');
+                });
+            }
             // Manejar display móvil inicial
             handleMobileDisplay();
             
@@ -4836,6 +4887,7 @@
                 addMessage(message, 'user');
                 input.value = '';
                 input.style.height = 'auto';
+                resetSendButtonIcon('sendButton');
                 sendWebhook(message);
             }
         }
@@ -4856,6 +4908,7 @@
                 // Crear transición del input
                 createInputTransition(message, input);
             }
+            resetSendButtonIcon('welcomeSendButton'
         }
 
         function sendMobileMessage() {
