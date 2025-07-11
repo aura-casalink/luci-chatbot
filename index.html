@@ -1528,16 +1528,23 @@
             color: #333;
         }
 
-       /* Estilos para popup de bienvenida */
-        #welcomePopup .popup-subtitle {
-            line-height: 1.6;
-            margin-bottom: 25px;
+       /* Animación de flotación para popups */
+        @keyframes popupFloat {
+            0% {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
         
-        #welcomePopup .popup-title {
-            font-size: 20px;
-            margin-bottom: 15px;
+        .popup-content.animate {
+            animation: popupFloat 0.4s ease-out;
         }
+
+       
 
        /* =================== LAYOUT DE DOS COLUMNAS =================== */
         .chat-column {
@@ -5824,28 +5831,16 @@
         
         // =================== POPUP CREAR CUENTA ===================
         function showLoginPopup() {
-            console.log('=== EJECUTANDO showLoginPopup ===');
-            
             const popup = document.getElementById('loginPopup');
-            console.log('Popup encontrado:', popup);
+            const content = popup.querySelector('.popup-content');
             
-            if (popup) {
-                popup.style.display = 'flex';
-                console.log('Popup mostrado exitosamente');
-                
-                // Forzar reflow para asegurar que se muestre
-                popup.offsetHeight;
-                
-                // Verificar que se mostró
-                const computedStyle = window.getComputedStyle(popup);
-                console.log('Display del popup después de mostrar:', computedStyle.display);
-            } else {
-                console.error('¡Popup con ID loginPopup no encontrado!');
-                
-                // Listar todos los popups disponibles
-                const allPopups = document.querySelectorAll('[id*="popup"], [class*="popup"]');
-                console.log('Popups disponibles:', allPopups);
-            }
+            popup.style.display = 'flex';
+            content.classList.add('animate');
+            
+            // Remover la clase de animación después de que termine
+            setTimeout(() => {
+                content.classList.remove('animate');
+            }, 400);
         }
         
         function closeLoginPopup() {
@@ -7103,8 +7098,17 @@
             // Cerrar el popup de login
             document.getElementById('loginPopup').style.display = 'none';
             
-            // Mostrar el popup de bienvenida
-            document.getElementById('welcomePopup').style.display = 'flex';
+            // Mostrar el popup de bienvenida con animación
+            const welcomePopup = document.getElementById('welcomePopup');
+            const content = welcomePopup.querySelector('.popup-content');
+            
+            welcomePopup.style.display = 'flex';
+            content.classList.add('animate');
+            
+            // Remover la clase de animación después de que termine
+            setTimeout(() => {
+                content.classList.remove('animate');
+            }, 400);
         }
         
         function closeWelcomePopup() {
