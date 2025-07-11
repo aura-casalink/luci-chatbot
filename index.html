@@ -4181,6 +4181,27 @@
             }
             }
             
+        function showPropertiesResults(properties, totalProperties = null) {
+            console.log('Mostrando propiedades - detectando dispositivo...');
+            
+            // Detectar si estamos en móvil
+            if (isMobileView() && document.querySelector('.mobile-chat-area')?.style.display !== 'none') {
+                console.log('Dispositivo móvil detectado - creando mensaje con propiedades');
+                
+                // En móvil, mostrar las propiedades como mensaje en el chat
+                const propertyMessage = createMobilePropertyMessage(properties, totalProperties);
+                addMobileMessage(propertyMessage, 'assistant', false); // false = no guardar en historial
+                
+                // Scroll al final del chat móvil
+                setTimeout(() => scrollToLastMessage(), 100);
+                
+            } else {
+                console.log('Dispositivo desktop detectado - usando grid');
+                
+                // En desktop, usar el grid normal
+                updateGridWithResults(properties, totalProperties);
+            }
+        }   
         
         function handleCallback(data) {
             console.log('handleCallback ejecutado con:', data);
@@ -4210,11 +4231,12 @@
                 addMessage(data.message, 'assistant');
             }
         
-            // Si hay propiedades, actualizar el grid
+            // Si hay propiedades, mostrarlas según el dispositivo
             if (data.properties && Array.isArray(data.properties) && data.properties.length > 0) {
                 console.log('Propiedades en array:', data.properties.length);
                 console.log('Total propiedades del callback:', data.total_properties);
-                updateGridWithResults(data.properties, data.total_properties);
+                showPropertiesResults(data.properties, data.total_properties);
+            }
             } else if (data.total_properties && data.total_properties > 0) {
                 // Si no hay propiedades en el array pero sí un total, mostrar solo el botón
                 console.log('Solo total sin propiedades:', data.total_properties);
