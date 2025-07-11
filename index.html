@@ -4898,7 +4898,7 @@
             
             // Ocultar título y subtítulo inmediatamente (sin animación)
             if (mobileWelcomeSection) {
-                mobileWelcomeSection.style.display = 'none';
+                mobileWelcomeSection.style.setProperty('display', 'none', 'important');
                 console.log('Welcome section ocultada');
             } else {
                 console.log('ERROR: Welcome section NO encontrada');
@@ -4906,9 +4906,9 @@
             
             // Mostrar área de chat móvil inmediatamente
             if (mobileChatArea) {
-                mobileChatArea.style.display = 'block';
-                mobileChatArea.style.opacity = '1';
-                mobileChatArea.style.transform = 'translateY(0)';
+                mobileChatArea.style.setProperty('display', 'block', 'important');
+                mobileChatArea.style.setProperty('opacity', '1', 'important');
+                mobileChatArea.style.setProperty('transform', 'translateY(0)', 'important');
                 console.log('Chat area mostrada');
             } else {
                 console.log('ERROR: Mobile chat area NO encontrada');
