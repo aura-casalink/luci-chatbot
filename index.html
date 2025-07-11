@@ -2325,51 +2325,159 @@
         }
        
        @media (max-width: 768px) {
-            /* =================== SIDEBAR MÓVIL - SIN EXPANDIR =================== */
+            /* =================== SIDEBAR MÓVIL - HORIZONTAL ABAJO =================== */
+            .sidebar {
+                position: fixed !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                top: auto !important;
+                width: 100% !important;
+                height: 70px !important;
+                background-color: white;
+                border-top: 1px solid #e9ecef !important;
+                border-right: none !important;
+                border-radius: 0 !important;
+                z-index: 1000;
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                padding: 0 15px !important;
+                transition: none !important;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1) !important;
+            }
+            
+            .sidebar.expanded {
+                width: 100% !important;
+                height: 70px !important;
+            }
+            
+            /* Logo en móvil - lado izquierdo */
+            .sidebar-logo {
+                position: static !important;
+                width: auto !important;
+                height: 50px !important;
+                padding: 0 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                flex-shrink: 0 !important;
+            }
+            
+            .aura-logo {
+                font-size: 20px !important;
+                width: auto !important;
+                height: auto !important;
+            }
+            
+            /* Ocultar expand arrow en móvil */
             .expand-arrow {
                 display: none !important;
             }
             
-            .sidebar-logo:hover .aura-logo {
-                opacity: 1 !important;
+            /* Contenedor de opciones - horizontal */
+            .sidebar-options {
+                flex: 1 !important;
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 0 !important;
+                margin: 0 10px !important;
+                height: 100% !important;
+                overflow: visible !important;
+                max-height: none !important;
             }
             
-            .sidebar {
-                width: 80px !important;
-                transition: none !important;
+            .sidebar-icons-container {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                justify-content: center !important;
+                width: auto !important;
+                gap: 8px !important;
+                margin: 0 !important;
             }
             
-            .sidebar.expanded {
-                width: 80px !important;
+            .sidebar-bottom-buttons {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                width: auto !important;
+                gap: 8px !important;
+                margin: 0 !important;
+                padding: 0 !important;
             }
             
-            .container,
-            .container.sidebar-expanded {
-                margin-left: 80px !important;
-                width: calc(100% - 80px) !important;
-                transition: none !important;
+            /* Opciones individuales */
+            .sidebar-option,
+            .sidebar-login,
+            .sidebar-new-chat {
+                position: relative !important;
+                width: 45px !important;
+                height: 45px !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                cursor: pointer;
+                border-radius: 12px !important;
+                transition: background-color 0.2s ease;
+                flex-shrink: 0 !important;
+                flex-direction: column !important;
             }
             
+            .sidebar-option:hover,
+            .sidebar-login:hover,
+            .sidebar-new-chat:hover {
+                background-color: #f8f9fa !important;
+            }
+            
+            /* Iconos */
+            .sidebar-icon {
+                width: 20px !important;
+                height: 20px !important;
+                margin: 0 !important;
+            }
+            
+            .login-circle,
+            .new-chat-circle {
+                width: 32px !important;
+                height: 32px !important;
+                margin: 0 !important;
+            }
+            
+            .login-icon {
+                width: 16px !important;
+                height: 16px !important;
+            }
+            
+            .plus-icon {
+                font-size: 16px !important;
+            }
+            
+            /* Ocultar textos en móvil */
             .sidebar-text {
                 display: none !important;
             }
             
-            .sidebar-option,
-            .sidebar-login,
-            .sidebar-new-chat {
-                justify-content: center !important;
-                padding-left: 0 !important;
-                width: 60px !important;
-                flex-direction: column !important;
+            /* Ajustar indicador activo para móvil */
+            .sidebar-option.active::before {
+                content: '';
+                position: absolute;
+                bottom: -35px !important;
+                left: 50% !important;
+                right: auto !important;
+                top: auto !important;
+                transform: translateX(-50%) !important;
+                width: 24px !important;
+                height: 3px !important;
+                background-color: #000;
+                border-radius: 2px !important;
             }
             
-            .sidebar-option .sidebar-icon,
-            .sidebar-login .login-circle,
-            .sidebar-new-chat .new-chat-circle {
-                margin-left: 0 !important;
-                margin-right: 0 !important;
-            }
-            
+            /* Ocultar tooltips en móvil */
             .sidebar-option::after,
             .sidebar-option::before,
             .sidebar-login::after,
@@ -2378,21 +2486,13 @@
             .sidebar-new-chat::before {
                 display: none !important;
             }
-            
-            .sidebar-logo {
-                cursor: default !important;
-                justify-content: center !important;
-                padding-left: 0 !important;
-            }
-            
-            .sidebar.expanded .sidebar-logo::after {
+    
+            /* Ocultar sub-sidebar en móvil */
+            .properties-sub-sidebar {
                 display: none !important;
             }
-            
-            .sidebar.expanded .aura-logo,
-            .aura-logo {
-                display: flex !important;
-            }
+
+
         
             /* =================== TOPBAR MÓVIL =================== */
             .topbar {
@@ -2436,10 +2536,19 @@
             }
         
             /* =================== LAYOUT PRINCIPAL MÓVIL =================== */
+            .container,
+            .container.sidebar-active,
+            .container.sidebar-expanded {
+                margin-left: 0 !important;
+                width: 100% !important;
+                transition: none !important;
+            }
+            
             .main-area {
                 flex-direction: column !important;
                 margin-top: 50px !important;
-                height: calc(100vh - 50px) !important;
+                margin-bottom: 70px !important; /* Espacio para la sidebar inferior */
+                height: calc(100vh - 120px) !important; /* 50px topbar + 70px sidebar */
                 padding: 0 !important;
                 overflow-y: auto !important;
             }
