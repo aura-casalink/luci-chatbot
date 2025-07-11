@@ -2751,17 +2751,49 @@
             }
         
             /* =================== ÁREA DE CHAT MÓVIL =================== */
-            .chat-column {
+            .mobile-chat-area {
                 flex: 1 !important;
-                order: 2 !important;
-                margin: 0 !important;
-                padding: 0 !important;
                 background-color: white !important;
-                display: flex !important;
-                flex-direction: column !important;
                 width: 100% !important;
-                min-height: auto !important;
-                height: auto !important;
+                padding: 0 15px !important;
+                box-sizing: border-box !important;
+                overflow-y: auto !important;
+                max-height: 60vh !important;
+            }
+            
+            .mobile-chat-messages {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                padding: 20px 0;
+            }
+            
+            .mobile-chat-messages .message {
+                max-width: 85%;
+                margin-bottom: 15px;
+                padding: 12px 18px;
+                border-radius: 18px;
+                word-wrap: break-word;
+                font-family: 'Graphik', sans-serif;
+                font-size: 14px;
+            }
+            
+            .mobile-chat-messages .message.assistant {
+                background-color: white;
+                border: 1px solid #ddd;
+                align-self: flex-start;
+                border-bottom-left-radius: 4px;
+            }
+            
+            .mobile-chat-messages .message.user {
+                background-color: #edf2f4;
+                align-self: flex-end;
+                border-bottom-right-radius: 4px;
+            }
+            
+            .mobile-chat-messages .message.old {
+                color: #888;
+                filter: grayscale(0.7) opacity(0.8);
             }
         
             /* =================== SECCIÓN DE BIENVENIDA MÓVIL =================== */
@@ -3109,6 +3141,12 @@
                     </div>
                     <div class="mobile-disclaimer">
                         Luci se encuentra actualmente en <span class="beta-badge">BETA</span>, por lo que puede cometer errores. Considera verificar la información importante.
+                    </div>
+                </div>
+                <!-- Área de chat móvil (oculta inicialmente) -->
+                <div class="mobile-chat-area" style="display: none;">
+                    <div class="mobile-chat-messages" id="mobileChatMessages">
+                        <!-- Los mensajes aparecerán aquí -->
                     </div>
                 </div>
             </div>
@@ -4536,6 +4574,13 @@
         }
 
         function addMessage(text, sender, save = true) {
+            // Si estamos en móvil y hay chat móvil visible, usar esa función
+            if (isMobileView() && document.querySelector('.mobile-chat-area')?.style.display !== 'none') {
+                addMobileMessage(text, sender, save);
+                return;
+            }
+            
+            // Código existente para desktop
             const messagesContainer = document.getElementById('chatMessages');
             
             // Marcar todos los mensajes existentes como antiguos
@@ -4561,6 +4606,45 @@
         
                 saveConversationToSupabase();
         
+                if (sender === 'user') {
+                    setTimeout(() => loadPreviousConversations(), 1000);
+                }
+            }
+        }
+
+        function addMobileMessage(text, sender, save = true) {
+            const mobileChatMessages = document.getElementById('mobileChatMessages');
+            
+            if (!mobileChatMessages) {
+                console.error('Mobile chat messages container not found');
+                return;
+            }
+            
+            // Marcar todos los mensajes existentes como antiguos
+            const existingMessages = mobileChatMessages.querySelectorAll('.message:not(.loading-message)');
+            existingMessages.forEach(msg => {
+                if (!msg.classList.contains('old')) {
+                    msg.classList.add('old');
+                }
+            });
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.textContent = text;
+            mobileChatMessages.appendChild(messageDiv);
+            
+            // Scroll al final
+            mobileChatMessages.scrollTop = mobileChatMessages.scrollHeight;
+            
+            if (save) {
+                currentConversation.push({
+                    text: text,
+                    sender: sender,
+                    timestamp: new Date().toISOString()
+                });
+                
+                saveConversationToSupabase();
+                
                 if (sender === 'user') {
                     setTimeout(() => loadPreviousConversations(), 1000);
                 }
@@ -4747,37 +4831,52 @@
         }
         
         function createMobileInputTransition(message, originalInput) {
-            // Para móvil, hacer una transición directa sin animaciones complejas
             const mobileWelcomeSection = document.querySelector('.mobile-welcome-section');
             const mobileInputArea = document.querySelector('.mobile-input-area');
-            const chatScreen = document.getElementById('chatScreen');
+            const mobileChatArea = document.querySelector('.mobile-chat-area');
             
-            // Ocultar completamente las secciones móviles (no solo opacidad)
+            // Detener animación typing
+            stopTypingAnimation();
+            
+            // Desvanecer título y subtítulo con animación suave
             if (mobileWelcomeSection) {
-                mobileWelcomeSection.style.display = 'none';
-            }
-            if (mobileInputArea) {
-                mobileInputArea.style.display = 'none';
-            }
-            
-            // Mostrar el chat screen
-            if (chatScreen) {
-                chatScreen.style.display = 'flex';
-                chatScreen.classList.add('fade-in');
+                mobileWelcomeSection.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+                mobileWelcomeSection.style.opacity = '0';
+                mobileWelcomeSection.style.transform = 'translateY(-10px)';
+                
+                // Ocultar completamente después de la animación
+                setTimeout(() => {
+                    mobileWelcomeSection.style.display = 'none';
+                }, 300);
             }
             
-            // Añadir mensaje del asistente
-            const texts = translations[currentLanguage];
-            addMessage(texts.welcomeTitle, 'assistant');
-            
-            // Añadir mensaje del usuario
-            addMessage(message, 'user');
-            
-            // Limpiar input móvil
-            originalInput.value = '';
-            
-            // Enviar webhook
-            sendWebhook(message);
+            // Mostrar área de chat móvil después de un breve delay
+            setTimeout(() => {
+                if (mobileChatArea) {
+                    mobileChatArea.style.display = 'block';
+                    mobileChatArea.style.opacity = '0';
+                    mobileChatArea.style.transform = 'translateY(10px)';
+                    mobileChatArea.style.transition = 'opacity 0.3s ease-in, transform 0.3s ease-in';
+                    
+                    // Animar la aparición
+                    setTimeout(() => {
+                        mobileChatArea.style.opacity = '1';
+                        mobileChatArea.style.transform = 'translateY(0)';
+                    }, 50);
+                }
+                
+                // Añadir mensajes al chat móvil
+                const texts = translations[currentLanguage];
+                addMobileMessage(texts.welcomeTitle, 'assistant');
+                addMobileMessage(message, 'user');
+                
+                // Limpiar input móvil
+                originalInput.value = '';
+                
+                // Enviar webhook
+                sendWebhook(message);
+                
+            }, 150);
         }
         
         function createInputTransition(message, originalInput) {
