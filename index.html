@@ -2863,7 +2863,7 @@
             .mobile-typing-placeholder {
                 position: absolute;
                 left: 20px;
-                top: 50%;
+                top: 15px;
                 transform: translateY(-50%);
                 color: #999;
                 font-family: 'Graphik', sans-serif;
@@ -2872,6 +2872,7 @@
                 z-index: 1;
                 white-space: nowrap;
                 overflow: hidden;
+                transition: opacity 0.3s ease; 
             }
             
             .mobile-typing-placeholder.typing::after {
@@ -2881,6 +2882,11 @@
                 position: relative;
                 top: -2px;
                 font-weight: normal;
+            }
+           .mobile-input-wrapper .mobile-chat-input:focus ~ .mobile-typing-placeholder,
+            .mobile-input-wrapper .mobile-chat-input:not(:placeholder-shown) ~ .mobile-typing-placeholder {
+                opacity: 0;
+                visibility: hidden;
             }
             
             .mobile-disclaimer {
@@ -3631,33 +3637,36 @@
                     }
                 });
                 
-                // Pausar typing cuando el usuario está escribiendo
+                // MEJORADO: Pausar typing cuando el usuario interactúa
                 mobileChatInput.addEventListener('focus', () => {
+                    console.log('Mobile input focused - stopping typing');
                     stopTypingAnimation();
                 });
             
                 mobileChatInput.addEventListener('click', () => {
+                    console.log('Mobile input clicked - stopping typing');
                     stopTypingAnimation();
                 });
                 
+                // MEJORADO: Pausar inmediatamente cuando empieza a escribir
                 mobileChatInput.addEventListener('input', () => {
-                    if (mobileChatInput.value.length > 0) {
-                        stopTypingAnimation();
-                    }
+                    stopTypingAnimation();
+                    // Auto-resize textarea móvil
+                    mobileChatInput.style.height = 'auto';
+                    mobileChatInput.style.height = Math.min(mobileChatInput.scrollHeight, 120) + 'px';
                 });
                 
+                // MEJORADO: Solo reanudar si el campo está completamente vacío
                 mobileChatInput.addEventListener('blur', function() {
                     if (!this.value.trim()) {
                         setTimeout(() => {
-                            resumeTypingAnimation();
+                            // Verificar de nuevo que esté vacío antes de reanudar
+                            if (!this.value.trim() && document.activeElement !== this) {
+                                console.log('Mobile input blurred and empty - resuming typing');
+                                resumeTypingAnimation();
+                            }
                         }, 500);
                     }
-                });
-                
-                // Auto-resize textarea móvil
-                mobileChatInput.addEventListener('input', function() {
-                    this.style.height = 'auto';
-                    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
                 });
             }
             
@@ -4358,6 +4367,8 @@
         }
         
         function stopTypingAnimation() {
+            console.log('Stopping typing animation, mobile view:', isMobileView());
+            
             if (isMobileView()) {
                 mobileTypingPaused = true;
             } else {
@@ -4367,10 +4378,30 @@
             const typingPlaceholder = getTypingPlaceholder();
             if (typingPlaceholder) {
                 typingPlaceholder.classList.remove('typing');
+                // AÑADIDO: Ocultar completamente el placeholder cuando se pausa
+                typingPlaceholder.style.opacity = '0';
             }
         }
         
         function resumeTypingAnimation() {
+            console.log('Resuming typing animation, mobile view:', isMobileView());
+            
+            const typingPlaceholder = getTypingPlaceholder();
+            if (!typingPlaceholder) return;
+            
+            // Verificar que realmente no hay texto en el input correspondiente
+            const input = isMobileView() ? 
+                document.getElementById('mobileChatInput') : 
+                document.getElementById('welcomeChatInput');
+                
+            if (input && input.value.trim()) {
+                console.log('Input has content, not resuming typing');
+                return;
+            }
+            
+            // Restaurar visibilidad del placeholder
+            typingPlaceholder.style.opacity = '1';
+            
             if (isMobileView()) {
                 mobileTypingPaused = false;
                 mobileCurrentCharIndex = 0;
@@ -4380,6 +4411,7 @@
                 currentCharIndex = 0;
                 currentTypingIndex = 0;
             }
+            
             startTypingAnimation();
         }
         
