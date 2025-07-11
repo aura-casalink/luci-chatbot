@@ -1526,6 +1526,17 @@
             color: #333;
         }
 
+       /* Estilos para popup de bienvenida */
+        #welcomePopup .popup-subtitle {
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+        
+        #welcomePopup .popup-title {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
        /* =================== LAYOUT DE DOS COLUMNAS =================== */
         .chat-column {
             flex: 0 0 50%; 
@@ -3549,12 +3560,12 @@
     <div class="popup-overlay" id="loginPopup">
         <div class="popup-content">
             <button class="popup-close" onclick="closeLoginPopup()">&times;</button>
-            <h2 class="popup-title">Crea tu cuenta</h2>
-            <p class="popup-subtitle">Crear tu cuenta es gratis y muy sencillo</p>
+            <h2 class="popup-title">👋</h2>
+            <p class="popup-subtitle">Inicia sesión o crea tu cuenta</p>
             
             <div class="login-method">
-                <button class="login-btn active" onclick="selectLoginMethod('whatsapp')">WhatsApp</button>
-                <button class="login-btn" onclick="selectLoginMethod('email')">Email</button>
+                <button class="login-btn active" onclick="selectLoginMethod('whatsapp')">Iniciar sesión con teléfono</button>
+                <button class="login-btn" onclick="selectLoginMethod('email')">Iniciar sesión con email</button>
             </div>
             
             <div id="whatsappLogin">
@@ -3565,7 +3576,17 @@
                 <input type="email" class="email-input" placeholder="tu@email.com" id="emailInput">
             </div>
             
-            <button class="send-code-btn" onclick="sendLoginCode()">Enviar código</button>
+            <button class="send-code-btn" onclick="showWelcomePopup()">Continuar</button>
+        </div>
+    </div>
+    
+    <!-- Nuevo Popup de Bienvenida -->
+    <div class="popup-overlay" id="welcomePopup">
+        <div class="popup-content">
+            <button class="popup-close" onclick="closeWelcomePopup()">&times;</button>
+            <h2 class="popup-title">¡Gracias por tu interés en nuestra plataforma!</h2>
+            <p class="popup-subtitle">Nuestro equipo de ventas se pondrá en contacto contigo para darte acceso a las funcionalidades premium lo antes posible. Mientras tanto, puedes hacer uso ilimitado de nuestro buscador de propiedades.</p>
+            <button class="send-code-btn" onclick="closeWelcomePopup()">Entendido</button>
         </div>
     </div>
 
@@ -7074,6 +7095,18 @@
                 // Mostrar área de chat
                 mobileChatArea.classList.add('fade-in');
             }
+        }
+
+        function showWelcomePopup() {
+            // Cerrar el popup de login
+            document.getElementById('loginPopup').style.display = 'none';
+            
+            // Mostrar el popup de bienvenida
+            document.getElementById('welcomePopup').style.display = 'flex';
+        }
+        
+        function closeWelcomePopup() {
+            document.getElementById('welcomePopup').style.display = 'none';
         }
                 
     </script>
