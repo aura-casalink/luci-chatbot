@@ -6837,7 +6837,7 @@
                         </div>
                     </div>
                     
-                    <button class="contact-sales-btn" onclick="showContactInfoPopup('${property.title}', '${property.propertyCode || property.id || 'unknown'}')">
+                    <button class="contact-sales-btn" onclick="showContactInfoPopup('${property.title || property.address || 'Propiedad'}', '${property.property_id || property.propertyCode || property.id || 'unknown'}')">
                         Más Información
                     </button>
                     
