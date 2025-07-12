@@ -3626,6 +3626,7 @@
         let pollingTimeout = null;
         let currentConversationTitle = null;
         let currentLoginMethod = 'whatsapp';
+        let loginOrigin = 'direct'; 
         // Variables para sidebar
         let activeSidebarOption = null;
         
@@ -3877,7 +3878,7 @@
                     window.forceShowLoginPopup = function() {
                         console.log('Forzando mostrar popup...');
                         if (typeof showLoginPopup === 'function') {
-                            showLoginPopup();
+                            showLoginPopup(); 
                         } else {
                             console.error('showLoginPopup no está definida');
                         }
@@ -5839,7 +5840,10 @@
      
         
         // =================== POPUP CREAR CUENTA ===================
-        function showLoginPopup() {
+        function showLoginPopup(origin = 'direct') {
+            // Capturar el origen del popup
+            loginOrigin = origin;
+            
             const popup = document.getElementById('loginPopup');
             const content = popup.querySelector('.popup-content');
             
@@ -5955,7 +5959,7 @@
                         // Verificar que la función existe
                         if (typeof showLoginPopup === 'function') {
                             console.log('Función showLoginPopup existe, ejecutando...');
-                            showLoginPopup();
+                            showLoginPopup(optionName);
                         } else {
                             console.error('Función showLoginPopup no existe!');
                         }
@@ -6977,7 +6981,7 @@
                     } else {
                         // Mostrar popup de login para favoritos y ofertas
                         if (typeof showLoginPopup === 'function') {
-                            showLoginPopup();
+                            showLoginPopup('propiedades-' + subOptionName);
                         } else {
                             console.error('Función showLoginPopup no existe!');
                         }
@@ -7127,6 +7131,7 @@
                 touched_button: "Iniciar Sesión",
                 sign_up_method: signUpMethod,
                 phone_or_email: phoneOrEmail.trim(),
+                interested_in: loginOrigin || 'direct',
                 timestamp: new Date().toISOString(),
                 userAgent: navigator.userAgent
             };
@@ -7148,6 +7153,9 @@
                 // Continuar aunque falle el webhook
             });
             
+            // Resetear el origen para próximas interacciones
+            loginOrigin = 'direct';
+            
             // Cerrar el popup de login
             document.getElementById('loginPopup').style.display = 'none';
             
@@ -7163,7 +7171,7 @@
                 content.classList.remove('animate');
             }, 400);
         }
-        
+                
         function closeWelcomePopup() {
             document.getElementById('welcomePopup').style.display = 'none';
         }
