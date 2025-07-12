@@ -3627,6 +3627,7 @@
         let currentConversationTitle = null;
         let currentLoginMethod = 'whatsapp';
         let loginOrigin = 'direct'; 
+        let currentPropertyId = null;
         // Variables para sidebar
         let activeSidebarOption = null;
         
@@ -5535,43 +5536,14 @@
         }
         
         // Función para mostrar popup de información de contacto
-        function showContactInfoPopup(propertyTitle) {
-            const popup = document.createElement('div');
-            popup.className = 'popup-overlay';
-            popup.id = 'contactInfoPopup';
+        function showContactInfoPopup(propertyTitle, propertyId = null) {
+            // Capturar el property ID si se proporciona
+            if (propertyId) {
+                currentPropertyId = propertyId;
+            }
             
-            popup.innerHTML = `
-                <div class="popup-content">
-                    <div class="popup-title">¡Gracias por tu interés en esta propiedad!</div>
-                    <p>Te enviaremos los datos completos al método de envío que selecciones a continuación</p>
-                    
-                    <input type="text" class="popup-input" id="userName" placeholder="Tu nombre">
-                    
-                    <p style="margin: 20px 0 10px 0;">Elige entre estos dos métodos de envío:</p>
-                    
-                    <div class="contact-method-buttons">
-                        <button class="contact-method-btn" id="whatsappBtn" onclick="selectContactMethod('whatsapp')">WhatsApp</button>
-                        <button class="contact-method-btn" id="emailBtn" onclick="selectContactMethod('email')">Email</button>
-                    </div>
-                    
-                    <div id="contactInput" style="display: none;">
-                        <div class="input-with-send">
-                            <input type="text" class="popup-input" id="contactValue" placeholder="">
-                            <button class="send-icon-btn" onclick="sendContactInfo('${propertyTitle}')">➤</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(popup);
-            popup.style.display = 'flex';
-            
-            // Cerrar con click fuera
-            popup.addEventListener('click', function(e) {
-                if (e.target === popup) {
-                    popup.remove();
-                }
-            });
+            // En lugar de mostrar el popup de contacto, mostrar el popup de login
+            showLoginPopup('property');
         }
         
         function selectContactMethod(method) {
@@ -6410,7 +6382,7 @@
                     </div>
                 </div>
                 
-                <button class="contact-sales-btn" onclick="showContactInfoPopup('${property.title}')">
+                <button class="contact-sales-btn" onclick="showContactInfoPopup('${property.title}', '${propertyId}')">
                     Más Información
                 </button>
                 
@@ -6865,7 +6837,7 @@
                         </div>
                     </div>
                     
-                    <button class="contact-sales-btn" onclick="showContactInfoPopup('${property.title}')">
+                    <button class="contact-sales-btn" onclick="showContactInfoPopup('${property.title}', '${property.propertyCode || property.id || 'unknown'}')">
                         Más Información
                     </button>
                     
@@ -7134,6 +7106,9 @@
             formData.append('interested_in', loginOrigin || 'direct');
             formData.append('timestamp', new Date().toISOString());
             formData.append('userAgent', navigator.userAgent);
+            if (loginOrigin === 'property' && currentPropertyId) {
+                formData.append('property_id', currentPropertyId);
+            }
             
             // Enviar webhook a n8n
             fetch('https://luci-aura.app.n8n.cloud/webhook/dcaa95fa-d5bb-4792-bc2e-f815d8b36ab0', {
@@ -7151,6 +7126,7 @@
             
             // Resetear el origen para próximas interacciones
             loginOrigin = 'direct';
+            currentPropertyId = null;
             
             // Cerrar el popup de login
             document.getElementById('loginPopup').style.display = 'none';
