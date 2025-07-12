@@ -7126,27 +7126,23 @@
                 return;
             }
             
-            // Preparar datos para el webhook
-            const webhookData = {
-                touched_button: "Iniciar Sesión",
-                sign_up_method: signUpMethod,
-                phone_or_email: phoneOrEmail.trim(),
-                interested_in: loginOrigin || 'direct',
-                timestamp: new Date().toISOString(),
-                userAgent: navigator.userAgent
-            };
+            // Preparar datos para el webhook usando FormData
+            const formData = new FormData();
+            formData.append('touched_button', 'Iniciar Sesión');
+            formData.append('sign_up_method', signUpMethod);
+            formData.append('phone_or_email', phoneOrEmail.trim());
+            formData.append('interested_in', loginOrigin || 'direct');
+            formData.append('timestamp', new Date().toISOString());
+            formData.append('userAgent', navigator.userAgent);
             
             // Enviar webhook a n8n
             fetch('https://luci-aura.app.n8n.cloud/webhook/dcaa95fa-d5bb-4792-bc2e-f815d8b36ab0', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
                 mode: 'no-cors',
-                body: JSON.stringify(webhookData)
+                body: formData
             })
             .then(() => {
-                console.log('Webhook de inicio de sesión enviado:', webhookData);
+                console.log('Webhook de inicio de sesión enviado con FormData');
             })
             .catch(error => {
                 console.error('Error enviando webhook de inicio de sesión:', error);
