@@ -2069,6 +2069,10 @@
             justify-content: flex-end;
             padding-right: 15px !important;
         }
+       
+       .topbar-logo-mobile {
+           display: none !important;
+       }
         
         .language-selector-topbar {
             display: flex;
@@ -2601,8 +2605,24 @@
                 z-index: 999;
                 display: flex;
                 align-items: center;
-                justify-content: flex-end;
-                padding-right: 15px !important;
+                justify-content: space-between;
+                padding: 0 15px !important;
+            }
+
+           /* Logo móvil en topbar */
+            .topbar-logo-mobile {
+                width: 40px;
+                height: 40px;
+                background-color: #FFC900;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Montserrat', sans-serif;
+                font-weight: 700;
+                font-size: 18px;
+                color: #000;
+                flex-shrink: 0;
             }
             
             .language-selector-topbar {
@@ -3321,6 +3341,7 @@
     <div class="container sidebar-active">
          <!-- Topbar -->
         <div class="topbar">
+            <div class="topbar-logo-mobile">A</div>
             <div class="language-selector-topbar">
                 <img src="https://flagcdn.com/w40/es.png" alt="Español" class="flag-btn-small active" onclick="changeLanguage('spanish')" data-lang="spanish">
                 <img src="https://flagcdn.com/w40/gb.png" alt="English" class="flag-btn-small" onclick="changeLanguage('english')" data-lang="english">
