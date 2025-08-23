@@ -6758,6 +6758,11 @@
                     
                     // Restaurar opacidad y funcionalidad
                     card.style.opacity = '1';
+
+                    const exclusiveTag = card.querySelector('.exclusive-tag');
+                    if (exclusiveTag) {
+                        exclusiveTag.remove();
+                    }
                     
                     // Actualizar imagen de fondo
                     const imageDiv = card.querySelector('.property-image');
@@ -6895,7 +6900,7 @@
             
             slideCard.innerHTML = `
                 <div class="property-slide-content">
-                    <button class="property-slide-close" onclick="closePropertySlide()">×</button>
+                    <button class="property-slide-close" onclick="closePropertySlide()">X</button>
                     
                     <div class="property-slide-header">
                         <div class="property-slide-title">${property.title}</div>
