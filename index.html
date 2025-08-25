@@ -6757,6 +6757,21 @@
             const propertyCards = document.querySelectorAll('.property-card');
             
             // Actualizar hasta 9 propiedades
+            console.log('🧹 Preparando limpieza antes de nueva actualización...');
+            
+            // Pre-limpiar todas las tarjetas antes de actualizar
+            const propertyCards = document.querySelectorAll('.property-card');
+            propertyCards.forEach((card, index) => {
+                // Limpiar dataset de búsquedas anteriores
+                card.dataset.propertyData = '';
+                
+                // Si la tarjeta va a ser reutilizada, limpiar primero
+                const imageDiv = card.querySelector('.property-image');
+                if (imageDiv) {
+                    imageDiv.style.backgroundColor = '#f0f0f0';
+                }
+            });
+            
             const propertiesToShow = properties.slice(0, 9);
             
             propertiesToShow.forEach((property, index) => {
@@ -6807,19 +6822,42 @@
             
             // Si hay menos de 9 propiedades, atenuar las tarjetas sobrantes
             for (let i = propertiesToShow.length; i < propertyCards.length; i++) {
-                propertyCards[i].style.opacity = '0.3';
-                propertyCards[i].onclick = null;
+                const card = propertyCards[i];
                 
-                // Limpiar contenido de tarjetas vacías
-                const imageDiv = propertyCards[i].querySelector('.property-image');
-                const priceElement = propertyCards[i].querySelector('.property-price');
-                const locationElement = propertyCards[i].querySelector('.property-location');
-                const amenitiesContainer = propertyCards[i].querySelector('.amenities-icons');
+                // Mantener opacidad atenuada (comportamiento visual que te gusta)
+                card.style.opacity = '0.3';
+                card.onclick = null;
                 
-                if (imageDiv) imageDiv.style.backgroundImage = '';
-                if (priceElement) priceElement.textContent = '';
-                if (locationElement) locationElement.textContent = '';
-                if (amenitiesContainer) amenitiesContainer.innerHTML = '';
+                const imageDiv = card.querySelector('.property-image');
+                const priceElement = card.querySelector('.property-price');
+                const locationElement = card.querySelector('.property-location');
+                const amenitiesContainer = card.querySelector('.amenities-icons');
+                
+                // Limpiar imagen completamente
+                if (imageDiv) {
+                    imageDiv.style.backgroundImage = 'none';
+                    imageDiv.style.backgroundColor = '#f0f0f0'; // Color placeholder
+                    imageDiv.innerHTML = ''; // Limpiar cualquier contenido interno
+                }
+                
+                // Limpiar texto
+                if (priceElement) {
+                    priceElement.textContent = '';
+                    priceElement.innerHTML = '';
+                }
+                if (locationElement) {
+                    locationElement.textContent = '';
+                    locationElement.innerHTML = '';
+                }
+                if (amenitiesContainer) {
+                    amenitiesContainer.innerHTML = '';
+                }
+                
+                // Limpiar dataset que puede contener datos anteriores
+                card.dataset.propertyData = '';
+                
+                // Remover cualquier clase específica de propiedad
+                card.classList.remove('has-data');
             }
             
             console.log(`Grid actualizado con ${propertiesToShow.length} de ${totalProperties} propiedades`);
