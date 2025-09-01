@@ -1913,6 +1913,57 @@
             transform: translateY(-1px);
             box-shadow: 0 2px 8px rgba(255, 201, 0, 0.3);
         }
+
+       /* Botón de compartir */
+        .share-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+        
+        .share-button:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        .share-button svg {
+            width: 20px;
+            height: 20px;
+            color: #333;
+        }
+        
+        /* Tooltip para copiar */
+        .share-tooltip {
+            position: absolute;
+            top: -35px;
+            right: -20px;
+            background: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .share-tooltip.show {
+            opacity: 1;
+        }
         
         .property-slide-map {
             grid-area: map;
@@ -2610,6 +2661,11 @@
             /* Ocultar sub-sidebar en móvil */
             .properties-sub-sidebar {
                 display: none !important;
+            }
+
+           .share-button {
+                top: 45px;
+                right: 10px;
             }
         
             /* =================== TOPBAR MÓVIL =================== */
