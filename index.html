@@ -7020,10 +7020,12 @@
                             </svg>
                         `;
                         
-                        // Usar onclick directo en lugar de setAttribute
-                        shareButton.onclick = function(event) {
+                        shareButton.addEventListener('click', function(event) {
+                            event.stopPropagation();
+                            event.preventDefault();
+                            console.log('Compartiendo propiedad con ID:', propertyId);
                             shareProperty(propertyId, event);
-                        };
+                        });
                         
                         imageDiv.appendChild(shareButton);
                     }
