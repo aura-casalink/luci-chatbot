@@ -1938,33 +1938,57 @@
             background: rgba(255, 255, 255, 1);
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
-        
+                
         .share-button svg {
             width: 20px;
             height: 20px;
-            color: #333;
+            fill: #333;
         }
-        
+
+       .property-card .share-button {
+            top: 8px;
+            right: 8px;
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+       .property-card .share-button svg {
+            width: 16px;
+            height: 16px;
+        }
+                        
         /* Tooltip para copiar */
         .share-tooltip {
-            position: absolute;
-            top: -35px;
-            right: -20px;
-            background: #333;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
             color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
             white-space: nowrap;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s;
-        }
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }   
         
         .share-tooltip.show {
             opacity: 1;
+            animation: tooltipPulse 0.3s ease;
         }
-        
+       
+       @keyframes tooltipPulse {
+            0% { transform: translate(-50%, -50%) scale(0.8); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+                
         .property-slide-map {
             grid-area: map;
             height: 100%; /* Ocupar toda la altura del área del grid */
@@ -2666,6 +2690,18 @@
            .share-button {
                 top: 45px;
                 right: 10px;
+            }
+           
+           .property-slide-card .share-button {
+                top: 45px;
+                right: 10px;
+            }
+            
+            .property-card .share-button {
+                top: 6px;
+                right: 6px;
+                width: 28px;
+                height: 28px;
             }
         
             /* =================== TOPBAR MÓVIL =================== */
@@ -3553,6 +3589,12 @@
                     <!-- Propiedad 1 -->
                     <div class="property-card" onclick="openPropertyDetail(1)">
                         <div class="property-image" style="background-image: url('https://f003.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z8d6e5dd5a5cccbf59d6b0816_f111c9c7653cb0e93_d20250710_m075738_c003_v0312029_t0056_u01752134258027'); background-size: cover; background-position: center;">
+                             <!-- Botón de compartir en la miniatura -->
+                            <button class="share-button" onclick="shareProperty('propiedad1', event)" title="Compartir">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                                </svg>
+                            </button>
                             <div class="amenities-icons">
                                 <div class="amenity-icon" title="Terraza">
                                     <img src="https://cdn-icons-png.flaticon.com/512/3623/3623094.png" alt="Terraza">
@@ -3572,6 +3614,11 @@
                     <!-- Propiedad 2 -->
                     <div class="property-card" onclick="openPropertyDetail(2)">
                         <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/be/b2/f1/1217657644.webp'); background-size: cover; background-position: center;">
+                            <button class="share-button" onclick="shareProperty('propiedad1', event)" title="Compartir">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                                </svg>
+                            </button>
                             <div class="amenities-icons">
                                 <div class="amenity-icon" title="Ascensor">
                                     <img src="https://cdn-icons-png.flaticon.com/512/948/948747.png" alt="Ascensor">
@@ -3600,6 +3647,11 @@
                     <!-- Propiedad 3 -->
                     <div class="property-card" onclick="openPropertyDetail(3)">
                         <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/47/aa/2a/1217657655.webp'); background-size: cover; background-position: center;">
+                            <button class="share-button" onclick="shareProperty('propiedad1', event)" title="Compartir">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                                </svg>
+                            </button>
                             <div class="amenities-icons">
                                 <div class="amenity-icon" title="Ascensor">
                                     <img src="https://cdn-icons-png.flaticon.com/512/948/948747.png" alt="Ascensor">
@@ -3622,6 +3674,11 @@
                     <!-- Propiedad 4 -->
                     <div class="property-card" onclick="openPropertyDetail(4)">
                         <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/ef/da/02/1352099408.webp'); background-size: cover; background-position: center;">
+                            <button class="share-button" onclick="shareProperty('propiedad1', event)" title="Compartir">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                                </svg>
+                            </button>
                             <div class="amenities-icons">
                                 <div class="amenity-icon" title="Ascensor">
                                     <img src="https://cdn-icons-png.flaticon.com/512/948/948747.png" alt="Ascensor">
@@ -3641,6 +3698,11 @@
                     <!-- Propiedad 5 -->
                     <div class="property-card" onclick="openPropertyDetail(5)">
                         <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/26/87/e3/1257669860.webp'); background-size: cover; background-position: center;">
+                            <button class="share-button" onclick="shareProperty('propiedad1', event)" title="Compartir">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                                </svg>
+                            </button>
                             <div class="amenities-icons">
                                 <div class="amenity-icon" title="Ascensor">
                                     <img src="https://cdn-icons-png.flaticon.com/512/948/948747.png" alt="Ascensor">
@@ -3660,6 +3722,11 @@
                     <!-- Propiedad 6 -->
                     <div class="property-card" onclick="openPropertyDetail(6)">
                         <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/5a/c4/85/1347007848.webp'); background-size: cover; background-position: center;">
+                           <button class="share-button" onclick="shareProperty('propiedad1', event)" title="Compartir">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                                </svg>
+                            </button>
                             <div class="amenities-icons">
                                 <div class="amenity-icon" title="Ascensor">
                                     <img src="https://cdn-icons-png.flaticon.com/512/948/948747.png" alt="Ascensor">
@@ -3675,6 +3742,11 @@
                     <!-- Propiedad 7 -->
                     <div class="property-card" onclick="openPropertyDetail(7)">
                         <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/3c/54/a2/1347007801.webp'); background-size: cover; background-position: center;">
+                            <button class="share-button" onclick="shareProperty('propiedad1', event)" title="Compartir">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                                </svg>
+                            </button>
                             <div class="amenities-icons">
                                 <div class="amenity-icon" title="Terraza">
                                     <img src="https://cdn-icons-png.flaticon.com/512/3623/3623094.png" alt="Terraza">
@@ -3690,6 +3762,11 @@
                     <!-- Propiedad 8 -->
                     <div class="property-card" onclick="openPropertyDetail(8)">
                         <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/96/6b/9a/1347007850.webp'); background-size: cover; background-position: center;">
+                           <button class="share-button" onclick="shareProperty('propiedad1', event)" title="Compartir">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                                </svg>
+                            </button>
                             <div class="amenities-icons">
                                 <div class="amenity-icon" title="Ascensor">
                                     <img src="https://cdn-icons-png.flaticon.com/512/948/948747.png" alt="Ascensor">
@@ -3708,6 +3785,11 @@
                     <!-- Propiedad 9 -->
                     <div class="property-card" onclick="openPropertyDetail(9)">
                         <div class="property-image" style="background-image: url('https://img4.idealista.com/blur/480_360_mq/0/id.pro.es.image.master/77/54/29/1347007867.webp'); background-size: cover; background-position: center;">
+                            <button class="share-button" onclick="shareProperty('propiedad1', event)" title="Compartir">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                                </svg>
+                            </button>
                             <div class="amenities-icons">
                                 <div class="amenity-icon" title="Parking">
                                     <img src="https://cdn-icons-png.flaticon.com/512/75/75905.png" alt="Parking">
@@ -6645,26 +6727,34 @@
 }
 
     function shareProperty(propertyId, event) {
-        // Prevenir que se cierre la tarjeta si está dentro de ella
+        // Prevenir que se cierre la tarjeta o se active otro evento
         if (event) {
             event.stopPropagation();
+            event.preventDefault();
         }
         
         // Construir la URL de compartir
         const shareUrl = `https://luci.aura-app.es/share/${propertyId}`;
         
+        // Crear o obtener el tooltip global
+        let tooltip = document.getElementById('globalShareTooltip');
+        if (!tooltip) {
+            tooltip = document.createElement('div');
+            tooltip.id = 'globalShareTooltip';
+            tooltip.className = 'share-tooltip';
+            tooltip.innerHTML = '📋 ¡Enlace copiado al portapapeles!';
+            document.body.appendChild(tooltip);
+        }
+        
         // Copiar al portapapeles
         navigator.clipboard.writeText(shareUrl).then(() => {
             // Mostrar tooltip de confirmación
-            const tooltip = document.getElementById('shareTooltip');
-            if (tooltip) {
-                tooltip.classList.add('show');
-                
-                // Ocultar después de 2 segundos
-                setTimeout(() => {
-                    tooltip.classList.remove('show');
-                }, 2000);
-            }
+            tooltip.classList.add('show');
+            
+            // Ocultar después de 2 segundos
+            setTimeout(() => {
+                tooltip.classList.remove('show');
+            }, 2000);
         }).catch(err => {
             // Fallback para navegadores antiguos
             const textArea = document.createElement('textarea');
@@ -6676,13 +6766,10 @@
             
             try {
                 document.execCommand('copy');
-                const tooltip = document.getElementById('shareTooltip');
-                if (tooltip) {
-                    tooltip.classList.add('show');
-                    setTimeout(() => {
-                        tooltip.classList.remove('show');
-                    }, 2000);
-                }
+                tooltip.classList.add('show');
+                setTimeout(() => {
+                    tooltip.classList.remove('show');
+                }, 2000);
             } catch (err) {
                 alert('No se pudo copiar el enlace. URL: ' + shareUrl);
             }
@@ -7046,8 +7133,8 @@
                     
                     <!-- Botón de compartir -->
                     <button class="share-button" onclick="shareProperty('${propertyId}', event)" title="Compartir propiedad">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m9.032 4.024a3 3 0 10-4.056-4.342m4.056 4.342a3 3 0 10-4.056 4.342M6.732 6.732a3 3 0 10-4.056 4.056m0 0a3 3 0 104.056 4.056" />
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
                         </svg>
                         <span class="share-tooltip" id="shareTooltip">¡Enlace copiado!</span>
                     </button>
