@@ -3759,6 +3759,35 @@
     </div>
 
     <script>
+
+        // Redirect inverso de desktop a mobile
+        (function() {
+            // Verificar si estamos en desktop-luci.aura-app.es
+            if (window.location.hostname === 'desktop-luci.aura-app.es') {
+                // Detectar si es un dispositivo móvil
+                const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+                                     || (window.innerWidth <= 768);
+                
+                if (isMobileDevice) {
+                    // Construir la URL de redirect manteniendo el path
+                    const mobilePath = window.location.pathname + window.location.search + window.location.hash;
+                    const mobileUrl = 'https://luci.aura-app.es' + mobilePath;
+                    
+                    // Hacer el redirect
+                    window.location.replace(mobileUrl);
+                }
+            }
+            
+            // También manejar las URLs de compartir
+            if (window.location.pathname.startsWith('/share/')) {
+                // Aquí puedes añadir lógica para cargar la propiedad específica
+                const propertyId = window.location.pathname.split('/share/')[1];
+                if (propertyId) {
+                    // Guardar el ID para cargarlo cuando la página esté lista
+                    window.sharedPropertyId = propertyId;
+                }
+            }
+        })();
         // Variables globales
         let isWaitingForResponse = false;
         let currentSessionId = null;
@@ -6615,6 +6644,53 @@
     }
 }
 
+    function shareProperty(propertyId, event) {
+        // Prevenir que se cierre la tarjeta si está dentro de ella
+        if (event) {
+            event.stopPropagation();
+        }
+        
+        // Construir la URL de compartir
+        const shareUrl = `https://luci.aura-app.es/share/${propertyId}`;
+        
+        // Copiar al portapapeles
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            // Mostrar tooltip de confirmación
+            const tooltip = document.getElementById('shareTooltip');
+            if (tooltip) {
+                tooltip.classList.add('show');
+                
+                // Ocultar después de 2 segundos
+                setTimeout(() => {
+                    tooltip.classList.remove('show');
+                }, 2000);
+            }
+        }).catch(err => {
+            // Fallback para navegadores antiguos
+            const textArea = document.createElement('textarea');
+            textArea.value = shareUrl;
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                const tooltip = document.getElementById('shareTooltip');
+                if (tooltip) {
+                    tooltip.classList.add('show');
+                    setTimeout(() => {
+                        tooltip.classList.remove('show');
+                    }, 2000);
+                }
+            } catch (err) {
+                alert('No se pudo copiar el enlace. URL: ' + shareUrl);
+            }
+            
+            document.body.removeChild(textArea);
+        });
+    }
+        
     function changeSlideImage(direction) {
         const carousel = document.getElementById('slideCarousel');
         const images = carousel.querySelectorAll('img');
@@ -6955,6 +7031,9 @@
             // Similar a openPropertyDetail pero usando datos dinámicos
             const propertiesColumn = document.querySelector('.properties-column');
             
+            // Usar propertyCode, si no existe usar id, si no usar un hash del precio y dirección
+            const propertyId = property.propertyCode || property.id || btoa(`${property.price}_${property.address}`).substring(0, 10);
+            
             const slideCard = document.createElement('div');
             slideCard.className = 'property-slide-card';
             slideCard.id = 'propertySlideCard';
@@ -6963,8 +7042,14 @@
             
             slideCard.innerHTML = `
                 <div class="property-slide-content">
-                    <button class="property-slide-close" onclick="closePropertySlide()">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2723/2723639.png" alt="Cerrar" style="width: 16px; height: 16px;">
+                    <button class="property-slide-close" onclick="closePropertySlide()">×</button>
+                    
+                    <!-- Botón de compartir -->
+                    <button class="share-button" onclick="shareProperty('${propertyId}', event)" title="Compartir propiedad">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m9.032 4.024a3 3 0 10-4.056-4.342m4.056 4.342a3 3 0 10-4.056 4.342M6.732 6.732a3 3 0 10-4.056 4.056m0 0a3 3 0 104.056 4.056" />
+                        </svg>
+                        <span class="share-tooltip" id="shareTooltip">¡Enlace copiado!</span>
                     </button>
                     
                     <div class="property-slide-header">
@@ -6993,38 +7078,36 @@
                         </div>
                     </div>
                     
-                    <button class="contact-sales-btn" onclick="showContactInfoPopup('${property.title || property.address || 'Propiedad'}', '${property.property_id || property.propertyCode || property.id || 'unknown'}')">
+                    <button class="contact-sales-btn" onclick="showContactInfoPopup('${property.title || property.address || 'Propiedad'}', '${propertyId}')">
                         Más Información
                     </button>
                     
                     <div class="property-slide-map">
-                        ${property.lat && property.lng ? `
-                            <iframe 
+                        ${property.lat && property.lng ? 
+                            `<iframe 
+                                src="https://www.google.com/maps?q=${property.lat},${property.lng}&z=15&output=embed" 
                                 width="100%" 
                                 height="100%" 
-                                frameborder="0" 
-                                style="border:0"
-                                src="https://www.google.com/maps/embed/v1/view?key=AIzaSyAf-L38UI3hGyYrMJjeFO0Ij2n1p1mCyMk&center=${property.lat},${property.lng}&zoom=16"
-                                allowfullscreen>
-                            </iframe>
-                        ` : '<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #888;">Ubicación no disponible</div>'}
+                                style="border:0;" 
+                                allowfullscreen="" 
+                                loading="lazy">
+                            </iframe>` : 
+                            '<div style="background: #eee; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">Mapa no disponible</div>'
+                        }
                     </div>
                     
                     <div class="property-slide-carousel-area">
-                        <div class="property-slide-carousel" id="slideCarousel">
-                            ${property.images && property.images.length > 0 ? 
-                                property.images.map((img, index) => 
-                                    `<img src="${img}" alt="${property.title}" ${index === 0 ? 'class="active"' : ''} onclick="openImageZoom('${img}')">`
-                                ).join('') :
-                                `<div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #888;">No hay imágenes disponibles</div>`
-                            }
-                            ${property.images && property.images.length > 1 ? `
+                        <div class="property-slide-carousel">
+                            ${property.images.map((img, index) => 
+                                `<img src="${img}" alt="Imagen ${index + 1}" ${index === 0 ? 'class="active"' : ''} onclick="openImageZoom('${img}')">`
+                            ).join('')}
+                            ${property.images.length > 1 ? `
                                 <button class="slide-carousel-nav slide-carousel-prev" onclick="changeSlideImage(-1)">‹</button>
                                 <button class="slide-carousel-nav slide-carousel-next" onclick="changeSlideImage(1)">›</button>
                             ` : ''}
                         </div>
                         
-                        ${property.images && property.images.length > 1 ? `
+                        ${property.images.length > 1 ? `
                             <div class="carousel-indicators">
                                 ${property.images.map((_, index) => 
                                     `<div class="carousel-dot ${index === 0 ? 'active' : ''}" onclick="goToSlideImage(${index})"></div>`
@@ -7035,28 +7118,30 @@
                     
                     <div class="property-slide-description-area">
                         <div class="description-title">Descripción</div>
-                        <div class="property-slide-description">${property.description || 'No hay descripción disponible.'}</div>
+                        <div class="property-slide-description">${property.description}</div>
                     </div>
                     
                     <div class="property-feedback-area">
                         <div class="feedback-question">¿Qué te parece esta propiedad?</div>
                         <div class="feedback-buttons">
-                            <button class="feedback-btn" onclick="selectFeedback('like', this)" data-property-id="${property.property_id}">👍</button>
-                            <button class="feedback-btn" onclick="selectFeedback('dislike', this)" data-property-id="${property.property_id}">👎</button>
+                            <button class="feedback-btn" onclick="selectFeedback('like', this)" data-property-id="${propertyId}">👍</button>
+                            <button class="feedback-btn" onclick="selectFeedback('dislike', this)" data-property-id="${propertyId}">👎</button>
                         </div>
                     </div>
                 </div>
             `;
             
+            // Añadir la tarjeta al contenedor de propiedades
             propertiesColumn.appendChild(slideCard);
             
+            // Activar la animación de deslizamiento
             setTimeout(() => {
                 slideCard.classList.add('active');
             }, 10);
             
+            // Inicializar índice de imagen actual
             window.currentSlideImageIndex = 0;
-            
-            // Para móvil: añadir clase al body y prevenir scroll
+        
             if (window.innerWidth <= 768) {
                 document.body.classList.add('property-card-open');
                 document.body.style.overflow = 'hidden';
