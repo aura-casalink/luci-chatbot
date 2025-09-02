@@ -6663,20 +6663,20 @@
                 </div>
                 
                 <div class="property-slide-carousel-area">
-                    <div class="property-slide-carousel" id="slideCarousel">
+                    <div class="property-slide-carousel">
                         ${property.images.map((img, index) => 
                             `<img src="${img}" alt="${property.title}" ${index === 0 ? 'class="active"' : ''} onclick="openImageZoom('${img}')">`
                         ).join('')}
                         ${property.images.length > 1 ? `
-                            <button class="slide-carousel-nav slide-carousel-prev" onclick="changeSlideImage(-1)">‹</button>
-                            <button class="slide-carousel-nav slide-carousel-next" onclick="changeSlideImage(1)">›</button>
+                            <button class="slide-carousel-nav slide-carousel-prev" onclick="changeSlideImage(-1, this)">‹</button>
+                            <button class="slide-carousel-nav slide-carousel-next" onclick="changeSlideImage(1, this)">›</button>
                         ` : ''}
                     </div>
                     
                     ${property.images.length > 1 ? `
                         <div class="carousel-indicators">
                             ${property.images.map((_, index) => 
-                                `<div class="carousel-dot ${index === 0 ? 'active' : ''}" onclick="goToSlideImage(${index})"></div>`
+                                `<div class="carousel-dot ${index === 0 ? 'active' : ''}" onclick="goToSlideImage(${index}, this)"></div>`
                             ).join('')}
                         </div>
                     ` : ''}
@@ -6782,63 +6782,87 @@
         });
     }
         
-    function changeSlideImage(direction) {
-        const carousel = document.getElementById('slideCarousel');
-        const images = carousel.querySelectorAll('img');
-        const dots = document.querySelectorAll('.carousel-dot');
+    window.changeSlideImage = function(direction, button) {
+        // Obtener el carrusel desde el botón que fue clickeado
+        const carousel = button ? button.closest('.property-slide-carousel') : document.querySelector('.property-slide-carousel');
         
-        // Remover clase active de imagen y dot actuales
-        images[window.currentSlideImageIndex].classList.remove('active');
-        if (dots.length > 0) {
-            dots[window.currentSlideImageIndex].classList.remove('active');
+        if (!carousel) {
+            console.error('Carousel no encontrado');
+            return;
+        }
+        
+        const images = carousel.querySelectorAll('img');
+        const slideCard = carousel.closest('.property-slide-card');
+        const dots = slideCard ? slideCard.querySelectorAll('.carousel-dot') : [];
+        
+        // Obtener o inicializar el índice actual
+        if (!carousel.dataset.currentIndex) {
+            carousel.dataset.currentIndex = '0';
+        }
+        let currentIndex = parseInt(carousel.dataset.currentIndex);
+        
+        // Remover clase active de imagen actual
+        if (images[currentIndex]) {
+            images[currentIndex].classList.remove('active');
+        }
+        if (dots[currentIndex]) {
+            dots[currentIndex].classList.remove('active');
         }
         
         // Calcular nuevo índice
-        window.currentSlideImageIndex += direction;
+        currentIndex += direction;
         
-        if (window.currentSlideImageIndex >= images.length) {
-            window.currentSlideImageIndex = 0;
-        } else if (window.currentSlideImageIndex < 0) {
-            window.currentSlideImageIndex = images.length - 1;
+        if (currentIndex >= images.length) {
+            currentIndex = 0;
+        } else if (currentIndex < 0) {
+            currentIndex = images.length - 1;
         }
         
+        // Guardar nuevo índice
+        carousel.dataset.currentIndex = currentIndex.toString();
+        
         // Activar nueva imagen y dot
-        images[window.currentSlideImageIndex].classList.add('active');
-        if (dots.length > 0) {
-            dots[window.currentSlideImageIndex].classList.add('active');
+        if (images[currentIndex]) {
+            images[currentIndex].classList.add('active');
+        }
+        if (dots[currentIndex]) {
+            dots[currentIndex].classList.add('active');
         }
     }
     
-    function goToSlideImage(index) {
-        const carousel = document.getElementById('slideCarousel');
-        const images = carousel.querySelectorAll('img');
-        const dots = document.querySelectorAll('.carousel-dot');
+    window.goToSlideImage = function(index, dot) {
+        // Obtener el carrusel desde el dot que fue clickeado
+        const slideCard = dot ? dot.closest('.property-slide-card') : document.querySelector('.property-slide-card');
+        if (!slideCard) return;
         
-        // Remover clase active de imagen y dot actuales
-        images[window.currentSlideImageIndex].classList.remove('active');
-        if (dots.length > 0) {
-            dots[window.currentSlideImageIndex].classList.remove('active');
+        const carousel = slideCard.querySelector('.property-slide-carousel');
+        if (!carousel) return;
+        
+        const images = carousel.querySelectorAll('img');
+        const dots = slideCard.querySelectorAll('.carousel-dot');
+        
+        // Obtener índice actual
+        let currentIndex = parseInt(carousel.dataset.currentIndex || '0');
+        
+        // Remover clase active actual
+        if (images[currentIndex]) {
+            images[currentIndex].classList.remove('active');
+        }
+        if (dots[currentIndex]) {
+            dots[currentIndex].classList.remove('active');
         }
         
         // Establecer nuevo índice
-        window.currentSlideImageIndex = index;
+        carousel.dataset.currentIndex = index.toString();
         
         // Activar nueva imagen y dot
-        images[window.currentSlideImageIndex].classList.add('active');
-        if (dots.length > 0) {
-            dots[window.currentSlideImageIndex].classList.add('active');
+        if (images[index]) {
+            images[index].classList.add('active');
+        }
+        if (dots[index]) {
+            dots[index].classList.add('active');
         }
     }
-
-    // Cerrar tarjeta deslizante con tecla Escape
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            const slideCard = document.getElementById('propertySlideCard');
-            if (slideCard) {
-                closePropertySlide();
-            }
-        }
-    });
 
         function selectFeedback(type, button) {
             const propertyId = button.dataset.propertyId;
@@ -7194,21 +7218,25 @@
                         }
                     </div>
                     
+
                     <div class="property-slide-carousel-area">
                         <div class="property-slide-carousel">
-                            ${property.images.map((img, index) => 
-                                `<img src="${img}" alt="Imagen ${index + 1}" ${index === 0 ? 'class="active"' : ''} onclick="openImageZoom('${img}')">`
-                            ).join('')}
-                            ${property.images.length > 1 ? `
-                                <button class="slide-carousel-nav slide-carousel-prev" onclick="changeSlideImage(-1)">‹</button>
-                                <button class="slide-carousel-nav slide-carousel-next" onclick="changeSlideImage(1)">›</button>
+                            ${property.images && property.images.length > 0 ? 
+                                property.images.map((img, index) => 
+                                    `<img src="${img}" alt="Imagen ${index + 1}" ${index === 0 ? 'class="active"' : ''} onclick="openImageZoom('${img}')">`
+                                ).join('') :
+                                '<img src="' + (property.thumbnail || '') + '" alt="Imagen principal" class="active" onclick="openImageZoom(\'' + (property.thumbnail || '') + '\')">'
+                            }
+                            ${property.images && property.images.length > 1 ? `
+                                <button class="slide-carousel-nav slide-carousel-prev" onclick="window.changeSlideImage(-1, this)">‹</button>
+                                <button class="slide-carousel-nav slide-carousel-next" onclick="window.changeSlideImage(1, this)">›</button>
                             ` : ''}
                         </div>
                         
-                        ${property.images.length > 1 ? `
+                        ${property.images && property.images.length > 1 ? `
                             <div class="carousel-indicators">
                                 ${property.images.map((_, index) => 
-                                    `<div class="carousel-dot ${index === 0 ? 'active' : ''}" onclick="goToSlideImage(${index})"></div>`
+                                    `<div class="carousel-dot ${index === 0 ? 'active' : ''}" onclick="window.goToSlideImage(${index}, this)"></div>`
                                 ).join('')}
                             </div>
                         ` : ''}
