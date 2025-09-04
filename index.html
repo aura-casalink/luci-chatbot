@@ -4496,8 +4496,15 @@
                         // NO hay propiedades - LIMPIAR TODO Y RESTAURAR
                         console.log('No se encontraron propiedades - limpiando búsqueda');
                         
-                        // Forzar limpieza completa
+                        // Forzar limpieza completa inmediata
                         cleanupSearchState();
+                        
+                        // Asegurarnos de que no quede ningún residuo de la búsqueda
+                        setTimeout(() => {
+                            // Segunda pasada de limpieza por si acaso
+                            document.querySelectorAll('.search-overlay').forEach(overlay => overlay.remove());
+                            document.querySelectorAll('.search-loader').forEach(loader => loader.remove());
+                        }, 100);
                         
                         // Mostrar mensaje apropiado
                         const noResultsMessage = callbackData.message || 
@@ -6889,18 +6896,28 @@
             const gridContainer = document.querySelector('.grid-container');
 
             // Guardar estado original antes de empezar
-            window.originalGridState = {
-                title: propertiesHeader.textContent,
-                cards: []
-            };
+            if (!window.originalGridState || !window.isSearching) {
+                window.originalGridState = {
+                    title: propertiesHeader.textContent,
+                    cards: []
+                };
             
-            // Guardar info de cada tarjeta
-            document.querySelectorAll('.property-card').forEach(card => {
-                window.originalGridState.cards.push({
-                    price: card.querySelector('.property-price')?.textContent,
-                    location: card.querySelector('.property-location')?.textContent
+                // Guardar info COMPLETA de cada tarjeta
+                document.querySelectorAll('.property-card').forEach(card => {
+                    const priceEl = card.querySelector('.property-price');
+                    const locationEl = card.querySelector('.property-location');
+                    
+                    window.originalGridState.cards.push({
+                        price: priceEl ? priceEl.textContent : '',
+                        location: locationEl ? locationEl.textContent : '',
+                        opacity: card.style.opacity || '1',
+                        display: locationEl ? locationEl.style.display : 'block'
+                    });
                 });
-            });
+            }
+
+            // Marcar que estamos en búsqueda
+            window.isSearching = true;
             
             // Cambiar título con animación
             let searchTitleInterval;
@@ -7026,53 +7043,43 @@
                 propertiesHeader.textContent = 'Nuestras Propiedades';
             }
             
-            // 3. Limpiar TODOS los overlays (importante: usar querySelectorAll)
+            // 3. Limpiar TODOS los overlays
             document.querySelectorAll('.search-overlay').forEach(overlay => {
                 overlay.remove();
             });
             
-            // 4. Limpiar TODAS las clases de búsqueda
-            document.querySelectorAll('.property-card.searching').forEach(card => {
+            // 4. Restaurar todas las tarjetas
+            document.querySelectorAll('.property-card').forEach((card, index) => {
+                // Quitar clase searching
                 card.classList.remove('searching');
                 card.style.opacity = '1';
                 card.style.pointerEvents = 'auto';
-            });
-            
-            // 5. Restaurar precios y ubicaciones originales de las propiedades hardcodeadas
-            const propertyCards = document.querySelectorAll('.property-card');
-            const originalPrices = ['1.480.000€', '332.000€', '489.000€', '459.000€', '849.000€', '320.000€', '550.000€', '680.000€', '395.000€'];
-            const originalLocations = [
-                'Palacio, Madrid',
-                'Puerto de Sotogrande-La Marina',
-                'Puerto de Sotogrande-La Marina',
-                'Nueva Atalaya, Estepona',
-                'Lomas de Marbella Club, Marbella',
-                'Retiro, Madrid',
-                'Malasaña, Madrid',
-                'Chueca, Madrid',
-                'Lavapiés, Madrid'
-            ];
-            
-            propertyCards.forEach((card, index) => {
-                // Restaurar precio
-                const priceElement = card.querySelector('.property-price');
-                if (priceElement && originalPrices[index]) {
-                    priceElement.textContent = originalPrices[index];
-                    priceElement.style.color = '#333';
-                    priceElement.style.fontSize = '14px';
-                }
-                
-                // Restaurar ubicación
-                const locationElement = card.querySelector('.property-location');
-                if (locationElement && originalLocations[index]) {
-                    locationElement.textContent = originalLocations[index];
-                    locationElement.style.display = 'block';
-                }
-                
-                // Asegurar que la tarjeta es clickeable
-                card.style.pointerEvents = 'auto';
                 card.style.cursor = 'pointer';
+                
+                // Si guardamos el estado original, restaurarlo
+                if (window.originalGridState && window.originalGridState.cards[index]) {
+                    const originalCard = window.originalGridState.cards[index];
+                    
+                    const priceElement = card.querySelector('.property-price');
+                    if (priceElement && originalCard.price) {
+                        priceElement.textContent = originalCard.price;
+                        priceElement.style.color = '#333';
+                        priceElement.style.fontSize = '14px';
+                    }
+                    
+                    const locationElement = card.querySelector('.property-location');
+                    if (locationElement && originalCard.location) {
+                        locationElement.textContent = originalCard.location;
+                        locationElement.style.display = 'block';
+                    }
+                }
             });
+            
+            // 5. Limpiar el botón "Ver más" si existe
+            const viewMoreBtn = document.querySelector('.view-more-properties');
+            if (viewMoreBtn) {
+                viewMoreBtn.remove();
+            }
             
             console.log('Estado de búsqueda completamente limpiado');
         }
