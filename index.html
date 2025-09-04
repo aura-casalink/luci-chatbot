@@ -4463,7 +4463,7 @@
             }, 6000);
         }
         
-       function handleRealtimeCallback(payload, sessionId) {
+        function handleRealtimeCallback(payload, sessionId) {
             const row = payload.new;
             console.log('Callback recibido para session:', sessionId, row);
             
@@ -4474,6 +4474,9 @@
                     
                     // Quitar mensaje de carga
                     hideLoading();
+                    
+                    // IMPORTANTE: Detener la búsqueda del grid en todos los casos
+                    stopGridSearch();
                     
                     // Si hay propiedades en la respuesta
                     if (callbackData.properties && callbackData.properties.length > 0) {
@@ -4492,13 +4495,23 @@
                             }
                         }
                         
-                        // Marcar como procesado
-                        markCallbackAsProcessed(row.id);
-                        
-                    } else if (callbackData.type === 'no_properties_found') {
+                    } else {
+                        // NO hay propiedades - mostrar mensaje y restaurar grid original
                         console.log('No se encontraron propiedades');
                         
-                        const noResultsMessage = callbackData.message || 'No se encontraron propiedades con esos criterios. ¿Podrías ampliar tu búsqueda?';
+                        // Detener búsqueda sin número (restaura título original)
+                        stopGridSearch(0);
+                        
+                        // Restaurar opacidad de las propiedades hardcodeadas
+                        const propertyCards = document.querySelectorAll('.property-card');
+                        propertyCards.forEach(card => {
+                            card.style.opacity = '1';
+                            card.classList.remove('searching');
+                        });
+                        
+                        // Mostrar mensaje apropiado
+                        const noResultsMessage = callbackData.message || 
+                            'No he encontrado propiedades que coincidan con tus criterios. ¿Podrías ampliar tu búsqueda o ajustar el presupuesto?';
                         
                         // Detectar si estamos en móvil para usar la función correcta
                         if (window.innerWidth <= 768) {
@@ -4506,30 +4519,21 @@
                         } else {
                             addMessage(noResultsMessage, 'assistant', true);
                         }
-                        
-                        // Marcar como procesado
-                        markCallbackAsProcessed(row.id);
-                        
-                    } else if (callbackData.message) {
-                        console.log('Mensaje de callback:', callbackData.message);
-                        
-                        // Para cualquier otro mensaje del callback
-                        const isMobile = window.innerWidth <= 768;
-                        if (isMobile) {
-                            addMobileMessage(callbackData.message, 'assistant', true);
-                        } else {
-                            addMessage(callbackData.message, 'assistant', true);
-                        }
-                        
-                        // Marcar como procesado si no es mensaje de progreso
-                        if (!callbackData.message.includes('Buscando') && !callbackData.message.includes('Analizando')) {
-                            markCallbackAsProcessed(row.id);
-                        }
                     }
+                    
+                    // Marcar como procesado
+                    if (row.id) {
+                        markProcessed(row.id);
+                    }
+                    
+                    // Limpiar estados de callback
+                    pendingCallback = false;
                     
                 } catch (error) {
                     console.error('Error procesando callback:', error);
                     hideLoading();
+                    stopGridSearch();
+                    pendingCallback = false;
                 }
             }
         }
@@ -6962,10 +6966,16 @@
             const propertiesHeader = document.querySelector('.properties-header h3');
             propertiesHeader.style.opacity = '1';
             
-            if (propertiesCount !== null) {
-                // Mostrar número de propiedades encontradas con el icono ajustado
+            if (propertiesCount !== null && propertiesCount > 0) {
+                // Mostrar número de propiedades encontradas
                 propertiesHeader.innerHTML = `<img src="https://cdn-icons-png.flaticon.com/512/3355/3355672.png" alt="Encontradas" style="width: 20px; height: 20px; vertical-align: middle; margin-right: 5px; margin-top: -3px;"> ${propertiesCount} propiedades encontradas`;
-                // Restaurar título original
+                
+                // Después de 3 segundos, volver al título original
+                setTimeout(() => {
+                    propertiesHeader.textContent = 'Nuestras Propiedades';
+                }, 3000);
+            } else {
+                // Si no hay propiedades o es null, mostrar título original
                 propertiesHeader.textContent = 'Nuestras Propiedades';
             }
             
@@ -6973,10 +6983,19 @@
             const overlays = document.querySelectorAll('.search-overlay');
             overlays.forEach(overlay => overlay.remove());
             
-            // Remover clase searching
+            // Remover clase searching y restaurar elementos
             const propertyCards = document.querySelectorAll('.property-card');
             propertyCards.forEach(card => {
                 card.classList.remove('searching');
+                
+                // Restaurar precio original si no hay resultados
+                if (propertiesCount === 0 || propertiesCount === null) {
+                    const priceElement = card.querySelector('.property-price');
+                    if (priceElement && priceElement.textContent === 'Búsqueda en curso...') {
+                        // Aquí podrías restaurar el precio original si lo tienes guardado
+                        priceElement.textContent = '';
+                    }
+                }
                 
                 // Mostrar ubicación de nuevo
                 const locationElement = card.querySelector('.property-location');
